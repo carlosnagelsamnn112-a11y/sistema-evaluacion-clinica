@@ -15,7 +15,7 @@ const s = {
 
 export default function Setup() {
   const router = useRouter()
-  const [form, setForm] = useState({ secretKey: '', nombre: '', email: '', password: '', confirmar: '' })
+  const [form, setForm] = useState({ secretKey: '', nombre: '', password: '', confirmar: '' })
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,7 +23,7 @@ export default function Setup() {
   const crear = async () => {
     setError('')
     setExito('')
-    if (!form.secretKey || !form.nombre || !form.email || !form.password) { setError('Complete todos los campos'); return }
+    if (!form.secretKey || !form.nombre || !form.password) { setError('Complete todos los campos'); return }
     if (form.password !== form.confirmar) { setError('Las contraseñas no coinciden'); return }
     if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); return }
 
@@ -35,7 +35,6 @@ export default function Setup() {
         body: JSON.stringify({
           secretKey: form.secretKey,
           nombre: form.nombre,
-          email: form.email,
           password: form.password
         })
       })
@@ -59,12 +58,8 @@ export default function Setup() {
           <input style={s.input} type="password" value={form.secretKey} onChange={e => setForm({ ...form, secretKey: e.target.value })} placeholder="Clave configurada en .env.local" />
         </div>
         <div>
-          <label style={s.label}>Nombre completo:</label>
-          <input style={s.input} value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} placeholder="Nombre del administrador" />
-        </div>
-        <div>
-          <label style={s.label}>Correo electrónico:</label>
-          <input style={s.input} type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="correo@ejemplo.com" />
+          <label style={s.label}>Nombre del administrador:</label>
+          <input style={s.input} value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} placeholder="Nombre completo" />
         </div>
         <div>
           <label style={s.label}>Contraseña:</label>

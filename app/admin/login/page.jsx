@@ -16,13 +16,12 @@ const s = {
 
 export default function AdminLogin() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
-    if (!email || !password) { setError('Complete todos los campos'); return }
+    if (!password) { setError('Ingrese la contraseña'); return }
     setLoading(true)
     setError('')
 
@@ -30,31 +29,41 @@ export default function AdminLogin() {
       const { data, error: sbError } = await supabase
         .from('administradores')
         .select('*')
-        .eq('email', email.toLowerCase().trim())
-        .single()
 
-      if (sbError || !data) { setError('Correo o contraseña incorrectos'); setLoading(false); return }
+      if (sbError || !data || data.length === 0) {
+        setError('No hay administradores registrados')
+        setLoading(false)
+        return
+      }
 
-      // Verificar contraseña con API
-      const res = await fetch('/api/admin/verificar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, hash: data.password_hash })
-      })
-      const result = await res.json()
+      // Verificar contraseña contra todos los admins
+      let adminValido = null
+      for (const admin of data) {
+        const res = await fetch('/api/admin/verificar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password, hash: admin.password_hash })
+        })
+        const result = await res.json()
+        if (result.valido) { adminValido = admin; break }
+      }
 
-      if (!result.valido) { setError('Correo o contraseña incorrectos'); setLoading(false); return }
+      if (!adminValido) {
+        setError('Contraseña incorrecta')
+        setLoading(false)
+        return
+      }
 
-      // Guardar sesión en localStorage
       localStorage.setItem('adminSession', JSON.stringify({
-        id: data.id,
-        nombre: data.nombre,
-        email: data.email,
+        id: adminValido.id,
+        nombre: adminValido.nombre,
         timestamp: Date.now()
       }))
 
       router.push('/admin/dashboard')
-    } catch { setError('Error al iniciar sesión. Intente de nuevo') }
+    } catch {
+      setError('Error al iniciar sesión. Intente de nuevo')
+    }
     setLoading(false)
   }
 
@@ -66,12 +75,15 @@ export default function AdminLogin() {
           Sistema de Evaluación Clínica — UAN Neiva
         </p>
         <div>
-          <label style={s.label}>Correo electrónico:</label>
-          <input style={s.input} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="correo@ejemplo.com" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
-        </div>
-        <div>
           <label style={s.label}>Contraseña:</label>
-          <input style={s.input} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+          <input
+            style={s.input}
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="••••••••"
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+          />
         </div>
         {error && <div style={s.error}>{error}</div>}
         <button style={s.btn} onClick={handleLogin} disabled={loading}>

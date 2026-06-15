@@ -14,9 +14,9 @@ function hashPassword(password) {
 export async function POST(request) {
   try {
     const body = await request.json()
-    const { secretKey, nombre, email, password } = body
+    const { secretKey, nombre, password } = body
 
-    if (!secretKey || !nombre || !email || !password) {
+    if (!secretKey || !nombre || !password) {
       return NextResponse.json({ success: false, error: 'Faltan campos requeridos' })
     }
 
@@ -32,24 +32,17 @@ export async function POST(request) {
 
     const { data, error } = await supabase
       .from('administradores')
-      .insert({
-        nombre: nombre,
-        email: email.toLowerCase().trim(),
-        password_hash: passwordHash
-      })
+      .insert({ nombre, password_hash: passwordHash })
       .select()
       .single()
 
     if (error) {
-      if (error.code === '23505') {
-        return NextResponse.json({ success: false, error: 'Este correo ya está registrado' })
-      }
       return NextResponse.json({ success: false, error: error.message })
     }
 
     return NextResponse.json({
       success: true,
-      admin: { id: data.id, nombre: data.nombre, email: data.email }
+      admin: { id: data.id, nombre: data.nombre }
     })
 
   } catch (e) {
