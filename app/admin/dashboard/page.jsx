@@ -100,6 +100,7 @@ export default function Dashboard() {
   const [nuevaEps, setNuevaEps] = useState('')
   const [editEps, setEditEps] = useState(null)
   const [editEpsNombre, setEditEpsNombre] = useState('')
+  const [descripcionVer, setDescripcionVer] = useState(null)
 
   useEffect(() => {
     const session = localStorage.getItem('adminSession')
@@ -845,13 +846,28 @@ export default function Dashboard() {
                           <td style={s.td}>{e.morsicatio_buccarum || '—'}</td>
                           <td style={s.td}>{e.morsicatio_labiarum || '—'}</td>
                           <td style={s.td}>{e.morsicatio_linguarum || '—'}</td>
-                          <td style={{ ...s.td, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.descripcion_lesion || '—'}</td>
+                          <td style={s.td}>
+                            {e.descripcion_lesion ? (
+                              <button style={s.btnBlue} onClick={() => setDescripcionVer({ nombre: getNombre(e.cedula), texto: e.descripcion_lesion })}>Ver texto</button>
+                            ) : '—'}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 {exploraciones.length === 0 && <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>No hay exploraciones registradas</p>}
+              </div>
+            )}
+
+            {descripcionVer && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '500px', width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
+                  <h3 style={{ color: '#fff', marginBottom: '5px' }}>Descripción de la lesión</h3>
+                  <p style={{ color: '#888', fontSize: '13px', marginBottom: '15px' }}>{descripcionVer.nombre}</p>
+                  <p style={{ color: '#ddd', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{descripcionVer.texto}</p>
+                  <button style={{ ...s.btn, width: '100%', marginTop: '20px' }} onClick={() => setDescripcionVer(null)}>Cerrar</button>
+                </div>
               </div>
             )}
 
