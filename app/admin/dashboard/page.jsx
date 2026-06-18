@@ -101,6 +101,9 @@ export default function Dashboard() {
   const [editEps, setEditEps] = useState(null)
   const [editEpsNombre, setEditEpsNombre] = useState('')
   const [descripcionVer, setDescripcionVer] = useState(null)
+  const [fotosVer, setFotosVer] = useState(null)
+  const [subiendoFoto, setSubiendoFoto] = useState(false)
+  const [fotoError, setFotoError] = useState('')
 
   useEffect(() => {
     const session = localStorage.getItem('adminSession')
@@ -314,6 +317,36 @@ export default function Dashboard() {
     if (!editEpsNombre.trim()) return
     await supabase.from('eps').update({ nombre: editEpsNombre }).eq('id', editEps)
     setEditEps(null); setEditEpsNombre(''); cargarDatos()
+  }
+
+  // ── SUBIR FOTO ──
+  const subirFoto = async (archivo, cedula, slot) => {
+    if (!archivo) return
+    if (!archivo.type.startsWith('image/')) { setFotoError('Solo se permiten imágenes'); return }
+    if (archivo.size > 5 * 1024 * 1024) { setFotoError('La imagen no puede superar 5MB'); return }
+    setSubiendoFoto(true); setFotoError('')
+    try {
+      const ext = archivo.name.split('.').pop()
+      const path = `${cedula}/foto${slot}_${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage.from('exploracion-fotos').upload(path, archivo, { upsert: true })
+      if (uploadError) throw uploadError
+      const { data: urlData } = supabase.storage.from('exploracion-fotos').getPublicUrl(path)
+      const campo = slot === 1 ? 'foto1_url' : 'foto2_url'
+      await supabase.from('exploracion_clinica').update({ [campo]: urlData.publicUrl }).eq('cedula', cedula)
+      await cargarDatos()
+      // Actualizar el estado de fotosVer con los nuevos datos
+      const { data: expl } = await supabase.from('exploracion_clinica').select('foto1_url, foto2_url').eq('cedula', cedula).single()
+      if (expl) setFotosVer(prev => ({ ...prev, foto1_url: expl.foto1_url, foto2_url: expl.foto2_url }))
+    } catch (e) { setFotoError('Error al subir: ' + e.message) }
+    setSubiendoFoto(false)
+  }
+
+  const eliminarFoto = async (cedula, slot) => {
+    if (!confirm('¿Eliminar esta foto?')) return
+    const campo = slot === 1 ? 'foto1_url' : 'foto2_url'
+    await supabase.from('exploracion_clinica').update({ [campo]: null }).eq('cedula', cedula)
+    await cargarDatos()
+    setFotosVer(prev => ({ ...prev, [campo]: null }))
   }
 
   // ── CONSENTIMIENTO VIEW (versión simple, se mejora después) ──
@@ -828,7 +861,7 @@ export default function Dashboard() {
                         <th style={s.th}>Úlcera</th><th style={s.th}>Queratosis</th>
                         <th style={s.th}>Fibroma</th><th style={s.th}>M. Buccarum</th>
                         <th style={s.th}>M. Labiarum</th><th style={s.th}>M. Linguarum</th>
-                        <th style={s.th}>Descripción</th>
+                        <th style={s.th}>Descripción</th><th style={s.th}>Fotos</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -851,6 +884,11 @@ export default function Dashboard() {
                               <button style={s.btnBlue} onClick={() => setDescripcionVer({ nombre: getNombre(e.cedula), texto: e.descripcion_lesion })}>Ver texto</button>
                             ) : '—'}
                           </td>
+                          <td style={s.td}>
+                            <button style={s.btnBlue} onClick={() => { setFotoError(''); setFotosVer({ cedula: e.cedula, nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url }) }}>
+                              📷 {(e.foto1_url || e.foto2_url) ? 'Ver fotos' : 'Agregar'}
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -867,6 +905,47 @@ export default function Dashboard() {
                   <p style={{ color: '#888', fontSize: '13px', marginBottom: '15px' }}>{descripcionVer.nombre}</p>
                   <p style={{ color: '#ddd', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{descripcionVer.texto}</p>
                   <button style={{ ...s.btn, width: '100%', marginTop: '20px' }} onClick={() => setDescripcionVer(null)}>Cerrar</button>
+                </div>
+              </div>
+            )}
+
+            {fotosVer && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+                  <h3 style={{ color: '#fff', marginBottom: '5px' }}>Fotos de exploración clínica</h3>
+                  <p style={{ color: '#888', fontSize: '13px', marginBottom: '20px' }}>{fotosVer.nombre}</p>
+                  {fotoError && <div style={{ color: '#ff6666', padding: '10px', backgroundColor: '#220000', borderRadius: '6px', marginBottom: '15px', fontSize: '13px' }}>{fotoError}</div>}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                    {[1, 2].map(slot => {
+                      const url = slot === 1 ? fotosVer.foto1_url : fotosVer.foto2_url
+                      return (
+                        <div key={slot} style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '15px', textAlign: 'center' }}>
+                          <p style={{ color: '#888', fontSize: '12px', marginBottom: '10px' }}>Foto {slot}</p>
+                          {url ? (
+                            <div>
+                              <img src={url} alt={`foto ${slot}`} style={{ width: '100%', borderRadius: '6px', marginBottom: '10px', maxHeight: '200px', objectFit: 'cover' }} />
+                              <button style={{ ...s.btnRed, width: '100%', marginBottom: '6px' }} onClick={() => eliminarFoto(fotosVer.cedula, slot)} disabled={subiendoFoto}>Eliminar</button>
+                              <label style={{ ...s.btnBlue, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
+                                Reemplazar
+                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFoto(e.target.files[0], fotosVer.cedula, slot)} />
+                              </label>
+                            </div>
+                          ) : (
+                            <div>
+                              <div style={{ width: '100%', height: '120px', backgroundColor: '#222', borderRadius: '6px', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ color: '#555', fontSize: '30px' }}>📷</span>
+                              </div>
+                              <label style={{ ...s.btnGreen, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
+                                {subiendoFoto ? 'Subiendo...' : 'Subir foto'}
+                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFoto(e.target.files[0], fotosVer.cedula, slot)} disabled={subiendoFoto} />
+                              </label>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <button style={{ ...s.btn, width: '100%' }} onClick={() => { setFotosVer(null); setFotoError('') }}>Cerrar</button>
                 </div>
               </div>
             )}
