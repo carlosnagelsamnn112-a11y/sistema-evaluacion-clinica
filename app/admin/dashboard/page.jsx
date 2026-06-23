@@ -391,8 +391,7 @@ export default function Dashboard() {
 
           {/* LOGO */}
           <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <div style={{ display: 'inline-block', backgroundColor: '#1a2e5a', color: '#fff', padding: '12px 24px', borderRadius: '4px', fontWeight: '900', fontSize: '22px', letterSpacing: '3px', marginBottom: '4px' }}>UAN</div>
-            <p style={{ fontSize: '10px', color: '#333', letterSpacing: '2px', margin: '4px 0 0 0' }}>UNIVERSIDAD ANTONIO NARIÑO</p>
+            <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/logo-uan.png" alt="Logo Universidad Antonio Nariño" style={{ height: '70px', objectFit: 'contain', display: 'block', margin: '0 auto' }} />
           </div>
 
           {/* TÍTULO */}
@@ -443,23 +442,27 @@ export default function Dashboard() {
             <tbody>
               <tr>
                 <td style={{ width: '50%', padding: '10px 10px 0 0', verticalAlign: 'bottom' }}>
+                  <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Diana.png" alt="firma Diana" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>1101682283</p>
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>Diana Carolina Cortés (20572211983)</p>
                   <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
                 </td>
                 <td style={{ width: '50%', padding: '10px 0 0 10px', verticalAlign: 'bottom' }}>
+                  <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Luisa.png" alt="firma Luisa" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>1013104626</p>
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>Luisa María Sandoval (20572212013)</p>
                   <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
                 </td>
               </tr>
               <tr>
-                <td style={{ width: '50%', padding: '30px 10px 0 0', verticalAlign: 'bottom' }}>
+                <td style={{ width: '50%', padding: '20px 10px 0 0', verticalAlign: 'bottom' }}>
+                  <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Christopher.png" alt="firma Christopher" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>1003894702</p>
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>Christopher Vargas (20572211040)</p>
                   <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
                 </td>
-                <td style={{ width: '50%', padding: '30px 0 0 10px', verticalAlign: 'bottom' }}>
+                <td style={{ width: '50%', padding: '20px 0 0 10px', verticalAlign: 'bottom' }}>
+                  <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Alejandra.png" alt="firma Alejandra" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>123456789</p>
                   <p style={{ fontSize: '12px', margin: '2px 0' }}>Alejandra Bobadilla Henao</p>
                   <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Docente de odontología</p>
@@ -953,12 +956,13 @@ export default function Dashboard() {
                     <thead>
                       <tr>
                         <th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
-                        <th style={s.th}>Lesiones</th><th style={s.th}>M. Labios</th>
+                        <th style={s.th}>Lesiones</th><th style={s.th}>Fotos</th>
+                        <th style={s.th}>M. Labios</th>
                         <th style={s.th}>M. Mejillas</th><th style={s.th}>M. Lengua</th>
                         <th style={s.th}>Úlcera</th><th style={s.th}>Queratosis</th>
                         <th style={s.th}>Fibroma</th><th style={s.th}>M. Buccarum</th>
                         <th style={s.th}>M. Labiarum</th><th style={s.th}>M. Linguarum</th>
-                        <th style={s.th}>Descripción</th><th style={s.th}>Fotos</th>
+                        <th style={s.th}>Descripción</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -967,6 +971,11 @@ export default function Dashboard() {
                           <td style={s.td}>{getNombre(e.cedula)}</td>
                           <td style={s.td}>{e.cedula}</td>
                           <td style={s.td}><span style={s.badge(e.presenta_lesiones === 'Sí' ? 'red' : e.presenta_lesiones === 'No' ? 'green' : 'gray')}>{e.presenta_lesiones || '—'}</span></td>
+                          <td style={s.td}>
+                            <button style={s.btnBlue} onClick={() => { setFotoError(''); setFotosVer({ cedula: e.cedula, nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url }) }}>
+                              📷 {(e.foto1_url || e.foto2_url) ? 'Ver fotos' : 'Agregar'}
+                            </button>
+                          </td>
                           <td style={s.td}>{e.mordedura_labios || '—'}</td>
                           <td style={s.td}>{e.mordedura_mejillas || '—'}</td>
                           <td style={s.td}>{e.mordedura_lengua || '—'}</td>
@@ -980,11 +989,6 @@ export default function Dashboard() {
                             {e.descripcion_lesion ? (
                               <button style={s.btnBlue} onClick={() => setDescripcionVer({ nombre: getNombre(e.cedula), texto: e.descripcion_lesion })}>Ver texto</button>
                             ) : '—'}
-                          </td>
-                          <td style={s.td}>
-                            <button style={s.btnBlue} onClick={() => { setFotoError(''); setFotosVer({ cedula: e.cedula, nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url }) }}>
-                              📷 {(e.foto1_url || e.foto2_url) ? 'Ver fotos' : 'Agregar'}
-                            </button>
                           </td>
                         </tr>
                       ))}
