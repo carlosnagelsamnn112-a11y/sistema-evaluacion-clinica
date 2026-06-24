@@ -90,7 +90,7 @@ export default function Dashboard() {
     presentaLesiones: '', mordeduraLabios: '', mordeduraMejillas: '', mordeduraLengua: '',
     ulceraTraumatica: '', queratosisFriccional: '', fibromaTraumatico: '',
     morsicatioBuccarum: '', morsicatioLabiarum: '', morsicatioLinguarum: '',
-    descripcionLesion: ''
+    descripcionLesion: '', foto1Url: '', foto2Url: ''
   })
 
   // Estado visualización
@@ -160,7 +160,7 @@ export default function Dashboard() {
 
   const resetFlujoForms = () => {
     setRespuestasDass({})
-    setExploracion({ presentaLesiones: '', mordeduraLabios: '', mordeduraMejillas: '', mordeduraLengua: '', ulceraTraumatica: '', queratosisFriccional: '', fibromaTraumatico: '', morsicatioBuccarum: '', morsicatioLabiarum: '', morsicatioLinguarum: '', descripcionLesion: '' })
+    setExploracion({ presentaLesiones: '', mordeduraLabios: '', mordeduraMejillas: '', mordeduraLengua: '', ulceraTraumatica: '', queratosisFriccional: '', fibromaTraumatico: '', morsicatioBuccarum: '', morsicatioLabiarum: '', morsicatioLinguarum: '', descripcionLesion: '', foto1Url: '', foto2Url: '' })
     setHistoria({ fechaNacimiento: '', contacto: '', sexo: '', semestre: '', enfermedadesSistemicas: '', tipoEnfermedad: '', tomaMedicamentos: '', tipoMedicamento: '', antecedentesPsicologicos: '', tipoEnfermedadPsicologica: '', habitoLabios: false, habitoMejillas: false, habitoLengua: false, habitoNo: false, sustanciasPsicoactivas: '', tipoSustancia: '', fumaCigarrilloVape: '' })
     setEpsInput('')
   }
@@ -296,7 +296,9 @@ export default function Dashboard() {
         morsicatio_buccarum: exploracion.morsicatioBuccarum,
         morsicatio_labiarum: exploracion.morsicatioLabiarum,
         morsicatio_linguarum: exploracion.morsicatioLinguarum,
-        descripcion_lesion: exploracion.descripcionLesion
+        descripcion_lesion: exploracion.descripcionLesion,
+        foto1_url: exploracion.foto1Url || null,
+        foto2_url: exploracion.foto2Url || null
       }).eq('cedula', flujoPaciente.cedula)
       setFlujoVista('exito'); cargarDatos()
     } catch (e) { setFlujoError('Error al guardar: ' + e.message) }
@@ -319,35 +321,53 @@ export default function Dashboard() {
     setEditEps(null); setEditEpsNombre(''); cargarDatos()
   }
 
-  // ── SUBIR FOTO ──
-  const subirFoto = async (archivo, cedula, slot) => {
+  // ── SUBIR FOTO (durante el llenado de exploración) ──
+  const subirFotoFormulario = async (archivo, slot) => {
     if (!archivo) return
     if (!archivo.type.startsWith('image/')) { setFotoError('Solo se permiten imágenes'); return }
     if (archivo.size > 5 * 1024 * 1024) { setFotoError('La imagen no puede superar 5MB'); return }
     setSubiendoFoto(true); setFotoError('')
     try {
       const ext = archivo.name.split('.').pop()
-      const path = `${cedula}/foto${slot}_${Date.now()}.${ext}`
+      const path = `${flujoPaciente.cedula}/foto${slot}_${Date.now()}.${ext}`
       const { error: uploadError } = await supabase.storage.from('exploracion-fotos').upload(path, archivo, { upsert: true })
       if (uploadError) throw uploadError
       const { data: urlData } = supabase.storage.from('exploracion-fotos').getPublicUrl(path)
-      const campo = slot === 1 ? 'foto1_url' : 'foto2_url'
-      await supabase.from('exploracion_clinica').update({ [campo]: urlData.publicUrl }).eq('cedula', cedula)
-      await cargarDatos()
-      // Actualizar el estado de fotosVer con los nuevos datos
-      const { data: expl } = await supabase.from('exploracion_clinica').select('foto1_url, foto2_url').eq('cedula', cedula).single()
-      if (expl) setFotosVer(prev => ({ ...prev, foto1_url: expl.foto1_url, foto2_url: expl.foto2_url }))
+      const campo = slot === 1 ? 'foto1Url' : 'foto2Url'
+      setExploracion(prev => ({ ...prev, [campo]: urlData.publicUrl }))
     } catch (e) { setFotoError('Error al subir: ' + e.message) }
     setSubiendoFoto(false)
   }
 
-  const eliminarFoto = async (cedula, slot) => {
-    if (!confirm('¿Eliminar esta foto?')) return
-    const campo = slot === 1 ? 'foto1_url' : 'foto2_url'
-    await supabase.from('exploracion_clinica').update({ [campo]: null }).eq('cedula', cedula)
-    await cargarDatos()
-    setFotosVer(prev => ({ ...prev, [campo]: null }))
+  const eliminarFotoFormulario = (slot) => {
+    const campo = slot === 1 ? 'foto1Url' : 'foto2Url'
+    setExploracion(prev => ({ ...prev, [campo]: '' }))
   }
+
+  // ── VER FOTOS (solo lectura, en Revisar datos) ──
+  const VerFotos = ({ foto1, foto2, nombre, onClose }) => (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+        <h3 style={{ color: '#fff', marginBottom: '5px' }}>Fotos de exploración clínica</h3>
+        <p style={{ color: '#888', fontSize: '13px', marginBottom: '20px' }}>{nombre}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+          {[foto1, foto2].map((url, i) => (
+            <div key={i} style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '15px', textAlign: 'center' }}>
+              <p style={{ color: '#888', fontSize: '12px', marginBottom: '10px' }}>Foto {i + 1}</p>
+              {url ? (
+                <img src={url} alt={`foto ${i + 1}`} style={{ width: '100%', borderRadius: '6px', maxHeight: '220px', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '120px', backgroundColor: '#222', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ color: '#555', fontSize: '30px' }}>📷</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <button style={{ ...s.btn, width: '100%' }} onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  )
 
   // ── CONSENTIMIENTO VIEW (versión simple, se mejora después) ──
   const VerConsentimiento = ({ c, pac, onClose }) => {
@@ -489,6 +509,7 @@ export default function Dashboard() {
     <div style={s.body}>
       <style>{`
         .tabla-wrap { width: 100%; }
+        .tabla-wrap-siempre { width: 100%; overflow-x: auto; }
         @media (max-width: 768px) {
           .tabla-wrap { overflow-x: auto; }
         }
@@ -735,6 +756,35 @@ export default function Dashboard() {
 
                       <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>Descripción de la lesión</h4>
                       <textarea style={s.textarea} placeholder="Describa clínicamente la lesión observada..." value={exploracion.descripcionLesion} onChange={e => setExploracion({ ...exploracion, descripcionLesion: e.target.value })} />
+
+                      <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>Fotos de evidencia (opcional, máximo 2)</h4>
+                      {fotoError && <div style={{ color: '#ff6666', padding: '10px', backgroundColor: '#220000', borderRadius: '6px', marginBottom: '10px', fontSize: '13px' }}>{fotoError}</div>}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        {[1, 2].map(slot => {
+                          const url = slot === 1 ? exploracion.foto1Url : exploracion.foto2Url
+                          return (
+                            <div key={slot} style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
+                              <p style={{ color: '#888', fontSize: '12px', marginBottom: '8px' }}>Foto {slot}</p>
+                              {url ? (
+                                <div>
+                                  <img src={url} alt={`foto ${slot}`} style={{ width: '100%', borderRadius: '6px', marginBottom: '8px', maxHeight: '150px', objectFit: 'cover' }} />
+                                  <button style={{ ...s.btnRed, width: '100%' }} onClick={() => eliminarFotoFormulario(slot)}>Eliminar</button>
+                                </div>
+                              ) : (
+                                <div>
+                                  <div style={{ width: '100%', height: '100px', backgroundColor: '#222', borderRadius: '6px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <span style={{ color: '#555', fontSize: '26px' }}>📷</span>
+                                  </div>
+                                  <label style={{ ...s.btnGreen, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
+                                    {subiendoFoto ? 'Subiendo...' : 'Subir foto'}
+                                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFotoFormulario(e.target.files[0], slot)} disabled={subiendoFoto} />
+                                  </label>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
                     </>
                   )}
                 </div>
@@ -857,7 +907,7 @@ export default function Dashboard() {
             {/* ── 3. HISTORIAS ── */}
             {detalleVista === 'historias' && (
               <div style={s.card}>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead>
                       <tr>
@@ -956,13 +1006,13 @@ export default function Dashboard() {
                     <thead>
                       <tr>
                         <th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
-                        <th style={s.th}>Lesiones</th><th style={s.th}>Fotos</th>
+                        <th style={s.th}>Lesiones</th>
                         <th style={s.th}>M. Labios</th>
                         <th style={s.th}>M. Mejillas</th><th style={s.th}>M. Lengua</th>
                         <th style={s.th}>Úlcera</th><th style={s.th}>Queratosis</th>
                         <th style={s.th}>Fibroma</th><th style={s.th}>M. Buccarum</th>
                         <th style={s.th}>M. Labiarum</th><th style={s.th}>M. Linguarum</th>
-                        <th style={s.th}>Descripción</th>
+                        <th style={s.th}>Descripción</th><th style={s.th}>Fotos</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -971,11 +1021,6 @@ export default function Dashboard() {
                           <td style={s.td}>{getNombre(e.cedula)}</td>
                           <td style={s.td}>{e.cedula}</td>
                           <td style={s.td}><span style={s.badge(e.presenta_lesiones === 'Sí' ? 'red' : e.presenta_lesiones === 'No' ? 'green' : 'gray')}>{e.presenta_lesiones || '—'}</span></td>
-                          <td style={s.td}>
-                            <button style={s.btnBlue} onClick={() => { setFotoError(''); setFotosVer({ cedula: e.cedula, nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url }) }}>
-                              📷 {(e.foto1_url || e.foto2_url) ? 'Ver fotos' : 'Agregar'}
-                            </button>
-                          </td>
                           <td style={s.td}>{e.mordedura_labios || '—'}</td>
                           <td style={s.td}>{e.mordedura_mejillas || '—'}</td>
                           <td style={s.td}>{e.mordedura_lengua || '—'}</td>
@@ -988,6 +1033,11 @@ export default function Dashboard() {
                           <td style={s.td}>
                             {e.descripcion_lesion ? (
                               <button style={s.btnBlue} onClick={() => setDescripcionVer({ nombre: getNombre(e.cedula), texto: e.descripcion_lesion })}>Ver texto</button>
+                            ) : '—'}
+                          </td>
+                          <td style={s.td}>
+                            {(e.foto1_url || e.foto2_url) ? (
+                              <button style={s.btnBlue} onClick={() => setFotosVer({ nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url })}>📷 Ver fotos</button>
                             ) : '—'}
                           </td>
                         </tr>
@@ -1011,44 +1061,7 @@ export default function Dashboard() {
             )}
 
             {fotosVer && (
-              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-                  <h3 style={{ color: '#fff', marginBottom: '5px' }}>Fotos de exploración clínica</h3>
-                  <p style={{ color: '#888', fontSize: '13px', marginBottom: '20px' }}>{fotosVer.nombre}</p>
-                  {fotoError && <div style={{ color: '#ff6666', padding: '10px', backgroundColor: '#220000', borderRadius: '6px', marginBottom: '15px', fontSize: '13px' }}>{fotoError}</div>}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                    {[1, 2].map(slot => {
-                      const url = slot === 1 ? fotosVer.foto1_url : fotosVer.foto2_url
-                      return (
-                        <div key={slot} style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '15px', textAlign: 'center' }}>
-                          <p style={{ color: '#888', fontSize: '12px', marginBottom: '10px' }}>Foto {slot}</p>
-                          {url ? (
-                            <div>
-                              <img src={url} alt={`foto ${slot}`} style={{ width: '100%', borderRadius: '6px', marginBottom: '10px', maxHeight: '200px', objectFit: 'cover' }} />
-                              <button style={{ ...s.btnRed, width: '100%', marginBottom: '6px' }} onClick={() => eliminarFoto(fotosVer.cedula, slot)} disabled={subiendoFoto}>Eliminar</button>
-                              <label style={{ ...s.btnBlue, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
-                                Reemplazar
-                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFoto(e.target.files[0], fotosVer.cedula, slot)} />
-                              </label>
-                            </div>
-                          ) : (
-                            <div>
-                              <div style={{ width: '100%', height: '120px', backgroundColor: '#222', borderRadius: '6px', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span style={{ color: '#555', fontSize: '30px' }}>📷</span>
-                              </div>
-                              <label style={{ ...s.btnGreen, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
-                                {subiendoFoto ? 'Subiendo...' : 'Subir foto'}
-                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFoto(e.target.files[0], fotosVer.cedula, slot)} disabled={subiendoFoto} />
-                              </label>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <button style={{ ...s.btn, width: '100%' }} onClick={() => { setFotosVer(null); setFotoError('') }}>Cerrar</button>
-                </div>
-              </div>
+              <VerFotos foto1={fotosVer.foto1_url} foto2={fotosVer.foto2_url} nombre={fotosVer.nombre} onClose={() => setFotosVer(null)} />
             )}
 
             {/* ── 6. RESULTADOS DEL ESTUDIO ── */}
