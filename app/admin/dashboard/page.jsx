@@ -508,11 +508,7 @@ export default function Dashboard() {
   return (
     <div style={s.body}>
       <style>{`
-        .tabla-wrap { width: 100%; }
         .tabla-wrap-siempre { width: 100%; overflow-x: auto; }
-        @media (max-width: 768px) {
-          .tabla-wrap { overflow-x: auto; }
-        }
       `}</style>
       {/* HEADER */}
       <div style={s.header}>
@@ -841,7 +837,7 @@ export default function Dashboard() {
                   <input style={{ ...s.input, flex: 1, minWidth: '150px' }} value={nuevaEps} onChange={e => setNuevaEps(e.target.value)} placeholder="Nombre de la nueva EPS" onKeyDown={e => e.key === 'Enter' && agregarEps()} />
                   <button style={s.btnGreen} onClick={agregarEps}>+ Agregar</button>
                 </div>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead><tr><th style={s.th}>#</th><th style={s.th}>Nombre EPS</th><th style={s.th}>Acciones</th></tr></thead>
                     <tbody>
@@ -875,7 +871,7 @@ export default function Dashboard() {
             {/* ── 2. CONSENTIMIENTOS ── */}
             {detalleVista === 'consentimientos' && !consentimientoVer && (
               <div style={s.card}>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead><tr><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>C1</th><th style={s.th}>C2</th><th style={s.th}>Ver</th></tr></thead>
                     <tbody>
@@ -946,7 +942,7 @@ export default function Dashboard() {
             {/* ── 4. ANÁLISIS DASS-21 ── */}
             {detalleVista === 'analisis' && !respuestaDetalle && (
               <div style={s.card}>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead>
                       <tr>
@@ -981,7 +977,7 @@ export default function Dashboard() {
               <div style={s.card}>
                 <button style={{ ...s.btn, marginBottom: '15px' }} onClick={() => setRespuestaDetalle(null)}>← Volver a la lista</button>
                 <h3 style={{ color: '#fff', marginBottom: '15px' }}>Respuestas de {getNombre(respuestaDetalle.cedula)}</h3>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead><tr><th style={s.th}>Nº</th><th style={s.th}>Pregunta</th><th style={s.th}>Puntaje</th></tr></thead>
                     <tbody>
@@ -1001,7 +997,7 @@ export default function Dashboard() {
             {/* ── 5. EXPLORACIÓN CLÍNICA ── */}
             {detalleVista === 'exploracion' && (
               <div style={s.card}>
-                <div className="tabla-wrap">
+                <div className="tabla-wrap-siempre">
                   <table style={s.table}>
                     <thead>
                       <tr>
@@ -1085,7 +1081,7 @@ export default function Dashboard() {
                 <div style={{ ...s.card, marginBottom: '20px' }}>
                   <h4 style={{ color: '#fff', marginBottom: '15px' }}>Lesiones registradas en exploración clínica</h4>
                   <p style={{ color: '#888', fontSize: '12px', marginBottom: '15px' }}>Datos ingresados por el administrador durante la exploración clínica</p>
-                  <div className="tabla-wrap">
+                  <div className="tabla-wrap-siempre">
                     <table style={s.table}>
                       <thead><tr><th style={s.th}>Tipo de lesión</th><th style={s.th}>Casos</th><th style={s.th}>Porcentaje</th></tr></thead>
                       <tbody>
@@ -1155,7 +1151,7 @@ export default function Dashboard() {
                 <div style={s.card}>
                   <h4 style={{ color: '#fff', marginBottom: '15px' }}>Relación entre lesiones orales y factores emocionales</h4>
                   <p style={{ color: '#888', fontSize: '12px', marginBottom: '15px' }}>Solo pacientes con exploración clínica completada</p>
-                  <div className="tabla-wrap">
+                  <div className="tabla-wrap-siempre">
                     <table style={s.table}>
                       <thead><tr><th style={s.th}>Condición</th><th style={s.th}>Con lesiones</th><th style={s.th}>Sin lesiones</th></tr></thead>
                       <tbody>
