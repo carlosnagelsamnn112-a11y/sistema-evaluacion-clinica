@@ -283,20 +283,43 @@ export default function Dashboard() {
   // ── GUARDAR EXPLORACIÓN ──
   const guardarExploracion = async () => {
     if (!exploracion.presentaLesiones) { setFlujoError('Indique si el paciente presenta lesiones orales'); return }
+
+    const localizacion = ['mordeduraLabios', 'mordeduraMejillas', 'mordeduraLengua']
+    const tipoLesion = ['ulceraTraumatica', 'queratosisFriccional', 'fibromaTraumatico', 'morsicatioBuccarum', 'morsicatioLabiarum', 'morsicatioLinguarum']
+
+    if (exploracion.presentaLesiones === 'Sí') {
+      const tieneLocalizacion = localizacion.some(k => exploracion[k] === 'Sí')
+      if (!tieneLocalizacion) { setFlujoError('Marque al menos una opción en Localización de la lesión'); return }
+      const tieneTipo = tipoLesion.some(k => exploracion[k] === 'Sí')
+      if (!tieneTipo) { setFlujoError('Marque al menos una opción en Tipo de lesión'); return }
+      if (!exploracion.descripcionLesion.trim()) { setFlujoError('La descripción de la lesión es obligatoria'); return }
+      if (!exploracion.foto1Url && !exploracion.foto2Url) { setFlujoError('Debe subir al menos una foto de evidencia'); return }
+    }
+
     setFlujoLoading(true)
     try {
+      // Normaliza: cualquier campo de localizacion/tipo que no sea 'Sí' explícito queda 'No'
+      const normalizar = (lista) => {
+        const obj = {}
+        lista.forEach(k => { obj[k] = exploracion[k] === 'Sí' ? 'Sí' : 'No' })
+        return obj
+      }
+      const camposNormalizados = exploracion.presentaLesiones === 'Sí'
+        ? { ...normalizar(localizacion), ...normalizar(tipoLesion) }
+        : { mordeduraLabios: 'No', mordeduraMejillas: 'No', mordeduraLengua: 'No', ulceraTraumatica: 'No', queratosisFriccional: 'No', fibromaTraumatico: 'No', morsicatioBuccarum: 'No', morsicatioLabiarum: 'No', morsicatioLinguarum: 'No' }
+
       await supabase.from('exploracion_clinica').update({
         presenta_lesiones: exploracion.presentaLesiones,
-        mordedura_labios: exploracion.mordeduraLabios,
-        mordedura_mejillas: exploracion.mordeduraMejillas,
-        mordedura_lengua: exploracion.mordeduraLengua,
-        ulcera_traumatica: exploracion.ulceraTraumatica,
-        queratosis_friccional: exploracion.queratosisFriccional,
-        fibroma_traumatico: exploracion.fibromaTraumatico,
-        morsicatio_buccarum: exploracion.morsicatioBuccarum,
-        morsicatio_labiarum: exploracion.morsicatioLabiarum,
-        morsicatio_linguarum: exploracion.morsicatioLinguarum,
-        descripcion_lesion: exploracion.descripcionLesion,
+        mordedura_labios: camposNormalizados.mordeduraLabios,
+        mordedura_mejillas: camposNormalizados.mordeduraMejillas,
+        mordedura_lengua: camposNormalizados.mordeduraLengua,
+        ulcera_traumatica: camposNormalizados.ulceraTraumatica,
+        queratosis_friccional: camposNormalizados.queratosisFriccional,
+        fibroma_traumatico: camposNormalizados.fibromaTraumatico,
+        morsicatio_buccarum: camposNormalizados.morsicatioBuccarum,
+        morsicatio_labiarum: camposNormalizados.morsicatioLabiarum,
+        morsicatio_linguarum: camposNormalizados.morsicatioLinguarum,
+        descripcion_lesion: exploracion.descripcionLesion || null,
         foto1_url: exploracion.foto1Url || null,
         foto2_url: exploracion.foto2Url || null
       }).eq('cedula', flujoPaciente.cedula)
@@ -699,7 +722,7 @@ export default function Dashboard() {
                 <div style={s.card}>
                   <h4 style={{ color: '#fff', marginBottom: '15px' }}>Identificación de lesiones</h4>
                   <div style={{ marginBottom: '15px' }}>
-                    <label style={{ color: '#ccc', fontSize: '14px', display: 'block', marginBottom: '8px' }}>¿Presenta lesiones orales?</label>
+                    <label style={{ color: '#ccc', fontSize: '14px', display: 'block', marginBottom: '8px' }}>¿Presenta lesiones orales? *</label>
                     <div style={{ display: 'flex', gap: '10px' }}>
                       {['Sí', 'No'].map(v => (
                         <label key={v} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: exploracion.presentaLesiones === v ? '#2a5a2a' : '#222', padding: '8px 20px', border: `1px solid ${exploracion.presentaLesiones === v ? '#3a7a3a' : '#444'}`, borderRadius: '20px', cursor: 'pointer', color: '#ccc' }}>
@@ -711,7 +734,7 @@ export default function Dashboard() {
 
                   {exploracion.presentaLesiones === 'Sí' && (
                     <>
-                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Localización de la lesión</h4>
+                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Localización de la lesión (mínimo una opción) *</h4>
                       {[
                         { key: 'mordeduraLabios', label: 'Mordedura de labios' },
                         { key: 'mordeduraMejillas', label: 'Mordedura de mejillas' },
@@ -729,7 +752,7 @@ export default function Dashboard() {
                         </div>
                       ))}
 
-                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Tipo de lesión</h4>
+                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Tipo de lesión (mínimo una opción) *</h4>
                       {[
                         { key: 'ulceraTraumatica', label: 'Úlcera traumática' },
                         { key: 'queratosisFriccional', label: 'Queratosis friccional' },
@@ -750,10 +773,12 @@ export default function Dashboard() {
                         </div>
                       ))}
 
-                      <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>Descripción de la lesión</h4>
+                      <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>Descripción de la lesión {exploracion.presentaLesiones === 'Sí' ? '*' : ''}</h4>
                       <textarea style={s.textarea} placeholder="Describa clínicamente la lesión observada..." value={exploracion.descripcionLesion} onChange={e => setExploracion({ ...exploracion, descripcionLesion: e.target.value })} />
 
-                      <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>Fotos de evidencia (opcional, máximo 2)</h4>
+                      <h4 style={{ color: '#fff', margin: '20px 0 10px' }}>
+                        Fotos de evidencia {exploracion.presentaLesiones === 'Sí' ? '(obligatorio, mínimo 1, máximo 2)' : ''}
+                      </h4>
                       {fotoError && <div style={{ color: '#ff6666', padding: '10px', backgroundColor: '#220000', borderRadius: '6px', marginBottom: '10px', fontSize: '13px' }}>{fotoError}</div>}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         {[1, 2].map(slot => {
@@ -771,8 +796,12 @@ export default function Dashboard() {
                                   <div style={{ width: '100%', height: '100px', backgroundColor: '#222', borderRadius: '6px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <span style={{ color: '#555', fontSize: '26px' }}>📷</span>
                                   </div>
-                                  <label style={{ ...s.btnGreen, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
-                                    {subiendoFoto ? 'Subiendo...' : 'Subir foto'}
+                                  <label style={{ ...s.btnGreen, display: 'block', cursor: 'pointer', textAlign: 'center', marginBottom: '6px' }}>
+                                    {subiendoFoto ? 'Subiendo...' : '📷 Tomar foto'}
+                                    <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={e => subirFotoFormulario(e.target.files[0], slot)} disabled={subiendoFoto} />
+                                  </label>
+                                  <label style={{ ...s.btnBlue, display: 'block', cursor: 'pointer', textAlign: 'center' }}>
+                                    {subiendoFoto ? 'Subiendo...' : '🖼️ Elegir archivo'}
                                     <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => subirFotoFormulario(e.target.files[0], slot)} disabled={subiendoFoto} />
                                   </label>
                                 </div>
