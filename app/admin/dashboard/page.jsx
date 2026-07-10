@@ -1090,122 +1090,198 @@ export default function Dashboard() {
             )}
 
             {/* ── 6. RESULTADOS DEL ESTUDIO ── */}
-            {detalleVista === 'resultados' && (
-              <div>
-                <h3 style={{ color: '#fff', marginBottom: '20px' }}>Resultados del Estudio</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px', marginBottom: '25px' }}>
-                  {[
-                    { label: 'Total participantes', value: pacientes.length, color: '#4fc3f7' },
-                    { label: 'Con lesiones orales', value: exploraciones.filter(e => e.presenta_lesiones === 'Sí').length, color: '#f44336' },
-                    { label: 'Sin lesiones orales', value: exploraciones.filter(e => e.presenta_lesiones === 'No').length, color: '#4caf50' },
-                    { label: 'Encuestas completadas', value: analisis.length, color: '#ffb74d' },
-                  ].map(item => (
-                    <div key={item.label} style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '10px', padding: '15px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '32px', fontWeight: '700', color: item.color }}>{item.value}</div>
-                      <div style={{ color: '#888', fontSize: '12px', marginTop: '5px' }}>{item.label}</div>
-                    </div>
-                  ))}
-                </div>
+            {detalleVista === 'resultados' && (() => {
+              // Cálculos base
+              const totalConC1 = [...new Set(consentimientos.filter(c => c.tipo === 1).map(c => c.cedula))].length
+              const totalHistorias = historias.length
+              const totalEncuestas = analisis.length
+              const explCompletas = exploraciones.filter(e => e.presenta_lesiones !== null && e.presenta_lesiones !== '')
+              const totalExploraciones = explCompletas.length
 
-                <div style={{ ...s.card, marginBottom: '20px' }}>
-                  <h4 style={{ color: '#fff', marginBottom: '15px' }}>Lesiones registradas en exploración clínica</h4>
-                  <p style={{ color: '#888', fontSize: '12px', marginBottom: '15px' }}>Datos ingresados por el administrador durante la exploración clínica</p>
-                  <div className="tabla-wrap-siempre">
-                    <table style={s.table}>
-                      <thead><tr><th style={s.th}>Tipo de lesión</th><th style={s.th}>Casos</th><th style={s.th}>Porcentaje</th></tr></thead>
-                      <tbody>
-                        {[
-                          { key: 'mordedura_labios', label: 'Mordedura de labios' },
-                          { key: 'mordedura_mejillas', label: 'Mordedura de mejillas' },
-                          { key: 'mordedura_lengua', label: 'Mordedura de lengua' },
-                          { key: 'ulcera_traumatica', label: 'Úlcera traumática' },
-                          { key: 'queratosis_friccional', label: 'Queratosis friccional' },
-                          { key: 'fibroma_traumatico', label: 'Fibroma traumático' },
-                          { key: 'morsicatio_buccarum', label: 'Morsicatio buccarum' },
-                          { key: 'morsicatio_labiarum', label: 'Morsicatio labiarum' },
-                          { key: 'morsicatio_linguarum', label: 'Morsicatio linguarum' },
-                        ].map(item => {
-                          const count = exploraciones.filter(e => e[item.key] === 'Sí').length
-                          const total = exploraciones.filter(e => e[item.key] !== null && e[item.key] !== undefined && e[item.key] !== '').length
-                          const pct = total > 0 ? Math.round((count / total) * 100) : 0
-                          return (
-                            <tr key={item.key}>
-                              <td style={s.td}>{item.label}</td>
-                              <td style={s.td}>{count}</td>
-                              <td style={s.td}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                  <div style={{ flex: 1, backgroundColor: '#333', borderRadius: '4px', height: '8px', minWidth: '60px' }}>
-                                    <div style={{ width: `${pct}%`, backgroundColor: '#f44336', height: '8px', borderRadius: '4px' }} />
-                                  </div>
-                                  <span style={{ minWidth: '35px', fontSize: '12px' }}>{pct}%</span>
-                                </div>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
+              // Trastorno = cualquier nivel distinto de Normal en cualquiera de los 3
+              const tieneTrastorno = (cedula) => {
+                const a = analisis.find(x => x.cedula == cedula)
+                if (!a) return false
+                return a.interpretacion_depresion !== 'Normal' ||
+                       a.interpretacion_ansiedad !== 'Normal' ||
+                       a.interpretacion_estres !== 'Normal'
+              }
+
+              const conLesionesCedulas = explCompletas.filter(e => e.presenta_lesiones === 'Sí').map(e => e.cedula)
+              const sinLesionesCedulas = explCompletas.filter(e => e.presenta_lesiones === 'No').map(e => e.cedula)
+
+              const conL_conT = conLesionesCedulas.filter(c => tieneTrastorno(c)).length
+              const conL_sinT = conLesionesCedulas.filter(c => !tieneTrastorno(c)).length
+              const sinL_conT = sinLesionesCedulas.filter(c => tieneTrastorno(c)).length
+              const sinL_sinT = sinLesionesCedulas.filter(c => !tieneTrastorno(c)).length
+
+              const niveles = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente severo']
+              const coloresNivel = { 'Normal': '#4caf50', 'Leve': '#8bc34a', 'Moderado': '#ffb74d', 'Severo': '#f44336', 'Extremadamente severo': '#b71c1c' }
+
+              const tiposLesion = [
+                { key: 'mordedura_labios', label: 'Mordedura de labios' },
+                { key: 'mordedura_mejillas', label: 'Mordedura de mejillas' },
+                { key: 'mordedura_lengua', label: 'Mordedura de lengua' },
+                { key: 'ulcera_traumatica', label: 'Úlcera traumática' },
+                { key: 'queratosis_friccional', label: 'Queratosis friccional' },
+                { key: 'fibroma_traumatico', label: 'Fibroma traumático' },
+                { key: 'morsicatio_buccarum', label: 'Morsicatio buccarum' },
+                { key: 'morsicatio_labiarum', label: 'Morsicatio labiarum' },
+                { key: 'morsicatio_linguarum', label: 'Morsicatio linguarum' },
+              ]
+
+              // Barras interactivas DASS
+              const BarraDass = ({ dim, label }) => {
+                const campo = `interpretacion_${dim}`
+                const total = analisis.length
+                return (
+                  <div style={{ marginBottom: '25px' }}>
+                    <p style={{ color: '#fff', fontWeight: '600', marginBottom: '12px', fontSize: '15px' }}>{label}</p>
+                    {niveles.map(nivel => {
+                      const count = analisis.filter(a => a[campo] === nivel).length
+                      const pct = total > 0 ? Math.round((count / total) * 100) : 0
+                      return (
+                        <div key={nivel} style={{ marginBottom: '8px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
+                            <span style={{ fontSize: '13px', color: coloresNivel[nivel] }}>{nivel}</span>
+                            <span style={{ fontSize: '13px', color: '#888' }}>{count} paciente{count !== 1 ? 's' : ''} · {pct}%</span>
+                          </div>
+                          <div style={{ backgroundColor: '#1a1a1a', borderRadius: '6px', height: '22px', overflow: 'hidden', position: 'relative', border: '1px solid #333' }}>
+                            <div style={{ width: `${pct}%`, backgroundColor: coloresNivel[nivel], height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
+                            {pct > 8 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#fff', fontWeight: '600' }}>{pct}%</span>}
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
-                </div>
+                )
+              }
 
-                <div style={s.card}>
-                  <h4 style={{ color: '#fff', marginBottom: '15px' }}>Distribución DASS-21</h4>
-                  {['depresion', 'ansiedad', 'estres'].map(dim => {
-                    const campo = `interpretacion_${dim}`
-                    const niveles = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente severo']
-                    const counts = {}
-                    niveles.forEach(n => { counts[n] = analisis.filter(a => a[campo] === n).length })
-                    const total = analisis.length
-                    return (
-                      <div key={dim} style={{ marginBottom: '20px' }}>
-                        <p style={{ color: '#ccc', marginBottom: '10px', fontWeight: '500' }}>{dim === 'estres' ? 'Estrés' : dim.charAt(0).toUpperCase() + dim.slice(1)}</p>
-                        {niveles.map(nivel => {
-                          const count = counts[nivel]
-                          const pct = total > 0 ? Math.round((count / total) * 100) : 0
-                          return (
-                            <div key={nivel} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                              <span style={{ minWidth: '160px', fontSize: '13px', color: '#ccc' }}>{nivel}</span>
-                              <div style={{ flex: 1, backgroundColor: '#333', borderRadius: '4px', height: '8px', minWidth: '60px' }}>
-                                <div style={{ width: `${pct}%`, backgroundColor: colorBadge(nivel) === 'green' ? '#4caf50' : colorBadge(nivel) === 'yellow' ? '#ffeb3b' : '#f44336', height: '8px', borderRadius: '4px' }} />
-                              </div>
-                              <span style={{ minWidth: '60px', fontSize: '12px', color: '#888' }}>{count} ({pct}%)</span>
-                            </div>
-                          )
-                        })}
+              return (
+                <div>
+                  <h3 style={{ color: '#fff', marginBottom: '20px', fontSize: '18px' }}>Resultados del Estudio</h3>
+
+                  {/* BLOQUE 1: 4 ESTADÍSTICAS PRINCIPALES */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '12px', marginBottom: '25px' }}>
+                    {[
+                      { label: 'Total pacientes', sublabel: 'con Consentimiento 1 firmado', value: totalConC1, color: '#4fc3f7' },
+                      { label: 'Historia clínica', sublabel: 'completada', value: totalHistorias, color: '#81c784' },
+                      { label: 'Encuesta DASS-21', sublabel: 'completada', value: totalEncuestas, color: '#ffb74d' },
+                      { label: 'Exploración clínica', sublabel: 'completada', value: totalExploraciones, color: '#ce93d8' },
+                    ].map(item => (
+                      <div key={item.label} style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '18px', textAlign: 'center' }}>
+                        <div style={{ fontSize: '40px', fontWeight: '800', color: item.color, lineHeight: 1 }}>{item.value}</div>
+                        <div style={{ color: '#fff', fontSize: '13px', fontWeight: '600', marginTop: '8px' }}>{item.label}</div>
+                        <div style={{ color: '#666', fontSize: '11px', marginTop: '3px' }}>{item.sublabel}</div>
                       </div>
-                    )
-                  })}
-                </div>
+                    ))}
+                  </div>
 
-                <div style={s.card}>
-                  <h4 style={{ color: '#fff', marginBottom: '15px' }}>Relación entre lesiones orales y factores emocionales</h4>
-                  <p style={{ color: '#888', fontSize: '12px', marginBottom: '15px' }}>Solo pacientes con exploración clínica completada</p>
-                  <div className="tabla-wrap-siempre">
-                    <table style={s.table}>
-                      <thead><tr><th style={s.th}>Condición</th><th style={s.th}>Con lesiones</th><th style={s.th}>Sin lesiones</th></tr></thead>
-                      <tbody>
-                        {[
-                          { label: 'Depresión severa/extrema', campo: 'interpretacion_depresion' },
-                          { label: 'Ansiedad severa/extrema', campo: 'interpretacion_ansiedad' },
-                          { label: 'Estrés severo/extremo', campo: 'interpretacion_estres' },
-                        ].map(item => {
-                          const conLesiones = exploraciones.filter(e => e.presenta_lesiones === 'Sí').map(e => e.cedula)
-                          const sinLesiones = exploraciones.filter(e => e.presenta_lesiones === 'No').map(e => e.cedula)
-                          const severo = (cedulas) => analisis.filter(a => cedulas.includes(a.cedula) && (a[item.campo] === 'Severo' || a[item.campo] === 'Extremadamente severo')).length
-                          return (
-                            <tr key={item.label}>
-                              <td style={s.td}>{item.label}</td>
-                              <td style={s.td}><span style={s.badge('red')}>{severo(conLesiones)} casos</span></td>
-                              <td style={s.td}><span style={s.badge('green')}>{severo(sinLesiones)} casos</span></td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
+                  {/* BLOQUE 2: RELACIÓN LESIONES vs TRASTORNOS */}
+                  <div style={{ ...s.card, marginBottom: '20px' }}>
+                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Relación entre lesiones orales y trastornos psicológicos</h4>
+                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Trastorno = cualquier nivel distinto de Normal en Depresión, Ansiedad o Estrés · Solo pacientes con exploración clínica completada</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {[
+                        { label: 'Con lesiones orales y con trastornos psicológicos', value: conL_conT, color: '#f44336', bg: '#2a0a0a', border: '#5a1a1a' },
+                        { label: 'Con lesiones orales y sin trastornos psicológicos', value: conL_sinT, color: '#ff9800', bg: '#2a1a0a', border: '#5a3a0a' },
+                        { label: 'Sin lesiones orales y con trastornos psicológicos', value: sinL_conT, color: '#2196f3', bg: '#0a1a2a', border: '#1a3a5a' },
+                        { label: 'Sin lesiones orales y sin trastornos psicológicos', value: sinL_sinT, color: '#4caf50', bg: '#0a2a0a', border: '#1a5a1a' },
+                      ].map(item => {
+                        const total = conL_conT + conL_sinT + sinL_conT + sinL_sinT
+                        const pct = total > 0 ? Math.round((item.value / total) * 100) : 0
+                        return (
+                          <div key={item.label} style={{ backgroundColor: item.bg, border: `1px solid ${item.border}`, borderRadius: '10px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <div style={{ fontSize: '32px', fontWeight: '800', color: item.color, minWidth: '50px', textAlign: 'center' }}>{item.value}</div>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ color: '#ddd', fontSize: '14px', margin: '0 0 6px 0' }}>{item.label}</p>
+                              <div style={{ backgroundColor: '#111', borderRadius: '4px', height: '6px', overflow: 'hidden' }}>
+                                <div style={{ width: `${pct}%`, backgroundColor: item.color, height: '100%', borderRadius: '4px', transition: 'width 0.6s ease' }} />
+                              </div>
+                            </div>
+                            <div style={{ color: item.color, fontSize: '16px', fontWeight: '700', minWidth: '40px', textAlign: 'right' }}>{pct}%</div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* BLOQUE 3: DISTRIBUCIÓN DASS-21 */}
+                  <div style={{ ...s.card, marginBottom: '20px' }}>
+                    <h4 style={{ color: '#fff', marginBottom: '18px', fontSize: '15px' }}>Distribución DASS-21 por dimensión</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+                      <BarraDass dim="depresion" label="Depresión" />
+                      <BarraDass dim="ansiedad" label="Ansiedad" />
+                      <BarraDass dim="estres" label="Estrés" />
+                    </div>
+                  </div>
+
+                  {/* BLOQUE 4: TIPOS DE LESIÓN */}
+                  <div style={{ ...s.card, marginBottom: '20px' }}>
+                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Tipos de lesión oral detectados</h4>
+                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Sobre el total de pacientes con exploración clínica completada ({totalExploraciones})</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {tiposLesion.map(item => {
+                        const count = explCompletas.filter(e => e[item.key] === 'Sí').length
+                        const pct = totalExploraciones > 0 ? Math.round((count / totalExploraciones) * 100) : 0
+                        return (
+                          <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span style={{ minWidth: '190px', fontSize: '13px', color: '#ccc' }}>{item.label}</span>
+                            <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '6px', height: '20px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
+                              <div style={{ width: `${pct}%`, backgroundColor: '#e53935', height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
+                              {pct > 5 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#fff', fontWeight: '600' }}>{pct}%</span>}
+                            </div>
+                            <span style={{ minWidth: '65px', fontSize: '13px', color: '#888', textAlign: 'right' }}>{count} · {pct}%</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* BLOQUE 5: LESIONES POR TIPO EN PACIENTES CON CADA NIVEL DASS */}
+                  <div style={s.card}>
+                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Trastornos psicológicos en pacientes con lesiones orales</h4>
+                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Distribución de niveles DASS-21 discriminada entre pacientes con y sin lesiones orales</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                      {[
+                        { label: 'Depresión', campo: 'interpretacion_depresion' },
+                        { label: 'Ansiedad', campo: 'interpretacion_ansiedad' },
+                        { label: 'Estrés', campo: 'interpretacion_estres' },
+                      ].map(dim => (
+                        <div key={dim.label}>
+                          <p style={{ color: '#fff', fontWeight: '600', marginBottom: '10px' }}>{dim.label}</p>
+                          <div style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
+                            <span style={{ flex: 1, textAlign: 'center', fontSize: '11px', color: '#f44336' }}>Con lesiones</span>
+                            <span style={{ flex: 1, textAlign: 'center', fontSize: '11px', color: '#4caf50' }}>Sin lesiones</span>
+                          </div>
+                          {niveles.map(nivel => {
+                            const conL = conLesionesCedulas.filter(c => analisis.find(a => a.cedula == c)?.[dim.campo] === nivel).length
+                            const sinL = sinLesionesCedulas.filter(c => analisis.find(a => a.cedula == c)?.[dim.campo] === nivel).length
+                            const maxVal = Math.max(conLesionesCedulas.length, sinLesionesCedulas.length, 1)
+                            return (
+                              <div key={nivel} style={{ marginBottom: '8px' }}>
+                                <span style={{ fontSize: '11px', color: coloresNivel[nivel], display: 'block', marginBottom: '3px' }}>{nivel}</span>
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                  <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '4px', height: '16px', overflow: 'hidden', border: '1px solid #333' }}>
+                                    <div style={{ width: `${Math.round((conL/maxVal)*100)}%`, backgroundColor: '#f44336', height: '100%', borderRadius: '4px' }} />
+                                  </div>
+                                  <span style={{ fontSize: '11px', color: '#888', minWidth: '12px', textAlign: 'center' }}>{conL}</span>
+                                  <span style={{ color: '#555', fontSize: '11px' }}>·</span>
+                                  <span style={{ fontSize: '11px', color: '#888', minWidth: '12px', textAlign: 'center' }}>{sinL}</span>
+                                  <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '4px', height: '16px', overflow: 'hidden', border: '1px solid #333' }}>
+                                    <div style={{ width: `${Math.round((sinL/maxVal)*100)}%`, backgroundColor: '#4caf50', height: '100%', borderRadius: '4px' }} />
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )
+            })()}
           </div>
         )}
       </div>
