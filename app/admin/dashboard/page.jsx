@@ -32,15 +32,15 @@ const s = {
   header: { backgroundColor: '#111', borderBottom: '1px solid #333', padding: '15px 25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' },
   main: { padding: '25px', maxWidth: '1200px', margin: '0 auto' },
   card: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '20px', marginBottom: '15px' },
-  table: { width: '100%', borderCollapse: 'collapse', fontSize: '13px' },
-  th: { backgroundColor: '#1a1a1a', color: '#ccc', padding: '10px 12px', textAlign: 'left', borderBottom: '1px solid #333', fontWeight: '500', whiteSpace: 'nowrap' },
-  td: { padding: '10px 12px', borderBottom: '1px solid #222', color: '#ddd', verticalAlign: 'middle' },
+  table: { width: '100%', borderCollapse: 'collapse', fontSize: '14px' },
+  th: { backgroundColor: '#1a1a1a', color: '#ccc', padding: '12px 14px', textAlign: 'left', borderBottom: '1px solid #333', fontWeight: '500', whiteSpace: 'nowrap' },
+  td: { padding: '12px 14px', borderBottom: '1px solid #222', color: '#ddd', verticalAlign: 'middle' },
   btn: { backgroundColor: '#222', color: '#fff', border: '1px solid #444', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
   btnRed: { backgroundColor: '#3a1a1a', color: '#ff6666', border: '1px solid #5a2a2a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
   btnGreen: { backgroundColor: '#1a3a1a', color: '#4caf50', border: '1px solid #2a5a2a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
   btnBlue: { backgroundColor: '#1a1a3a', color: '#64b5f6', border: '1px solid #2a2a5a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
   input: { padding: '8px 12px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px', boxSizing: 'border-box' },
-  badge: (color) => ({ display: 'inline-block', padding: '3px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '500', backgroundColor: color === 'green' ? '#1a3a1a' : color === 'red' ? '#3a1a1a' : color === 'yellow' ? '#3a3a1a' : '#2a2a2a', color: color === 'green' ? '#4caf50' : color === 'red' ? '#f44336' : color === 'yellow' ? '#ffeb3b' : '#9e9e9e', border: `1px solid ${color === 'green' ? '#2a5a2a' : color === 'red' ? '#5a2a2a' : color === 'yellow' ? '#5a5a2a' : '#3a3a3a'}` }),
+  badge: (color) => ({ display: 'inline-block', padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', backgroundColor: color === 'green' ? '#1a3a1a' : color === 'red' ? '#3a1a1a' : color === 'yellow' ? '#3a3a1a' : '#2a2a2a', color: color === 'green' ? '#4caf50' : color === 'red' ? '#f44336' : color === 'yellow' ? '#ffeb3b' : '#9e9e9e', border: `1px solid ${color === 'green' ? '#2a5a2a' : color === 'red' ? '#5a2a2a' : color === 'yellow' ? '#5a5a2a' : '#3a3a3a'}` }),
   select: { padding: '8px 12px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px' },
   textarea: { width: '100%', padding: '10px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px', minHeight: '100px', boxSizing: 'border-box', resize: 'vertical' },
   tableWrap: { width: '100%' },
@@ -104,6 +104,9 @@ export default function Dashboard() {
   const [fotosVer, setFotosVer] = useState(null)
   const [subiendoFoto, setSubiendoFoto] = useState(false)
   const [fotoError, setFotoError] = useState('')
+  const [varFila, setVarFila] = useState('')
+  const [varColumna, setVarColumna] = useState('')
+  const [calculoChi2, setCalculoChi2] = useState(null)
 
   useEffect(() => {
     const session = localStorage.getItem('adminSession')
@@ -139,6 +142,13 @@ export default function Dashboard() {
 
   const cerrarSesion = () => { localStorage.removeItem('adminSession'); router.push('/') }
 
+  const pacientesOrdenados = [...pacientes].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+
+  const obtenerIdParticipante = (cedula) => {
+    const idx = pacientesOrdenados.findIndex(p => p.cedula == cedula)
+    return idx !== -1 ? idx + 1 : '—'
+  }
+
   const getNombre = (cedula) => {
     const p = pacientes.find(x => x.cedula == cedula)
     return p ? `${p.nombre} ${p.apellidos}` : '—'
@@ -157,6 +167,199 @@ export default function Dashboard() {
     if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--
     return edad
   }
+
+  const calcularPruebaChi2 = () => {
+    if (!varFila || !varColumna) {
+      alert('Por favor seleccione ambas variables.');
+      return;
+    }
+
+    let datosCruzados = [];
+
+    pacientes.forEach(p => {
+      const e = exploraciones.find(x => x.cedula == p.cedula);
+      if (!e) return;
+
+      const h = historias.find(x => x.cedula == p.cedula);
+      const a = analisis.find(x => x.cedula == p.cedula);
+
+      let valFila = null;
+      let labelFila = '';
+
+      if (varFila === 'Lesiones orales (Sí / No)') {
+        if (e.presenta_lesiones === 'Sí' || e.presenta_lesiones === 'No') {
+          valFila = e.presenta_lesiones;
+          labelFila = e.presenta_lesiones === 'Sí' ? 'Con lesión' : 'Sin lesión';
+        }
+      } else if (varFila === 'Lesiones en los labios (Sí / No)') {
+        if (e.mordedura_labios === 'Sí' || e.mordedura_labios === 'No') {
+          valFila = e.mordedura_labios;
+          labelFila = e.mordedura_labios === 'Sí' ? 'Con lesión labial' : 'Sin lesión labial';
+        }
+      } else if (varFila === 'Lesiones en las mejillas (Sí / No)') {
+        if (e.mordedura_mejillas === 'Sí' || e.mordedura_mejillas === 'No') {
+          valFila = e.mordedura_mejillas;
+          labelFila = e.mordedura_mejillas === 'Sí' ? 'Con lesión en mejillas' : 'Sin lesión en mejillas';
+        }
+      } else if (varFila === 'Lesiones en la lengua (Sí / No)') {
+        if (e.mordedura_lengua === 'Sí' || e.mordedura_lengua === 'No') {
+          valFila = e.mordedura_lengua;
+          labelFila = e.mordedura_lengua === 'Sí' ? 'Con lesión en lengua' : 'Sin lesión en lengua';
+        }
+      }
+
+      if (valFila === null) return;
+
+      let valCol = null;
+      let labelCol = '';
+
+      if (varColumna === 'Trastornos psicológicos (Sí / No)') {
+        if (a) {
+          const tieneT = a.interpretacion_depresion !== 'Normal' || a.interpretacion_ansiedad !== 'Normal' || a.interpretacion_estres !== 'Normal';
+          valCol = tieneT ? 'Sí' : 'No';
+          labelCol = tieneT ? 'Con trastorno' : 'Sin trastorno';
+        }
+      } else if (varColumna === 'Trastorno psicológico de tipo depresión') {
+        if (a) {
+          const tieneT = a.interpretacion_depresion !== 'Normal';
+          valCol = tieneT ? 'Sí' : 'No';
+          labelCol = tieneT ? 'Con depresión' : 'Sin depresión';
+        }
+      } else if (varColumna === 'Trastorno psicológico de tipo ansiedad') {
+        if (a) {
+          const tieneT = a.interpretacion_ansiedad !== 'Normal';
+          valCol = tieneT ? 'Sí' : 'No';
+          labelCol = tieneT ? 'Con ansiedad' : 'Sin ansiedad';
+        }
+      } else if (varColumna === 'Trastorno psicológico de tipo estrés') {
+        if (a) {
+          const tieneT = a.interpretacion_estres !== 'Normal';
+          valCol = tieneT ? 'Sí' : 'No';
+          labelCol = tieneT ? 'Con estrés' : 'Sin estrés';
+        }
+      } else if (varColumna === 'Hábito de fumar') {
+        if (h) {
+          const fuma = h.fuma_cigarrillo_vape === 'Cigarrillo' || h.fuma_cigarrillo_vape === 'Las dos';
+          valCol = fuma ? 'Sí' : 'No';
+          labelCol = fuma ? 'Fuma' : 'No fuma';
+        }
+      } else if (varColumna === 'Hábito de vape') {
+        if (h) {
+          const vape = h.fuma_cigarrillo_vape === 'Vape' || h.fuma_cigarrillo_vape === 'Las dos';
+          valCol = vape ? 'Sí' : 'No';
+          labelCol = vape ? 'Usa vape' : 'No usa vape';
+        }
+      } else if (varColumna === 'Consumo de sustancias psicoactivas') {
+        if (h && (h.sustancias_psicoactivas === 'Sí' || h.sustancias_psicoactivas === 'No')) {
+          valCol = h.sustancias_psicoactivas;
+          labelCol = h.sustancias_psicoactivas === 'Sí' ? 'Consume SPA' : 'No consume SPA';
+        }
+      } else if (varColumna === 'Área de la universidad') {
+        if (h && (h.area === 'Preclínica' || h.area === 'Clínica')) {
+          valCol = h.area;
+          labelCol = h.area;
+        }
+      } else if (varColumna === 'Sexo') {
+        if (h && (h.sexo === 'Masculino' || h.sexo === 'Femenino')) {
+          valCol = h.sexo;
+          labelCol = h.sexo;
+        }
+      }
+
+      if (valCol === null) return;
+
+      datosCruzados.push({
+        cedula: p.cedula,
+        filaVal: valFila,
+        filaLabel: labelFila,
+        colVal: valCol,
+        colLabel: labelCol
+      });
+    });
+
+    const totalN = datosCruzados.length;
+    if (totalN < 2) {
+      alert(`No hay suficientes datos cruzados para calcular la prueba (Total pacientes válidos: ${totalN}).`);
+      setCalculoChi2(null);
+      return;
+    }
+
+    const catFilas = ['Sí', 'No'];
+    let catCols = [];
+    if (varColumna.startsWith('Trastorno') || varColumna.startsWith('Hábito') || varColumna.includes('sustancias') || varColumna.startsWith('Trastornos')) {
+      catCols = ['Sí', 'No'];
+    } else if (varColumna === 'Área de la universidad') {
+      catCols = ['Preclínica', 'Clínica'];
+    } else if (varColumna === 'Sexo') {
+      catCols = ['Masculino', 'Femenino'];
+    }
+
+    const getEtiquetaFila = (cat) => {
+      if (varFila === 'Lesiones orales (Sí / No)') return cat === 'Sí' ? 'Con lesión' : 'Sin lesión';
+      if (varFila === 'Lesiones en los labios (Sí / No)') return cat === 'Sí' ? 'Con lesión labial' : 'Sin lesión labial';
+      if (varFila === 'Lesiones en las mejillas (Sí / No)') return cat === 'Sí' ? 'Con lesión en mejillas' : 'Sin lesión en mejillas';
+      if (varFila === 'Lesiones en la lengua (Sí / No)') return cat === 'Sí' ? 'Con lesión en lengua' : 'Sin lesión en lengua';
+      return cat;
+    };
+
+    const getEtiquetaCol = (cat) => {
+      if (varColumna === 'Trastornos psicológicos (Sí / No)') return cat === 'Sí' ? 'Con trastorno' : 'Sin trastorno';
+      if (varColumna === 'Trastorno psicológico de tipo depresión') return cat === 'Sí' ? 'Con depresión' : 'Sin depresión';
+      if (varColumna === 'Trastorno psicológico de tipo ansiedad') return cat === 'Sí' ? 'Con ansiedad' : 'Sin ansiedad';
+      if (varColumna === 'Trastorno psicológico de tipo estrés') return cat === 'Sí' ? 'Con estrés' : 'Sin estrés';
+      if (varColumna === 'Hábito de fumar') return cat === 'Sí' ? 'Fuma' : 'No fuma';
+      if (varColumna === 'Hábito de vape') return cat === 'Sí' ? 'Usa vape' : 'No usa vape';
+      if (varColumna === 'Consumo de sustancias psicoactivas') return cat === 'Sí' ? 'Consume SPA' : 'No consume SPA';
+      return cat;
+    };
+
+    const f1 = catFilas[0], f2 = catFilas[1];
+    const c1 = catCols[0], c2 = catCols[1];
+
+    const o11 = datosCruzados.filter(x => x.filaVal === f1 && x.colVal === c1).length;
+    const o12 = datosCruzados.filter(x => x.filaVal === f1 && x.colVal === c2).length;
+    const o21 = datosCruzados.filter(x => x.filaVal === f2 && x.colVal === c1).length;
+    const o22 = datosCruzados.filter(x => x.filaVal === f2 && x.colVal === c2).length;
+
+    const totalF1 = o11 + o12;
+    const totalF2 = o21 + o22;
+    const totalC1 = o11 + o21;
+    const totalC2 = o12 + o22;
+
+    const e11 = totalN > 0 ? (totalF1 * totalC1) / totalN : 0;
+    const e12 = totalN > 0 ? (totalF1 * totalC2) / totalN : 0;
+    const e21 = totalN > 0 ? (totalF2 * totalC1) / totalN : 0;
+    const e22 = totalN > 0 ? (totalF2 * totalC2) / totalN : 0;
+
+    const chi11 = e11 > 0 ? Math.pow(o11 - e11, 2) / e11 : 0;
+    const chi12 = e12 > 0 ? Math.pow(o12 - e12, 2) / e12 : 0;
+    const chi21 = e21 > 0 ? Math.pow(o21 - e21, 2) / e21 : 0;
+    const chi22 = e22 > 0 ? Math.pow(o22 - e22, 2) / e22 : 0;
+
+    const chiTotal = chi11 + chi12 + chi21 + chi22;
+    const gl = 1;
+    const pValorConfianza = 0.95;
+    const valorCritico = 3.841;
+    const seRechazaH0 = chiTotal > valorCritico;
+
+    setCalculoChi2({
+      totalN,
+      f1, f2, c1, c2,
+      labelF1: getEtiquetaFila(f1),
+      labelF2: getEtiquetaFila(f2),
+      labelC1: getEtiquetaCol(c1),
+      labelC2: getEtiquetaCol(c2),
+      obs: { o11, o12, o21, o22 },
+      esp: { e11, e12, e21, e22 },
+      parc: { chi11, chi12, chi21, chi22 },
+      totalF1, totalF2, totalC1, totalC2,
+      chiTotal,
+      gl,
+      pValorConfianza,
+      valorCritico,
+      seRechazaH0
+    });
+  };
 
   const resetFlujoForms = () => {
     setRespuestasDass({})
@@ -845,6 +1048,7 @@ export default function Dashboard() {
                 { key: 'analisis', label: '4. Análisis DASS-21' },
                 { key: 'exploracion', label: '5. Exploración Clínica' },
                 { key: 'resultados', label: '6. Resultados del Estudio' },
+                { key: 'chi2', label: '7. Prueba de Chi-cuadrado' },
               ].map(t => (
                 <button key={t.key} onClick={() => { setDetalleVista(t.key); setBusqueda(''); setRespuestaDetalle(null); setConsentimientoVer(null) }}
                   style={{ padding: '8px 14px', borderRadius: '8px', border: `1px solid ${detalleVista === t.key ? '#4444aa' : '#444'}`, backgroundColor: detalleVista === t.key ? '#1a1a3e' : '#222', color: '#fff', cursor: 'pointer', fontSize: '13px', fontWeight: detalleVista === t.key ? '600' : '400' }}>{t.label}</button>
@@ -902,13 +1106,14 @@ export default function Dashboard() {
               <div style={s.card}>
                 <div className="tabla-wrap-siempre">
                   <table style={s.table}>
-                    <thead><tr><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>C1</th><th style={s.th}>C2</th><th style={s.th}>Ver</th></tr></thead>
+                    <thead><tr><th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>C1</th><th style={s.th}>C2</th><th style={s.th}>Ver</th></tr></thead>
                     <tbody>
                       {filtrar(pacientes).map(p => {
                         const c1 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 1)
                         const c2 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 2)
                         return (
                           <tr key={p.id}>
+                            <td style={s.td}>{obtenerIdParticipante(p.cedula)}</td>
                             <td style={s.td}>{p.nombre} {p.apellidos}</td>
                             <td style={s.td}>{p.cedula}</td>
                             <td style={s.td}><span style={s.badge(c1 ? 'green' : 'red')}>{c1 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
@@ -936,7 +1141,7 @@ export default function Dashboard() {
                   <table style={s.table}>
                     <thead>
                       <tr>
-                        <th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>Edad</th>
+                        <th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>Edad</th>
                         <th style={s.th}>Sexo</th><th style={s.th}>EPS</th><th style={s.th}>Semestre</th>
                         <th style={s.th}>Área</th><th style={s.th}>Enf. Sistémicas</th>
                         <th style={s.th}>Medicamentos</th><th style={s.th}>Ant. Psicológicos</th>
@@ -946,6 +1151,7 @@ export default function Dashboard() {
                     <tbody>
                       {filtrar(historias).map(h => (
                         <tr key={h.id}>
+                          <td style={s.td}>{obtenerIdParticipante(h.cedula)}</td>
                           <td style={s.td}>{getNombre(h.cedula)}</td>
                           <td style={s.td}>{h.cedula}</td>
                           <td style={s.td}>{h.edad}</td>
@@ -975,24 +1181,22 @@ export default function Dashboard() {
                   <table style={s.table}>
                     <thead>
                       <tr>
-                        <th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
-                        <th style={s.th}>Depresión</th><th style={s.th}>Ptje D</th>
-                        <th style={s.th}>Ansiedad</th><th style={s.th}>Ptje A</th>
-                        <th style={s.th}>Estrés</th><th style={s.th}>Ptje E</th>
+                        <th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
+                        <th style={s.th}>Depresión</th>
+                        <th style={s.th}>Ansiedad</th>
+                        <th style={s.th}>Estrés</th>
                         <th style={s.th}>Detalle</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filtrar(analisis).map(a => (
                         <tr key={a.id}>
+                          <td style={s.td}>{obtenerIdParticipante(a.cedula)}</td>
                           <td style={s.td}>{getNombre(a.cedula)}</td>
                           <td style={s.td}>{a.cedula}</td>
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_depresion))}>{a.interpretacion_depresion}</span></td>
-                          <td style={s.td}>{a.puntaje_depresion}</td>
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_ansiedad))}>{a.interpretacion_ansiedad}</span></td>
-                          <td style={s.td}>{a.puntaje_ansiedad}</td>
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_estres))}>{a.interpretacion_estres}</span></td>
-                          <td style={s.td}>{a.puntaje_estres}</td>
                           <td style={s.td}><button style={s.btnBlue} onClick={() => setRespuestaDetalle(respuestas.find(r => r.cedula == a.cedula))}>Ver detalle</button></td>
                         </tr>
                       ))}
@@ -1030,7 +1234,7 @@ export default function Dashboard() {
                   <table style={s.table}>
                     <thead>
                       <tr>
-                        <th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
+                        <th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
                         <th style={s.th}>Lesiones</th>
                         <th style={s.th}>M. Labios</th>
                         <th style={s.th}>M. Mejillas</th><th style={s.th}>M. Lengua</th>
@@ -1043,6 +1247,7 @@ export default function Dashboard() {
                     <tbody>
                       {filtrar(exploraciones).map(e => (
                         <tr key={e.id}>
+                          <td style={s.td}>{obtenerIdParticipante(e.cedula)}</td>
                           <td style={s.td}>{getNombre(e.cedula)}</td>
                           <td style={s.td}>{e.cedula}</td>
                           <td style={s.td}><span style={s.badge(e.presenta_lesiones === 'Sí' ? 'red' : e.presenta_lesiones === 'No' ? 'green' : 'gray')}>{e.presenta_lesiones || '—'}</span></td>
@@ -1282,6 +1487,243 @@ export default function Dashboard() {
                 </div>
               )
             })()}
+
+            {/* ── 7. PRUEBA DE CHI-CUADRADO ── */}
+            {detalleVista === 'chi2' && (
+              <div style={s.card}>
+                <h3 style={{ color: '#fff', marginBottom: '10px', fontSize: '18px', fontWeight: '600' }}>7. Prueba de Chi-cuadrado</h3>
+                <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>
+                  Analiza de forma interactiva la asociación estadística entre las variables del estudio clínico. Los cálculos se generan automáticamente sobre todos los registros guardados.
+                </p>
+
+                {/* PANEL DE SELECCIÓN */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '15px', alignItems: 'end', marginBottom: '30px', flexWrap: 'wrap' }}>
+                  <div>
+                    <label style={{ ...s.label, marginBottom: '6px' }}>Variable de las filas:</label>
+                    <select style={{ ...s.select, width: '100%' }} value={varFila} onChange={e => { setVarFila(e.target.value); setCalculoChi2(null); }}>
+                      <option value="">-- Seleccione una variable --</option>
+                      <option value="Lesiones orales (Sí / No)">Lesiones orales (Sí / No)</option>
+                      <option value="Lesiones en los labios (Sí / No)">Lesiones en los labios (Sí / No)</option>
+                      <option value="Lesiones en las mejillas (Sí / No)">Lesiones en las mejillas (Sí / No)</option>
+                      <option value="Lesiones en la lengua (Sí / No)">Lesiones en la lengua (Sí / No)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ ...s.label, marginBottom: '6px' }}>Variable de las columnas:</label>
+                    <select style={{ ...s.select, width: '100%' }} value={varColumna} onChange={e => { setVarColumna(e.target.value); setCalculoChi2(null); }}>
+                      <option value="">-- Seleccione una variable --</option>
+                      <option value="Trastornos psicológicos (Sí / No)">Trastornos psicológicos (Sí / No)</option>
+                      <option value="Trastorno psicológico de tipo depresión">Trastorno psicológico de tipo depresión</option>
+                      <option value="Trastorno psicológico de tipo ansiedad">Trastorno psicológico de tipo ansiedad</option>
+                      <option value="Trastorno psicológico de tipo estrés">Trastorno psicológico de tipo estrés</option>
+                      <option value="Hábito de fumar">Hábito de fumar</option>
+                      <option value="Hábito de vape">Hábito de vape</option>
+                      <option value="Consumo de sustancias psicoactivas">Consumo de sustancias psicoactivas</option>
+                      <option value="Área de la universidad">Área de la universidad</option>
+                      <option value="Sexo">Sexo</option>
+                    </select>
+                  </div>
+                  <button style={{ ...s.btnGreen, padding: '12px 28px', height: '40px', fontSize: '14px', fontWeight: '600' }} onClick={calcularPruebaChi2}>
+                    Calcular
+                  </button>
+                </div>
+
+                {!calculoChi2 ? (
+                  <div style={{ padding: '40px 20px', border: '1px dashed #333', borderRadius: '8px', textAlign: 'center', backgroundColor: '#0a0a0a' }}>
+                    <span style={{ fontSize: '36px', display: 'block', marginBottom: '10px' }}>📊</span>
+                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Selecciona una variable de fila y una de columna, y presiona el botón **Calcular** para ver los resultados.</p>
+                  </div>
+                ) : (
+                  <div>
+                    {/* INFO ADICIONAL */}
+                    <div style={{ backgroundColor: '#161616', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '12px 18px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '14px', color: '#aaa' }}>Tamaño de muestra analizada (N): <strong style={{ color: '#fff' }}>{calculoChi2.totalN} pacientes</strong></span>
+                      <span style={{ fontSize: '12px', color: '#666' }}>Cruzado por Cédula</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px', flexWrap: 'wrap' }}>
+                      
+                      {/* TABLA DE CONTINGENCIA (OBSERVADO vs ESPERADO) */}
+                      <div style={{ backgroundColor: '#141414', border: '1px solid #2c2c2c', borderRadius: '10px', padding: '18px' }}>
+                        <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: '600', marginBottom: '15px', borderBottom: '1px solid #2c2c2c', paddingBottom: '8px' }}>
+                          Tabla de contingencia (Frecuencias Observadas / Esperadas)
+                        </h4>
+                        <div className="tabla-wrap-siempre">
+                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', color: '#fff' }}>
+                            <thead>
+                              <tr>
+                                <th style={{ padding: '10px', borderBottom: '2px solid #333', textAlign: 'left', color: '#888' }}>
+                                  {varFila.split(' ')[0]} ↓ \ {varColumna.split(' ')[0]} →
+                                </th>
+                                <th style={{ padding: '10px', borderBottom: '2px solid #333', textAlign: 'center' }}>{calculoChi2.labelC1}</th>
+                                <th style={{ padding: '10px', borderBottom: '2px solid #333', textAlign: 'center' }}>{calculoChi2.labelC2}</th>
+                                <th style={{ padding: '10px', borderBottom: '2px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#aaa' }}>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', fontWeight: 'bold' }}>{calculoChi2.labelF1}</td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center' }}>
+                                  <div style={{ fontSize: '16px', fontWeight: '500' }}>{calculoChi2.obs.o11}</div>
+                                  <div style={{ fontSize: '11px', color: '#888' }}>esp: {calculoChi2.esp.e11.toFixed(2)}</div>
+                                </td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center' }}>
+                                  <div style={{ fontSize: '16px', fontWeight: '500' }}>{calculoChi2.obs.o12}</div>
+                                  <div style={{ fontSize: '11px', color: '#888' }}>esp: {calculoChi2.esp.e12.toFixed(2)}</div>
+                                </td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center', fontWeight: 'bold', color: '#aaa' }}>{calculoChi2.totalF1}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', fontWeight: 'bold' }}>{calculoChi2.labelF2}</td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center' }}>
+                                  <div style={{ fontSize: '16px', fontWeight: '500' }}>{calculoChi2.obs.o21}</div>
+                                  <div style={{ fontSize: '11px', color: '#888' }}>esp: {calculoChi2.esp.e21.toFixed(2)}</div>
+                                </td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center' }}>
+                                  <div style={{ fontSize: '16px', fontWeight: '500' }}>{calculoChi2.obs.o22}</div>
+                                  <div style={{ fontSize: '11px', color: '#888' }}>esp: {calculoChi2.esp.e22.toFixed(2)}</div>
+                                </td>
+                                <td style={{ padding: '12px 10px', borderBottom: '1px solid #222', textAlign: 'center', fontWeight: 'bold', color: '#aaa' }}>{calculoChi2.totalF2}</td>
+                              </tr>
+                              <tr style={{ backgroundColor: '#1a1a1a' }}>
+                                <td style={{ padding: '10px', fontWeight: 'bold', color: '#aaa' }}>Total</td>
+                                <td style={{ padding: '10px', textAlign: 'center', fontWeight: 'bold', color: '#aaa' }}>{calculoChi2.totalC1}</td>
+                                <td style={{ padding: '10px', textAlign: 'center', fontWeight: 'bold', color: '#aaa' }}>{calculoChi2.totalC2}</td>
+                                <td style={{ padding: '10px', textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>{calculoChi2.totalN}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* TABLA DE PARÁMETROS ESTADÍSTICOS */}
+                      <div style={{ backgroundColor: '#141414', border: '1px solid #2c2c2c', borderRadius: '10px', padding: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: '600', marginBottom: '15px', borderBottom: '1px solid #2c2c2c', paddingBottom: '8px' }}>
+                            Parámetros del Análisis Estadístico
+                          </h4>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #222' }}>
+                              <span style={{ color: '#888' }}>Grados de libertad (gl)</span>
+                              <span style={{ color: '#fff', fontWeight: 'bold' }}>{calculoChi2.gl}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #222' }}>
+                              <span style={{ color: '#888' }}>Nivel de Confianza (P)</span>
+                              <span style={{ color: '#fff', fontWeight: 'bold' }}>{(calculoChi2.pValorConfianza * 100).toFixed(0)}%</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #222' }}>
+                              <span style={{ color: '#888' }}>Nivel de Significancia (α)</span>
+                              <span style={{ color: '#fff', fontWeight: 'bold' }}>0.05</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #222' }}>
+                              <span style={{ color: '#888' }}>Valor crítico de tabla</span>
+                              <span style={{ color: '#64b5f6', fontWeight: 'bold' }}>{calculoChi2.valorCritico.toFixed(3)}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #222' }}>
+                              <span style={{ color: '#888' }}>Chi-cuadrado calculado (X²)</span>
+                              <span style={{ color: '#e57373', fontWeight: 'bold' }}>{calculoChi2.chiTotal.toFixed(6)}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* RESULTADO DE LA COMPARACIÓN */}
+                        <div style={{ marginTop: '20px', padding: '12px 15px', backgroundColor: '#1a1a1a', borderRadius: '8px', border: '1px solid #333', textAlign: 'center' }}>
+                          <span style={{ fontSize: '13px', color: '#aaa' }}>Comparación: </span>
+                          <strong style={{ fontSize: '14px', color: '#fff' }}>{calculoChi2.chiTotal.toFixed(4)}</strong>
+                          <span style={{ fontSize: '13px', color: '#aaa' }}> {calculoChi2.seRechazaH0 ? '>' : '≤'} </span>
+                          <strong style={{ fontSize: '14px', color: '#64b5f6' }}>{calculoChi2.valorCritico.toFixed(3)}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* DETALLE DE CÁLCULO CELDA POR CELDA */}
+                    <div style={{ ...s.card, backgroundColor: '#141414', border: '1px solid #2c2c2c', marginBottom: '25px' }}>
+                      <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: '600', marginBottom: '15px', borderBottom: '1px solid #2c2c2c', paddingBottom: '8px' }}>
+                        Cálculos analíticos intermedios (celda por celda)
+                      </h4>
+                      <div className="tabla-wrap-siempre">
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: '#fff' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid #333' }}>
+                              <th style={{ padding: '8px 10px', textAlign: 'left', color: '#888' }}>Celda (Fila x Columna)</th>
+                              <th style={{ padding: '8px 10px', textAlign: 'center', color: '#888' }}>Obs (O)</th>
+                              <th style={{ padding: '8px 10px', textAlign: 'center', color: '#888' }}>Esp (E)</th>
+                              <th style={{ padding: '8px 10px', textAlign: 'center', color: '#888' }}>(O - E)</th>
+                              <th style={{ padding: '8px 10px', textAlign: 'center', color: '#888' }}>(O - E)²</th>
+                              <th style={{ padding: '8px 10px', textAlign: 'right', color: '#fff', fontWeight: 'bold' }}>(O - E)² / E</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { label: `${calculoChi2.labelF1} ∩ ${calculoChi2.labelC1}`, o: calculoChi2.obs.o11, e: calculoChi2.esp.e11, chi: calculoChi2.parc.chi11 },
+                              { label: `${calculoChi2.labelF1} ∩ ${calculoChi2.labelC2}`, o: calculoChi2.obs.o12, e: calculoChi2.esp.e12, chi: calculoChi2.parc.chi12 },
+                              { label: `${calculoChi2.labelF2} ∩ ${calculoChi2.labelC1}`, o: calculoChi2.obs.o21, e: calculoChi2.esp.e21, chi: calculoChi2.parc.chi21 },
+                              { label: `${calculoChi2.labelF2} ∩ ${calculoChi2.labelC2}`, o: calculoChi2.obs.o22, e: calculoChi2.esp.e22, chi: calculoChi2.parc.chi22 },
+                            ].map((row, i) => {
+                              const dif = row.o - row.e;
+                              const difSq = Math.pow(dif, 2);
+                              return (
+                                <tr key={i} style={{ borderBottom: '1px solid #222' }}>
+                                  <td style={{ padding: '10px', color: '#ccc', fontWeight: '500' }}>{row.label}</td>
+                                  <td style={{ padding: '10px', textAlign: 'center' }}>{row.o}</td>
+                                  <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>{row.e.toFixed(4)}</td>
+                                  <td style={{ padding: '10px', textAlign: 'center', color: dif >= 0 ? '#81c784' : '#e57373' }}>{dif.toFixed(4)}</td>
+                                  <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>{difSq.toFixed(4)}</td>
+                                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold', color: '#e57373' }}>{row.chi.toFixed(6)}</td>
+                                </tr>
+                              );
+                            })}
+                            <tr style={{ backgroundColor: '#1a1a1a', fontWeight: 'bold' }}>
+                              <td style={{ padding: '10px', color: '#fff' }}>Suma Total (Chi-cuadrado calculado)</td>
+                              <td style={{ padding: '10px', textAlign: 'center' }}>{calculoChi2.totalN}</td>
+                              <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>{calculoChi2.totalN.toFixed(4)}</td>
+                              <td style={{ padding: '10px', textAlign: 'center' }}>0.0000</td>
+                              <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>—</td>
+                              <td style={{ padding: '10px', textAlign: 'right', color: '#e57373', fontSize: '15px' }}>{calculoChi2.chiTotal.toFixed(6)}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* CUADRO DE CONCLUSIÓN */}
+                    <div style={{
+                      padding: '24px 30px',
+                      borderRadius: '12px',
+                      border: `1px solid ${calculoChi2.seRechazaH0 ? '#5a1a1a' : '#1a5a1a'}`,
+                      backgroundColor: calculoChi2.seRechazaH0 ? '#2a0a0a' : '#0a2a0a',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+                      transition: 'all 0.3s ease'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
+                        <span style={{ fontSize: '28px' }}>{calculoChi2.seRechazaH0 ? '🚨' : '✅'}</span>
+                        <h4 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>
+                          {calculoChi2.seRechazaH0 
+                            ? 'Conclusión: Existe Relación Significativa (Se rechaza H₀)' 
+                            : 'Conclusión: Independencia de Variables (Se acepta H₀)'}
+                        </h4>
+                      </div>
+                      
+                      <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#ddd' }}>
+                        {calculoChi2.seRechazaH0 ? (
+                          <>
+                            Dado que el valor de Chi-cuadrado calculado (<strong style={{ color: '#ff8a80' }}>{calculoChi2.chiTotal.toFixed(4)}</strong>) es <strong>mayor</strong> que el valor crítico de la tabla (<strong style={{ color: '#64b5f6' }}>{calculoChi2.valorCritico.toFixed(3)}</strong>), <strong>se rechaza la hipótesis nula (H₀)</strong> y <strong>se acepta la hipótesis alternativa (H₁)</strong>.
+                            <br /><br />
+                            Esto significa estadísticamente, con un nivel de confianza del <strong>95%</strong>, que <strong>existe una relación de dependencia significativa</strong> entre las variables <strong>{varFila.split(' (')[0]}</strong> y <strong>{varColumna.split(' (')[0]}</strong> en el grupo estudiado.
+                          </>
+                        ) : (
+                          <>
+                            Dado que el valor de Chi-cuadrado calculado (<strong style={{ color: '#ff8a80' }}>{calculoChi2.chiTotal.toFixed(4)}</strong>) es <strong>menor o igual</strong> que el valor crítico de la tabla (<strong style={{ color: '#64b5f6' }}>{calculoChi2.valorCritico.toFixed(3)}</strong>), <strong>no se puede rechazar la hipótesis nula (H₀)</strong>.
+                            <br /><br />
+                            Esto significa estadísticamente, con un nivel de confianza del <strong>95%</strong>, que <strong>las variables son independientes</strong> y no se puede afirmar que exista una relación o asociación significativa entre <strong>{varFila.split(' (')[0]}</strong> y <strong>{varColumna.split(' (')[0]}</strong>.
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
