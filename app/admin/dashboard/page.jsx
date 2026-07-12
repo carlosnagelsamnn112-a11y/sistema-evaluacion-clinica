@@ -1430,46 +1430,7 @@ export default function Dashboard() {
               const niveles = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente severo']
               const coloresNivel = { 'Normal': '#4caf50', 'Leve': '#8bc34a', 'Moderado': '#ffb74d', 'Severo': '#f44336', 'Extremadamente severo': '#b71c1c' }
 
-              const localizacionesLesion = [
-                { key: 'mordedura_labios', label: 'Labios' },
-                { key: 'mordedura_mejillas', label: 'Mejillas' },
-                { key: 'mordedura_lengua', label: 'Lengua' },
-              ]
-              const tiposLesion = [
-                { key: 'ulcera_traumatica', label: 'Úlcera traumática' },
-                { key: 'queratosis_friccional', label: 'Queratosis friccional' },
-                { key: 'fibroma_traumatico', label: 'Fibroma traumático' },
-                { key: 'morsicatio_buccarum', label: 'Morsicatio buccarum' },
-                { key: 'morsicatio_labiarum', label: 'Morsicatio labiarum' },
-                { key: 'morsicatio_linguarum', label: 'Morsicatio linguarum' },
-              ]
 
-              // Barras interactivas DASS
-              const BarraDass = ({ dim, label }) => {
-                const campo = `interpretacion_${dim}`
-                const total = analisis.length
-                return (
-                  <div style={{ marginBottom: '25px' }}>
-                    <p style={{ color: '#fff', fontWeight: '600', marginBottom: '12px', fontSize: '15px' }}>{label}</p>
-                    {niveles.map(nivel => {
-                      const count = analisis.filter(a => a[campo] === nivel).length
-                      const pct = total > 0 ? Math.round((count / total) * 100) : 0
-                      return (
-                        <div key={nivel} style={{ marginBottom: '8px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                            <span style={{ fontSize: '13px', color: coloresNivel[nivel] }}>{nivel}</span>
-                            <span style={{ fontSize: '13px', color: '#888' }}>{count} paciente{count !== 1 ? 's' : ''} · {pct}%</span>
-                          </div>
-                          <div style={{ backgroundColor: '#1a1a1a', borderRadius: '6px', height: '22px', overflow: 'hidden', position: 'relative', border: '1px solid #333' }}>
-                            <div style={{ width: `${pct}%`, backgroundColor: coloresNivel[nivel], height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
-                            {pct > 8 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#fff', fontWeight: '600' }}>{pct}%</span>}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )
-              }
 
               return (
                 <div>
@@ -1514,60 +1475,6 @@ export default function Dashboard() {
                               </div>
                             </div>
                             <div style={{ color: item.color, fontSize: '16px', fontWeight: '700', minWidth: '40px', textAlign: 'right' }}>{pct}%</div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* BLOQUE 3: DISTRIBUCIÓN DASS-21 */}
-                  <div style={{ ...s.card, marginBottom: '20px' }}>
-                    <h4 style={{ color: '#fff', marginBottom: '18px', fontSize: '15px' }}>Distribución DASS-21 por dimensión</h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-                      <BarraDass dim="depresion" label="Depresión" />
-                      <BarraDass dim="ansiedad" label="Ansiedad" />
-                      <BarraDass dim="estres" label="Estrés" />
-                    </div>
-                  </div>
-
-                  {/* BLOQUE 4: LOCALIZACIONES ANATÓMICAS */}
-                  <div style={{ ...s.card, marginBottom: '20px' }}>
-                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Zonas anatómicas afectadas</h4>
-                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Sobre el total de pacientes con exploración clínica completada ({totalExploraciones})</p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {localizacionesLesion.map(item => {
-                        const count = explCompletas.filter(e => e[item.key] === 'Sí').length
-                        const pct = totalExploraciones > 0 ? Math.round((count / totalExploraciones) * 100) : 0
-                        return (
-                          <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ minWidth: '90px', fontSize: '13px', color: '#ccc' }}>{item.label}</span>
-                            <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '6px', height: '20px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
-                              <div style={{ width: `${pct}%`, backgroundColor: '#f59e0b', height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
-                              {pct > 5 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#000', fontWeight: '700' }}>{pct}%</span>}
-                            </div>
-                            <span style={{ minWidth: '65px', fontSize: '13px', color: '#888', textAlign: 'right' }}>{count} · {pct}%</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* BLOQUE 5: TIPOS DE LESIÓN */}
-                  <div style={{ ...s.card, marginBottom: '20px' }}>
-                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Tipos de lesión oral detectados</h4>
-                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Sobre el total de pacientes con exploración clínica completada ({totalExploraciones})</p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {tiposLesion.map(item => {
-                        const count = explCompletas.filter(e => e[item.key] === 'Sí').length
-                        const pct = totalExploraciones > 0 ? Math.round((count / totalExploraciones) * 100) : 0
-                        return (
-                          <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ minWidth: '190px', fontSize: '13px', color: '#ccc' }}>{item.label}</span>
-                            <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '6px', height: '20px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
-                              <div style={{ width: `${pct}%`, backgroundColor: '#e53935', height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
-                              {pct > 5 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#fff', fontWeight: '600' }}>{pct}%</span>}
-                            </div>
-                            <span style={{ minWidth: '65px', fontSize: '13px', color: '#888', textAlign: 'right' }}>{count} · {pct}%</span>
                           </div>
                         )
                       })}
@@ -1922,48 +1829,6 @@ export default function Dashboard() {
                         </div>
                       )
                     })()}
-                  </div>
-
-
-                  <div style={s.card}>
-                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Trastornos psicológicos en pacientes con lesiones orales</h4>
-                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Distribución de niveles DASS-21 discriminada entre pacientes con y sin lesiones orales</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                      {[
-                        { label: 'Depresión', campo: 'interpretacion_depresion' },
-                        { label: 'Ansiedad', campo: 'interpretacion_ansiedad' },
-                        { label: 'Estrés', campo: 'interpretacion_estres' },
-                      ].map(dim => (
-                        <div key={dim.label}>
-                          <p style={{ color: '#fff', fontWeight: '600', marginBottom: '10px' }}>{dim.label}</p>
-                          <div style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
-                            <span style={{ flex: 1, textAlign: 'center', fontSize: '11px', color: '#f44336' }}>Con lesiones</span>
-                            <span style={{ flex: 1, textAlign: 'center', fontSize: '11px', color: '#4caf50' }}>Sin lesiones</span>
-                          </div>
-                          {niveles.map(nivel => {
-                            const conL = conLesionesCedulas.filter(c => analisis.find(a => a.cedula == c)?.[dim.campo] === nivel).length
-                            const sinL = sinLesionesCedulas.filter(c => analisis.find(a => a.cedula == c)?.[dim.campo] === nivel).length
-                            const maxVal = Math.max(conLesionesCedulas.length, sinLesionesCedulas.length, 1)
-                            return (
-                              <div key={nivel} style={{ marginBottom: '8px' }}>
-                                <span style={{ fontSize: '11px', color: coloresNivel[nivel], display: 'block', marginBottom: '3px' }}>{nivel}</span>
-                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                  <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '4px', height: '16px', overflow: 'hidden', border: '1px solid #333' }}>
-                                    <div style={{ width: `${Math.round((conL/maxVal)*100)}%`, backgroundColor: '#f44336', height: '100%', borderRadius: '4px' }} />
-                                  </div>
-                                  <span style={{ fontSize: '11px', color: '#888', minWidth: '12px', textAlign: 'center' }}>{conL}</span>
-                                  <span style={{ color: '#555', fontSize: '11px' }}>·</span>
-                                  <span style={{ fontSize: '11px', color: '#888', minWidth: '12px', textAlign: 'center' }}>{sinL}</span>
-                                  <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '4px', height: '16px', overflow: 'hidden', border: '1px solid #333' }}>
-                                    <div style={{ width: `${Math.round((sinL/maxVal)*100)}%`, backgroundColor: '#4caf50', height: '100%', borderRadius: '4px' }} />
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               )
