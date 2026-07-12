@@ -28,21 +28,21 @@ const preguntas = [
 ]
 
 const s = {
-  body: { backgroundColor: '#000', minHeight: '100vh', fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif', color: '#fff' },
-  header: { backgroundColor: '#111', borderBottom: '1px solid #333', padding: '15px 25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' },
+  body: { backgroundColor: '#08080c', minHeight: '100vh', fontFamily: 'var(--font-sans)', color: '#fff' },
+  header: { backgroundColor: '#0f1016', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', padding: '15px 25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' },
   main: { padding: '25px', maxWidth: '1200px', margin: '0 auto' },
-  card: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '20px', marginBottom: '15px' },
+  card: { backgroundColor: '#111218', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '12px', padding: '20px', marginBottom: '15px' },
   table: { width: '100%', borderCollapse: 'collapse', fontSize: '14px' },
-  th: { backgroundColor: '#1a1a1a', color: '#ccc', padding: '12px 14px', textAlign: 'left', borderBottom: '1px solid #333', fontWeight: '500', whiteSpace: 'nowrap' },
-  td: { padding: '12px 14px', borderBottom: '1px solid #222', color: '#ddd', verticalAlign: 'middle' },
-  btn: { backgroundColor: '#222', color: '#fff', border: '1px solid #444', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
-  btnRed: { backgroundColor: '#3a1a1a', color: '#ff6666', border: '1px solid #5a2a2a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
-  btnGreen: { backgroundColor: '#1a3a1a', color: '#4caf50', border: '1px solid #2a5a2a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
-  btnBlue: { backgroundColor: '#1a1a3a', color: '#64b5f6', border: '1px solid #2a2a5a', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
-  input: { padding: '8px 12px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px', boxSizing: 'border-box' },
-  badge: (color) => ({ display: 'inline-block', padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', backgroundColor: color === 'green' ? '#1a3a1a' : color === 'red' ? '#3a1a1a' : color === 'yellow' ? '#3a3a1a' : '#2a2a2a', color: color === 'green' ? '#4caf50' : color === 'red' ? '#f44336' : color === 'yellow' ? '#ffeb3b' : '#9e9e9e', border: `1px solid ${color === 'green' ? '#2a5a2a' : color === 'red' ? '#5a2a2a' : color === 'yellow' ? '#5a5a2a' : '#3a3a3a'}` }),
-  select: { padding: '8px 12px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px' },
-  textarea: { width: '100%', padding: '10px', border: '1px solid #333', borderRadius: '6px', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px', minHeight: '100px', boxSizing: 'border-box', resize: 'vertical' },
+  th: { backgroundColor: '#16171f', color: '#9ca3af', padding: '12px 14px', textAlign: 'left', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', fontWeight: '500', whiteSpace: 'nowrap' },
+  td: { padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.04)', color: '#d1d5db', verticalAlign: 'middle' },
+  btn: { backgroundColor: '#1b1d26', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
+  btnRed: { backgroundColor: 'rgba(239, 68, 68, 0.12)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
+  btnGreen: { backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
+  btnBlue: { backgroundColor: 'rgba(59, 130, 246, 0.12)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '6px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer' },
+  input: { padding: '8px 12px', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', backgroundColor: '#15161e', color: '#fff', fontSize: '14px', boxSizing: 'border-box' },
+  badge: (color) => ({ display: 'inline-block', padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', backgroundColor: color === 'green' ? 'rgba(16, 185, 129, 0.1)' : color === 'red' ? 'rgba(239, 68, 68, 0.1)' : color === 'yellow' ? 'rgba(245, 158, 11, 0.1)' : '#2a2a2a', color: color === 'green' ? '#34d399' : color === 'red' ? '#f87171' : color === 'yellow' ? '#fbbf24' : '#9e9e9e', border: `1px solid ${color === 'green' ? 'rgba(16, 185, 129, 0.2)' : color === 'red' ? 'rgba(239, 68, 68, 0.2)' : color === 'yellow' ? 'rgba(245, 158, 11, 0.2)' : '#333'}` }),
+  select: { padding: '8px 12px', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', backgroundColor: '#15161e', color: '#fff', fontSize: '14px' },
+  textarea: { width: '100%', padding: '10px', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', backgroundColor: '#15161e', color: '#fff', fontSize: '14px', minHeight: '100px', boxSizing: 'border-box', resize: 'vertical' },
   tableWrap: { width: '100%' },
 }
 
@@ -107,6 +107,9 @@ export default function Dashboard() {
   const [varFila, setVarFila] = useState('')
   const [varColumna, setVarColumna] = useState('')
   const [calculoChi2, setCalculoChi2] = useState(null)
+  const [indicadorClinico, setIndicadorClinico] = useState('')
+  const [factorAnalisis, setFactorAnalisis] = useState('')
+  const [datosInteractivos, setDatosInteractivos] = useState(null)
 
   useEffect(() => {
     const session = localStorage.getItem('adminSession')
@@ -147,6 +150,16 @@ export default function Dashboard() {
   const obtenerIdParticipante = (cedula) => {
     const idx = pacientesOrdenados.findIndex(p => p.cedula == cedula)
     return idx !== -1 ? idx + 1 : '—'
+  }
+
+  const ordenarPorIdParticipante = (lista) => {
+    return [...lista].sort((a, b) => {
+      const idA = obtenerIdParticipante(a.cedula)
+      const idB = obtenerIdParticipante(b.cedula)
+      if (idA === '—') return 1
+      if (idB === '—') return -1
+      return idA - idB
+    })
   }
 
   const getNombre = (cedula) => {
@@ -191,20 +204,20 @@ export default function Dashboard() {
           valFila = e.presenta_lesiones;
           labelFila = e.presenta_lesiones === 'Sí' ? 'Con lesión' : 'Sin lesión';
         }
-      } else if (varFila === 'Lesiones en los labios (Sí / No)') {
+      } else if (varFila === 'Lesión en labios (Sí / No)') {
         if (e.mordedura_labios === 'Sí' || e.mordedura_labios === 'No') {
           valFila = e.mordedura_labios;
-          labelFila = e.mordedura_labios === 'Sí' ? 'Con lesión labial' : 'Sin lesión labial';
+          labelFila = e.mordedura_labios === 'Sí' ? 'Lesión en labios' : 'Sin lesión en labios';
         }
-      } else if (varFila === 'Lesiones en las mejillas (Sí / No)') {
+      } else if (varFila === 'Lesión en mejillas (Sí / No)') {
         if (e.mordedura_mejillas === 'Sí' || e.mordedura_mejillas === 'No') {
           valFila = e.mordedura_mejillas;
-          labelFila = e.mordedura_mejillas === 'Sí' ? 'Con lesión en mejillas' : 'Sin lesión en mejillas';
+          labelFila = e.mordedura_mejillas === 'Sí' ? 'Lesión en mejillas' : 'Sin lesión en mejillas';
         }
-      } else if (varFila === 'Lesiones en la lengua (Sí / No)') {
+      } else if (varFila === 'Lesión en lengua (Sí / No)') {
         if (e.mordedura_lengua === 'Sí' || e.mordedura_lengua === 'No') {
           valFila = e.mordedura_lengua;
-          labelFila = e.mordedura_lengua === 'Sí' ? 'Con lesión en lengua' : 'Sin lesión en lengua';
+          labelFila = e.mordedura_lengua === 'Sí' ? 'Lesión en lengua' : 'Sin lesión en lengua';
         }
       }
 
@@ -531,6 +544,71 @@ export default function Dashboard() {
     setFlujoLoading(false)
   }
 
+  // ── ELIMINACIÓN DE REGISTROS CLÍNICOS INDIVIDUALES ──
+  const eliminarConsentimiento = async (id, tipoNombre, pacNombre) => {
+    if (!confirm(`Advertencia: Eliminar el consentimiento de un paciente conservará su historia clínica y encuestas en la base de datos.\n\n¿Está seguro de que desea eliminar el ${tipoNombre} de ${pacNombre}?`)) return
+    try {
+      await supabase.from('consentimientos').delete().eq('id', id)
+      alert(`${tipoNombre} eliminado con éxito.`)
+      cargarDatos()
+    } catch (e) {
+      alert('Error al eliminar consentimiento: ' + e.message)
+    }
+  }
+
+  const eliminarHistoria = async (id, pacNombre) => {
+    if (!confirm(`¿Está seguro de que desea eliminar la historia clínica de ${pacNombre}? Esta acción no se puede deshacer.`)) return
+    try {
+      await supabase.from('historias_clinicas').delete().eq('id', id)
+      alert('Historia clínica eliminada con éxito.')
+      cargarDatos()
+    } catch (e) {
+      alert('Error al eliminar historia clínica: ' + e.message)
+    }
+  }
+
+  const eliminarEncuesta = async (id, cedula, pacNombre) => {
+    if (!confirm(`¿Está seguro de que desea eliminar la encuesta DASS-21 y su análisis asociado para ${pacNombre}?\n\nEsto también restablecerá las banderas de trastorno psicológico en la exploración clínica del paciente.`)) return
+    try {
+      await supabase.from('respuestas_dass21').delete().eq('cedula', cedula)
+      await supabase.from('analisis_dass21').delete().eq('id', id)
+      await supabase.from('exploracion_clinica').update({
+        tiene_depresion: 'No',
+        tiene_ansiedad: 'No',
+        tiene_estres: 'No'
+      }).eq('cedula', cedula)
+      alert('Encuesta DASS-21 eliminada con éxito.')
+      cargarDatos()
+    } catch (e) {
+      alert('Error al eliminar encuesta: ' + e.message)
+    }
+  }
+
+  const eliminarExploracion = async (id, cedula, pacNombre) => {
+    if (!confirm(`¿Está seguro de que desea eliminar los datos clínicos de la exploración (lesiones y fotos) de ${pacNombre}?`)) return
+    try {
+      await supabase.from('exploracion_clinica').update({
+        presenta_lesiones: null,
+        mordedura_labios: 'No',
+        mordedura_mejillas: 'No',
+        mordedura_lengua: 'No',
+        ulcera_traumatica: 'No',
+        queratosis_friccional: 'No',
+        fibroma_traumatico: 'No',
+        morsicatio_buccarum: 'No',
+        morsicatio_labiarum: 'No',
+        morsicatio_linguarum: 'No',
+        descripcion_lesion: null,
+        foto1_url: null,
+        foto2_url: null
+      }).eq('id', id)
+      alert('Exploración clínica restablecida con éxito.')
+      cargarDatos()
+    } catch (e) {
+      alert('Error al eliminar exploración clínica: ' + e.message)
+    }
+  }
+
   // ── EPS CRUD ──
   const agregarEps = async () => {
     if (!nuevaEps.trim()) return
@@ -735,6 +813,12 @@ export default function Dashboard() {
     <div style={s.body}>
       <style>{`
         .tabla-wrap-siempre { width: 100%; overflow-x: auto; }
+        tr:hover td { background-color: rgba(255, 255, 255, 0.015); transition: background-color 0.15s ease; }
+        button { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        button:hover { filter: brightness(1.15) contrast(1.05); transform: translateY(-1px); }
+        button:active { transform: translateY(0) scale(0.98); }
+        select, input, textarea { transition: all 0.2s ease; }
+        select:focus, input:focus, textarea:focus { border-color: #fbbf24 !important; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15); }
       `}</style>
       {/* HEADER */}
       <div style={s.header}>
@@ -937,11 +1021,11 @@ export default function Dashboard() {
 
                   {exploracion.presentaLesiones === 'Sí' && (
                     <>
-                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Localización de la lesión (mínimo una opción) *</h4>
+                      <h4 style={{ color: '#fff', margin: '20px 0 15px' }}>Localización de la lesión (Zonas anatómicas afectadas - Mínimo una opción) *</h4>
                       {[
-                        { key: 'mordeduraLabios', label: 'Mordedura de labios' },
-                        { key: 'mordeduraMejillas', label: 'Mordedura de mejillas' },
-                        { key: 'mordeduraLengua', label: 'Mordedura de lengua' },
+                        { key: 'mordeduraLabios', label: 'Labios' },
+                        { key: 'mordeduraMejillas', label: 'Mejillas' },
+                        { key: 'mordeduraLengua', label: 'Lengua' },
                       ].map(f => (
                         <div key={f.key} style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                           <label style={{ color: '#ccc', fontSize: '14px' }}>{f.label}</label>
@@ -1108,7 +1192,7 @@ export default function Dashboard() {
                   <table style={s.table}>
                     <thead><tr><th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th><th style={s.th}>C1</th><th style={s.th}>C2</th><th style={s.th}>Ver</th></tr></thead>
                     <tbody>
-                      {filtrar(pacientes).map(p => {
+                      {filtrar(ordenarPorIdParticipante(pacientes)).map(p => {
                         const c1 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 1)
                         const c2 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 2)
                         return (
@@ -1119,9 +1203,19 @@ export default function Dashboard() {
                             <td style={s.td}><span style={s.badge(c1 ? 'green' : 'red')}>{c1 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
                             <td style={s.td}><span style={s.badge(c2 ? 'green' : 'red')}>{c2 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
                             <td style={s.td}>
-                              <div style={{ display: 'flex', gap: '6px' }}>
-                                {c1 && <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c1, pac: p })}>Ver C1</button>}
-                                {c2 && <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c2, pac: p })}>Ver C2</button>}
+                              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                {c1 && (
+                                  <div style={{ display: 'flex', gap: '4px' }}>
+                                    <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c1, pac: p })}>Ver C1</button>
+                                    <button style={s.btnRed} onClick={() => eliminarConsentimiento(c1.id, 'Consentimiento 1', p.nombre + ' ' + p.apellidos)}>Eliminar C1</button>
+                                  </div>
+                                )}
+                                {c2 && (
+                                  <div style={{ display: 'flex', gap: '4px' }}>
+                                    <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c2, pac: p })}>Ver C2</button>
+                                    <button style={s.btnRed} onClick={() => eliminarConsentimiento(c2.id, 'Consentimiento 2', p.nombre + ' ' + p.apellidos)}>Eliminar C2</button>
+                                  </div>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -1145,11 +1239,11 @@ export default function Dashboard() {
                         <th style={s.th}>Sexo</th><th style={s.th}>EPS</th><th style={s.th}>Semestre</th>
                         <th style={s.th}>Área</th><th style={s.th}>Enf. Sistémicas</th>
                         <th style={s.th}>Medicamentos</th><th style={s.th}>Ant. Psicológicos</th>
-                        <th style={s.th}>Hábitos Orales</th><th style={s.th}>Sustancias</th><th style={s.th}>Fuma/Vape</th>
+                        <th style={s.th}>Hábitos Orales</th><th style={s.th}>Sustancias</th><th style={s.th}>Fuma/Vape</th><th style={s.th}>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filtrar(historias).map(h => (
+                      {filtrar(ordenarPorIdParticipante(historias)).map(h => (
                         <tr key={h.id}>
                           <td style={s.td}>{obtenerIdParticipante(h.cedula)}</td>
                           <td style={s.td}>{getNombre(h.cedula)}</td>
@@ -1165,6 +1259,9 @@ export default function Dashboard() {
                           <td style={s.td}>{h.habitos_orales}</td>
                           <td style={s.td}>{h.sustancias_psicoactivas}</td>
                           <td style={s.td}>{h.fuma_cigarrillo_vape}</td>
+                          <td style={s.td}>
+                            <button style={s.btnRed} onClick={() => eliminarHistoria(h.id, getNombre(h.cedula))}>Eliminar</button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1189,7 +1286,7 @@ export default function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filtrar(analisis).map(a => (
+                      {filtrar(ordenarPorIdParticipante(analisis)).map(a => (
                         <tr key={a.id}>
                           <td style={s.td}>{obtenerIdParticipante(a.cedula)}</td>
                           <td style={s.td}>{getNombre(a.cedula)}</td>
@@ -1197,7 +1294,12 @@ export default function Dashboard() {
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_depresion))}>{a.interpretacion_depresion}</span></td>
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_ansiedad))}>{a.interpretacion_ansiedad}</span></td>
                           <td style={s.td}><span style={s.badge(colorBadge(a.interpretacion_estres))}>{a.interpretacion_estres}</span></td>
-                          <td style={s.td}><button style={s.btnBlue} onClick={() => setRespuestaDetalle(respuestas.find(r => r.cedula == a.cedula))}>Ver detalle</button></td>
+                          <td style={s.td}>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button style={s.btnBlue} onClick={() => setRespuestaDetalle(respuestas.find(r => r.cedula == a.cedula))}>Ver detalle</button>
+                              <button style={s.btnRed} onClick={() => eliminarEncuesta(a.id, a.cedula, getNombre(a.cedula))}>Eliminar</button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1236,16 +1338,16 @@ export default function Dashboard() {
                       <tr>
                         <th style={s.th}>ID</th><th style={s.th}>Nombre</th><th style={s.th}>Cédula</th>
                         <th style={s.th}>Lesiones</th>
-                        <th style={s.th}>M. Labios</th>
-                        <th style={s.th}>M. Mejillas</th><th style={s.th}>M. Lengua</th>
+                        <th style={s.th}>Labios</th>
+                        <th style={s.th}>Mejillas</th><th style={s.th}>Lengua</th>
                         <th style={s.th}>Úlcera</th><th style={s.th}>Queratosis</th>
                         <th style={s.th}>Fibroma</th><th style={s.th}>M. Buccarum</th>
                         <th style={s.th}>M. Labiarum</th><th style={s.th}>M. Linguarum</th>
-                        <th style={s.th}>Descripción</th><th style={s.th}>Fotos</th>
+                        <th style={s.th}>Descripción</th><th style={s.th}>Fotos</th><th style={s.th}>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filtrar(exploraciones).map(e => (
+                      {filtrar(ordenarPorIdParticipante(exploraciones)).map(e => (
                         <tr key={e.id}>
                           <td style={s.td}>{obtenerIdParticipante(e.cedula)}</td>
                           <td style={s.td}>{getNombre(e.cedula)}</td>
@@ -1268,6 +1370,11 @@ export default function Dashboard() {
                           <td style={s.td}>
                             {(e.foto1_url || e.foto2_url) ? (
                               <button style={s.btnBlue} onClick={() => setFotosVer({ nombre: getNombre(e.cedula), foto1_url: e.foto1_url, foto2_url: e.foto2_url })}>📷 Ver fotos</button>
+                            ) : '—'}
+                          </td>
+                          <td style={s.td}>
+                            {e.presenta_lesiones !== null ? (
+                              <button style={s.btnRed} onClick={() => eliminarExploracion(e.id, e.cedula, getNombre(e.cedula))}>Eliminar</button>
                             ) : '—'}
                           </td>
                         </tr>
@@ -1323,10 +1430,12 @@ export default function Dashboard() {
               const niveles = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente severo']
               const coloresNivel = { 'Normal': '#4caf50', 'Leve': '#8bc34a', 'Moderado': '#ffb74d', 'Severo': '#f44336', 'Extremadamente severo': '#b71c1c' }
 
+              const localizacionesLesion = [
+                { key: 'mordedura_labios', label: 'Labios' },
+                { key: 'mordedura_mejillas', label: 'Mejillas' },
+                { key: 'mordedura_lengua', label: 'Lengua' },
+              ]
               const tiposLesion = [
-                { key: 'mordedura_labios', label: 'Mordedura de labios' },
-                { key: 'mordedura_mejillas', label: 'Mordedura de mejillas' },
-                { key: 'mordedura_lengua', label: 'Mordedura de lengua' },
                 { key: 'ulcera_traumatica', label: 'Úlcera traumática' },
                 { key: 'queratosis_friccional', label: 'Queratosis friccional' },
                 { key: 'fibroma_traumatico', label: 'Fibroma traumático' },
@@ -1421,7 +1530,29 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  {/* BLOQUE 4: TIPOS DE LESIÓN */}
+                  {/* BLOQUE 4: LOCALIZACIONES ANATÓMICAS */}
+                  <div style={{ ...s.card, marginBottom: '20px' }}>
+                    <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Zonas anatómicas afectadas</h4>
+                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Sobre el total de pacientes con exploración clínica completada ({totalExploraciones})</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {localizacionesLesion.map(item => {
+                        const count = explCompletas.filter(e => e[item.key] === 'Sí').length
+                        const pct = totalExploraciones > 0 ? Math.round((count / totalExploraciones) * 100) : 0
+                        return (
+                          <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span style={{ minWidth: '90px', fontSize: '13px', color: '#ccc' }}>{item.label}</span>
+                            <div style={{ flex: 1, backgroundColor: '#1a1a1a', borderRadius: '6px', height: '20px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
+                              <div style={{ width: `${pct}%`, backgroundColor: '#f59e0b', height: '100%', borderRadius: '6px', transition: 'width 0.6s ease', minWidth: pct > 0 ? '4px' : '0' }} />
+                              {pct > 5 && <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#000', fontWeight: '700' }}>{pct}%</span>}
+                            </div>
+                            <span style={{ minWidth: '65px', fontSize: '13px', color: '#888', textAlign: 'right' }}>{count} · {pct}%</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* BLOQUE 5: TIPOS DE LESIÓN */}
                   <div style={{ ...s.card, marginBottom: '20px' }}>
                     <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Tipos de lesión oral detectados</h4>
                     <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Sobre el total de pacientes con exploración clínica completada ({totalExploraciones})</p>
@@ -1443,7 +1574,357 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  {/* BLOQUE 5: LESIONES POR TIPO EN PACIENTES CON CADA NIVEL DASS */}
+                  {/* BLOQUE 6: PANEL INTERACTIVO */}
+                  <div style={{ ...s.card, marginBottom: '20px' }}>
+                    <h4 style={{ color: '#fff', marginBottom: '6px', fontSize: '16px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                      🔬 Análisis interactivo por variables
+                    </h4>
+                    <p style={{ color: '#666', fontSize: '12px', marginBottom: '22px' }}>
+                      Selecciona un indicador clínico y un factor de análisis para visualizar la distribución de los datos del estudio.
+                    </p>
+
+                    {/* SELECTORES */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '18px' }}>
+                      <div>
+                        <label style={{ color: '#9ca3af', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Indicador clínico
+                        </label>
+                        <select
+                          style={{ ...s.select, width: '100%' }}
+                          value={indicadorClinico}
+                          onChange={e => { setIndicadorClinico(e.target.value); setDatosInteractivos(null) }}
+                        >
+                          <option value="">-- Seleccione --</option>
+                          <option value="lesiones_orales">Lesiones orales (Sí/No)</option>
+                          <option value="lesion_labios">Lesión en labios (Sí/No)</option>
+                          <option value="lesion_mejillas">Lesión en mejillas (Sí/No)</option>
+                          <option value="lesion_lengua">Lesión en lengua (Sí/No)</option>
+                          <option value="depresion">Trastorno de depresión (Sí/No)</option>
+                          <option value="ansiedad">Trastorno de ansiedad (Sí/No)</option>
+                          <option value="estres">Trastorno de estrés (Sí/No)</option>
+                          <option value="cualquier_trastorno">Cualquier trastorno psicológico (Sí/No)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={{ color: '#9ca3af', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Factor de análisis
+                        </label>
+                        <select
+                          style={{ ...s.select, width: '100%' }}
+                          value={factorAnalisis}
+                          onChange={e => { setFactorAnalisis(e.target.value); setDatosInteractivos(null) }}
+                        >
+                          <option value="">-- Seleccione --</option>
+                          <option value="sexo">Sexo</option>
+                          <option value="area">Área de la universidad</option>
+                          <option value="fuma">Hábito de fumar/vape</option>
+                          <option value="sustancias">Consumo de sustancias psicoactivas</option>
+                          <option value="eps">EPS</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                        <button
+                          style={{ ...s.btnGreen, width: '100%', padding: '10px 20px', fontWeight: '700', fontSize: '14px' }}
+                          onClick={() => {
+                            if (!indicadorClinico || !factorAnalisis) {
+                              alert('Seleccione ambas variables para generar el análisis.')
+                              return
+                            }
+
+                            // Obtener valor del indicador para cada paciente
+                            const getIndicador = (cedula) => {
+                              const e = exploraciones.find(x => x.cedula == cedula)
+                              const a = analisis.find(x => x.cedula == cedula)
+                              if (indicadorClinico === 'lesiones_orales') return e?.presenta_lesiones === 'Sí'
+                              if (indicadorClinico === 'lesion_labios') return e?.mordedura_labios === 'Sí'
+                              if (indicadorClinico === 'lesion_mejillas') return e?.mordedura_mejillas === 'Sí'
+                              if (indicadorClinico === 'lesion_lengua') return e?.mordedura_lengua === 'Sí'
+                              if (indicadorClinico === 'depresion') return a?.interpretacion_depresion && a.interpretacion_depresion !== 'Normal'
+                              if (indicadorClinico === 'ansiedad') return a?.interpretacion_ansiedad && a.interpretacion_ansiedad !== 'Normal'
+                              if (indicadorClinico === 'estres') return a?.interpretacion_estres && a.interpretacion_estres !== 'Normal'
+                              if (indicadorClinico === 'cualquier_trastorno') return a && (a.interpretacion_depresion !== 'Normal' || a.interpretacion_ansiedad !== 'Normal' || a.interpretacion_estres !== 'Normal')
+                              return false
+                            }
+
+                            // Obtener categoría del factor para cada paciente
+                            const getFactor = (cedula) => {
+                              const h = historias.find(x => x.cedula == cedula)
+                              if (!h) return null
+                              if (factorAnalisis === 'sexo') return h.sexo || null
+                              if (factorAnalisis === 'area') return h.area || null
+                              if (factorAnalisis === 'fuma') {
+                                const v = h.fuma_cigarrillo_vape
+                                if (!v || v === 'Ninguna') return 'No fuma/vape'
+                                return 'Fuma o usa vape'
+                              }
+                              if (factorAnalisis === 'sustancias') return h.sustancias_psicoactivas || null
+                              if (factorAnalisis === 'eps') return h.eps || null
+                              return null
+                            }
+
+                            // Filtrar solo pacientes con datos completos en ambas variables
+                            const patsValidos = pacientes.filter(p => {
+                              const e = exploraciones.find(x => x.cedula == p.cedula)
+                              const h = historias.find(x => x.cedula == p.cedula)
+                              // Para indicadores de exploración, necesitamos e con datos
+                              const needsExp = ['lesiones_orales','lesion_labios','lesion_mejillas','lesion_lengua'].includes(indicadorClinico)
+                              const needsAnal = ['depresion','ansiedad','estres','cualquier_trastorno'].includes(indicadorClinico)
+                              if (needsExp && (!e || e.presenta_lesiones === null || e.presenta_lesiones === '')) return false
+                              if (needsAnal && !analisis.find(x => x.cedula == p.cedula)) return false
+                              if (!h) return false
+                              if (!getFactor(p.cedula)) return false
+                              return true
+                            })
+
+                            // Agrupar por categoría del factor
+                            const grupos = {}
+                            patsValidos.forEach(p => {
+                              const cat = getFactor(p.cedula)
+                              if (!grupos[cat]) grupos[cat] = { total: 0, positivos: 0 }
+                              grupos[cat].total++
+                              if (getIndicador(p.cedula)) grupos[cat].positivos++
+                            })
+
+                            const resultado = Object.entries(grupos).map(([cat, v]) => ({
+                              categoria: cat,
+                              total: v.total,
+                              positivos: v.positivos,
+                              negativos: v.total - v.positivos,
+                              porcentaje: v.total > 0 ? Math.round((v.positivos / v.total) * 100) : 0
+                            })).sort((a, b) => b.porcentaje - a.porcentaje)
+
+                            setDatosInteractivos({
+                              items: resultado,
+                              totalPacientes: patsValidos.length,
+                              totalPositivos: resultado.reduce((acc, d) => acc + d.positivos, 0)
+                            })
+                          }}
+                        >
+                          Generar resultados
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* RESULTADOS INTERACTIVOS */}
+                    {!datosInteractivos && (
+                      <div style={{ padding: '40px 20px', border: '1px dashed #2a2a2a', borderRadius: '10px', textAlign: 'center', backgroundColor: '#0c0c0f' }}>
+                        <span style={{ fontSize: '32px', display: 'block', marginBottom: '10px' }}>📊</span>
+                        <p style={{ color: '#555', fontSize: '13px', margin: 0 }}>
+                          Selecciona el indicador clínico y el factor de análisis y presiona <strong style={{ color: '#9ca3af' }}>Generar resultados</strong>.
+                        </p>
+                      </div>
+                    )}
+
+                    {datosInteractivos && (() => {
+                      const { items, totalPacientes, totalPositivos } = datosInteractivos
+
+                      // Paleta de colores para categorías
+                      const palette = ['#f59e0b', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6', '#ef4444', '#06b6d4', '#84cc16']
+
+                      const labelIndicador = {
+                        lesiones_orales: 'Lesiones orales',
+                        lesion_labios: 'Lesión en labios',
+                        lesion_mejillas: 'Lesión en mejillas',
+                        lesion_lengua: 'Lesión en lengua',
+                        depresion: 'Trastorno de depresión',
+                        ansiedad: 'Trastorno de ansiedad',
+                        estres: 'Trastorno de estrés',
+                        cualquier_trastorno: 'Cualquier trastorno psicológico',
+                      }[indicadorClinico] || indicadorClinico
+
+                      const labelFactor = {
+                        sexo: 'Sexo',
+                        area: 'Área de la universidad',
+                        fuma: 'Hábito de fumar/vape',
+                        sustancias: 'Sustancias psicoactivas',
+                        eps: 'EPS',
+                      }[factorAnalisis] || factorAnalisis
+
+                      // Donut SVG: solo positivos por categoría
+                      const positivosPorCat = items.filter(d => d.positivos > 0)
+                      const donutR = 70, donutCx = 100, donutCy = 100, strokeWidth = 30
+                      const circ = 2 * Math.PI * donutR
+                      let acumulado = 0
+                      const donutSegmentos = totalPositivos > 0 ? positivosPorCat.map((d, i) => {
+                        const pct = d.positivos / totalPositivos
+                        const dashLen = pct * circ
+                        const offset = circ - acumulado * circ
+                        acumulado += pct
+                        return { ...d, dashLen, offset, color: palette[i % palette.length] }
+                      }) : []
+
+                      return (
+                        <div>
+                          {/* Encabezado de resultados */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+                            <div>
+                              <p style={{ color: '#fff', fontWeight: '600', fontSize: '14px', margin: '0 0 3px 0' }}>
+                                {labelIndicador} <span style={{ color: '#666' }}>según</span> {labelFactor}
+                              </p>
+                              <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>
+                                {totalPacientes} pacientes con datos completos · {totalPositivos} con indicador positivo
+                              </p>
+                            </div>
+                            <button
+                              style={{ ...s.btn, fontSize: '12px', padding: '6px 14px' }}
+                              onClick={() => setDatosInteractivos(null)}
+                            >
+                              ✕ Limpiar
+                            </button>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'start' }}>
+                            {/* GRÁFICO DE BARRAS HORIZONTALES */}
+                            <div>
+                              <p style={{ color: '#9ca3af', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '14px' }}>
+                                Prevalencia por {labelFactor}
+                              </p>
+                              {items.map((d, i) => (
+                                <div key={d.categoria} style={{ marginBottom: '14px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '13px', color: '#d1d5db' }}>{d.categoria}</span>
+                                    <span style={{ fontSize: '12px', color: palette[i % palette.length], fontWeight: '600' }}>
+                                      {d.positivos}/{d.total} · {d.porcentaje}%
+                                    </span>
+                                  </div>
+                                  <div style={{ backgroundColor: '#1a1a1a', borderRadius: '6px', height: '24px', overflow: 'hidden', border: '1px solid #2a2a2a', position: 'relative' }}>
+                                    <div style={{
+                                      width: `${d.porcentaje}%`,
+                                      backgroundColor: palette[i % palette.length],
+                                      height: '100%',
+                                      borderRadius: '6px',
+                                      transition: 'width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                      minWidth: d.porcentaje > 0 ? '4px' : '0',
+                                      opacity: 0.9
+                                    }} />
+                                    {d.porcentaje > 10 && (
+                                      <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#000', fontWeight: '700' }}>
+                                        {d.porcentaje}%
+                                      </span>
+                                    )}
+                                  </div>
+                                  {/* Mini barra del total */}
+                                  <div style={{ marginTop: '3px', display: 'flex', gap: '3px' }}>
+                                    {d.total > 0 && (
+                                      <div style={{ flex: d.positivos, backgroundColor: palette[i % palette.length], height: '3px', borderRadius: '2px', opacity: 0.5 }} />
+                                    )}
+                                    {d.negativos > 0 && (
+                                      <div style={{ flex: d.negativos, backgroundColor: '#2a2a2a', height: '3px', borderRadius: '2px' }} />
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* GRÁFICO DONA */}
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                              <p style={{ color: '#9ca3af', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '14px', alignSelf: 'flex-start' }}>
+                                Distribución de casos positivos
+                              </p>
+                              {totalPositivos === 0 ? (
+                                <div style={{ padding: '30px', textAlign: 'center', color: '#555', fontSize: '13px' }}>
+                                  Sin casos positivos registrados para mostrar.
+                                </div>
+                              ) : (
+                                <div style={{ position: 'relative', width: '200px', height: '200px' }}>
+                                  <svg viewBox="0 0 200 200" width="200" height="200">
+                                    {/* Anillo de fondo */}
+                                    <circle
+                                      cx={donutCx} cy={donutCy} r={donutR}
+                                      fill="none" stroke="#1e1e1e" strokeWidth={strokeWidth + 2}
+                                    />
+                                    {donutSegmentos.map((seg, i) => (
+                                      <circle
+                                        key={i}
+                                        cx={donutCx} cy={donutCy} r={donutR}
+                                        fill="none"
+                                        stroke={seg.color}
+                                        strokeWidth={strokeWidth}
+                                        strokeDasharray={`${seg.dashLen} ${circ}`}
+                                        strokeDashoffset={seg.offset}
+                                        transform={`rotate(-90 ${donutCx} ${donutCy})`}
+                                        style={{ transition: 'stroke-dasharray 0.7s ease' }}
+                                      />
+                                    ))}
+                                    {/* Hueco central */}
+                                    <circle cx={donutCx} cy={donutCy} r={donutR - strokeWidth / 2 - 1} fill="#111218" />
+                                    {/* Texto central */}
+                                    <text x={donutCx} y={donutCy - 8} textAnchor="middle" fill="#fff" fontSize="22" fontWeight="800">{totalPositivos}</text>
+                                    <text x={donutCx} y={donutCy + 10} textAnchor="middle" fill="#666" fontSize="10">positivos</text>
+                                    <text x={donutCx} y={donutCy + 22} textAnchor="middle" fill="#555" fontSize="9">de {totalPacientes}</text>
+                                  </svg>
+                                </div>
+                              )}
+                              {/* Leyenda */}
+                              <div style={{ marginTop: '14px', width: '100%' }}>
+                                {items.filter(d => d.positivos > 0).map((d, i) => (
+                                  <div key={d.categoria} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                    <div style={{ width: '10px', height: '10px', borderRadius: '2px', backgroundColor: palette[i % palette.length], flexShrink: 0 }} />
+                                    <span style={{ fontSize: '12px', color: '#9ca3af', flex: 1 }}>{d.categoria}</span>
+                                    <span style={{ fontSize: '12px', color: palette[i % palette.length], fontWeight: '600' }}>
+                                      {totalPositivos > 0 ? Math.round((d.positivos / totalPositivos) * 100) : 0}%
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* TABLA RESUMEN */}
+                          <div style={{ marginTop: '24px', overflowX: 'auto' }}>
+                            <p style={{ color: '#9ca3af', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>
+                              Tabla resumen
+                            </p>
+                            <table style={{ ...s.table, fontSize: '13px' }}>
+                              <thead>
+                                <tr>
+                                  <th style={s.th}>{labelFactor}</th>
+                                  <th style={{ ...s.th, textAlign: 'center' }}>Total pacientes</th>
+                                  <th style={{ ...s.th, textAlign: 'center' }}>Con indicador</th>
+                                  <th style={{ ...s.th, textAlign: 'center' }}>Sin indicador</th>
+                                  <th style={{ ...s.th, textAlign: 'center' }}>Prevalencia</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {items.map((d, i) => (
+                                  <tr key={d.categoria}>
+                                    <td style={s.td}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: palette[i % palette.length] }} />
+                                        {d.categoria}
+                                      </div>
+                                    </td>
+                                    <td style={{ ...s.td, textAlign: 'center', color: '#fff' }}>{d.total}</td>
+                                    <td style={{ ...s.td, textAlign: 'center' }}>
+                                      <span style={s.badge(d.positivos > 0 ? 'yellow' : 'gray')}>{d.positivos}</span>
+                                    </td>
+                                    <td style={{ ...s.td, textAlign: 'center', color: '#888' }}>{d.negativos}</td>
+                                    <td style={{ ...s.td, textAlign: 'center' }}>
+                                      <span style={s.badge(d.porcentaje >= 50 ? 'red' : d.porcentaje >= 25 ? 'yellow' : 'green')}>
+                                        {d.porcentaje}%
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                                {/* Fila de totales */}
+                                <tr style={{ borderTop: '2px solid #333' }}>
+                                  <td style={{ ...s.td, fontWeight: '700', color: '#fff' }}>TOTAL</td>
+                                  <td style={{ ...s.td, textAlign: 'center', fontWeight: '700', color: '#fff' }}>{totalPacientes}</td>
+                                  <td style={{ ...s.td, textAlign: 'center', fontWeight: '700', color: '#fbbf24' }}>{totalPositivos}</td>
+                                  <td style={{ ...s.td, textAlign: 'center', fontWeight: '700', color: '#888' }}>{totalPacientes - totalPositivos}</td>
+                                  <td style={{ ...s.td, textAlign: 'center', fontWeight: '700', color: '#fff' }}>
+                                    {totalPacientes > 0 ? Math.round((totalPositivos / totalPacientes) * 100) : 0}%
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+
+
                   <div style={s.card}>
                     <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Trastornos psicológicos en pacientes con lesiones orales</h4>
                     <p style={{ color: '#666', fontSize: '12px', marginBottom: '18px' }}>Distribución de niveles DASS-21 discriminada entre pacientes con y sin lesiones orales</p>
@@ -1503,9 +1984,9 @@ export default function Dashboard() {
                     <select style={{ ...s.select, width: '100%' }} value={varFila} onChange={e => { setVarFila(e.target.value); setCalculoChi2(null); }}>
                       <option value="">-- Seleccione una variable --</option>
                       <option value="Lesiones orales (Sí / No)">Lesiones orales (Sí / No)</option>
-                      <option value="Lesiones en los labios (Sí / No)">Lesiones en los labios (Sí / No)</option>
-                      <option value="Lesiones en las mejillas (Sí / No)">Lesiones en las mejillas (Sí / No)</option>
-                      <option value="Lesiones en la lengua (Sí / No)">Lesiones en la lengua (Sí / No)</option>
+                      <option value="Lesión en labios (Sí / No)">Lesión en labios (Sí / No)</option>
+                      <option value="Lesión en mejillas (Sí / No)">Lesión en mejillas (Sí / No)</option>
+                      <option value="Lesión en lengua (Sí / No)">Lesión en lengua (Sí / No)</option>
                     </select>
                   </div>
                   <div>

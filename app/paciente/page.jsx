@@ -81,21 +81,21 @@ En constancia de lo anterior, se firma el presente consentimiento informado.`
 }
 
 const s = {
-  body: { backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif', color: '#fff' },
-  container: { maxWidth: '700px', width: '100%', backgroundColor: '#111', borderRadius: '12px', padding: '25px', border: '1px solid #333', margin: '10px auto' },
-  h2: { color: '#fff', textAlign: 'center', marginBottom: '25px', fontWeight: '500', borderBottom: '2px solid #333', paddingBottom: '15px', fontSize: '20px' },
+  body: { backgroundColor: '#08080c', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px', fontFamily: 'var(--font-sans)', color: '#fff' },
+  container: { maxWidth: '700px', width: '100%', backgroundColor: '#111218', borderRadius: '12px', padding: '25px', border: '1px solid rgba(255, 255, 255, 0.06)', margin: '10px auto', boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)' },
+  h2: { color: '#fff', textAlign: 'center', marginBottom: '25px', fontWeight: '500', borderBottom: '2px solid rgba(255, 255, 255, 0.08)', paddingBottom: '15px', fontSize: '20px' },
   h3: { color: '#eee', margin: '15px 0', fontWeight: '500' },
-  btn: { backgroundColor: '#222', color: '#fff', border: '1px solid #444', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
-  btnSecondary: { backgroundColor: '#1a1a1a', color: '#fff', border: '1px solid #333', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', cursor: 'pointer', width: '100%', marginBottom: '10px' },
-  btnSuccess: { backgroundColor: '#2a5a2a', color: '#fff', border: '1px solid #3a7a3a', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
-  input: { width: '100%', padding: '12px 15px', margin: '5px 0 15px 0', border: '1px solid #333', borderRadius: '6px', fontSize: '15px', backgroundColor: '#1a1a1a', color: '#fff', boxSizing: 'border-box' },
-  label: { display: 'block', marginBottom: '5px', color: '#ccc', fontWeight: '500', fontSize: '14px' },
+  btn: { backgroundColor: '#1b1d26', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
+  btnSecondary: { backgroundColor: '#111218', color: '#9ca3af', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', cursor: 'pointer', width: '100%', marginBottom: '10px' },
+  btnSuccess: { backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
+  input: { width: '100%', padding: '12px 15px', margin: '5px 0 15px 0', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', fontSize: '15px', backgroundColor: '#15161e', color: '#fff', boxSizing: 'border-box' },
+  label: { display: 'block', marginBottom: '5px', color: '#9ca3af', fontWeight: '500', fontSize: '14px' },
   formGroup: { marginBottom: '10px' },
-  error: { color: '#ff6666', fontSize: '14px', margin: '10px 0', padding: '12px', backgroundColor: '#220000', borderRadius: '6px', textAlign: 'center', border: '1px solid #cc0000' },
-  success: { backgroundColor: '#1a1a1a', borderLeft: '4px solid #00aa00', padding: '20px', margin: '20px 0', textAlign: 'center', borderRadius: '8px' },
-  infoPaciente: { backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '15px', marginBottom: '20px', textAlign: 'center' },
-  consentBox: { backgroundColor: '#fff', color: '#000', padding: '20px', borderRadius: '8px', marginBottom: '20px', maxHeight: '350px', overflowY: 'auto', fontSize: '13px', lineHeight: '1.6', whiteSpace: 'pre-wrap' },
-  firmaArea: { backgroundColor: '#fff', border: '2px solid #333', borderRadius: '8px', padding: '10px', margin: '15px 0' },
+  error: { color: '#f87171', fontSize: '14px', margin: '10px 0', padding: '12px', backgroundColor: 'rgba(239, 68, 68, 0.12)', borderRadius: '6px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' },
+  success: { backgroundColor: '#111218', borderLeft: '4px solid #10b981', padding: '20px', margin: '20px 0', textAlign: 'center', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' },
+  infoPaciente: { backgroundColor: '#15161e', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', padding: '15px', marginBottom: '20px', textAlign: 'center' },
+  consentBox: { backgroundColor: '#0d0d12', color: '#e5e7eb', padding: '20px', borderRadius: '8px', marginBottom: '20px', maxHeight: '350px', overflowY: 'auto', fontSize: '13px', lineHeight: '1.6', whiteSpace: 'pre-wrap', border: '1px solid rgba(255, 255, 255, 0.06)' },
+  firmaArea: { backgroundColor: '#fff', border: '2px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', padding: '10px', margin: '15px 0' },
 }
 
 export default function Paciente() {
@@ -196,6 +196,13 @@ export default function Paciente() {
 
   return (
     <main style={s.body}>
+      <style>{`
+        button { transition: all 0.2s ease; }
+        button:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        button:active { transform: translateY(0) scale(0.98); }
+        input { transition: all 0.2s ease; }
+        input:focus { border-color: #fbbf24 !important; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15); }
+      `}</style>
       <div style={s.container}>
         <h2 style={s.h2}>SISTEMA DE EVALUACIÓN CLÍNICA</h2>
 

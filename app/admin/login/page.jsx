@@ -4,14 +4,14 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 const s = {
-  body: { backgroundColor: '#000', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif' },
-  container: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '40px', width: '100%', maxWidth: '400px' },
+  body: { backgroundColor: '#08080c', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: 'var(--font-sans)' },
+  container: { backgroundColor: '#111218', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '12px', padding: '40px', width: '100%', maxWidth: '400px', boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)' },
   h2: { color: '#fff', textAlign: 'center', marginBottom: '30px', fontWeight: '500', fontSize: '20px' },
-  input: { width: '100%', padding: '12px 15px', margin: '5px 0 15px 0', border: '1px solid #333', borderRadius: '6px', fontSize: '15px', backgroundColor: '#1a1a1a', color: '#fff', boxSizing: 'border-box' },
-  label: { display: 'block', marginBottom: '5px', color: '#ccc', fontWeight: '500', fontSize: '14px' },
-  btn: { backgroundColor: '#1a1a2e', color: '#fff', border: '1px solid #333366', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
-  btnSecondary: { backgroundColor: '#1a1a1a', color: '#fff', border: '1px solid #333', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', cursor: 'pointer', width: '100%' },
-  error: { color: '#ff6666', fontSize: '14px', margin: '10px 0', padding: '12px', backgroundColor: '#220000', borderRadius: '6px', textAlign: 'center', border: '1px solid #cc0000' },
+  input: { width: '100%', padding: '12px 15px', margin: '5px 0 15px 0', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', fontSize: '15px', backgroundColor: '#15161e', color: '#fff', boxSizing: 'border-box' },
+  label: { display: 'block', marginBottom: '5px', color: '#9ca3af', fontWeight: '500', fontSize: '14px' },
+  btn: { backgroundColor: '#1b1d26', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', width: '100%', marginBottom: '10px' },
+  btnSecondary: { backgroundColor: '#111218', color: '#9ca3af', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', padding: '12px 24px', fontSize: '16px', cursor: 'pointer', width: '100%' },
+  error: { color: '#f87171', fontSize: '14px', margin: '10px 0', padding: '12px', backgroundColor: 'rgba(239, 68, 68, 0.12)', borderRadius: '6px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' },
 }
 
 export default function AdminLogin() {
@@ -69,6 +69,13 @@ export default function AdminLogin() {
 
   return (
     <main style={s.body}>
+      <style>{`
+        button { transition: all 0.2s ease; }
+        button:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        button:active { transform: translateY(0) scale(0.98); }
+        input { transition: all 0.2s ease; }
+        input:focus { border-color: #fbbf24 !important; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15); }
+      `}</style>
       <div style={s.container}>
         <h2 style={s.h2}>🔐 Panel Administrador</h2>
         <p style={{ color: '#888', textAlign: 'center', marginBottom: '25px', fontSize: '14px' }}>
