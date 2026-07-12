@@ -122,13 +122,13 @@ export default function Dashboard() {
   const cargarDatos = async () => {
     setLoading(true)
     const [{ data: pacs }, { data: anal }, { data: hist }, { data: cons }, { data: expl }, { data: epsData }, { data: resp }] = await Promise.all([
-      supabase.from('pacientes').select('*').order('id', { ascending: true }),
-      supabase.from('analisis_dass21').select('*').order('id', { ascending: true }),
-      supabase.from('historias_clinicas').select('*').order('id', { ascending: true }),
-      supabase.from('consentimientos').select('*').order('id', { ascending: true }),
-      supabase.from('exploracion_clinica').select('*').order('id', { ascending: true }),
+      supabase.from('pacientes').select('*').order('created_at', { ascending: false }),
+      supabase.from('analisis_dass21').select('*').order('created_at', { ascending: false }),
+      supabase.from('historias_clinicas').select('*').order('created_at', { ascending: false }),
+      supabase.from('consentimientos').select('*').order('created_at', { ascending: false }),
+      supabase.from('exploracion_clinica').select('*').order('created_at', { ascending: false }),
       supabase.from('eps').select('*').order('nombre'),
-      supabase.from('respuestas_dass21').select('*').order('id', { ascending: true })
+      supabase.from('respuestas_dass21').select('*').order('created_at', { ascending: false }),
     ])
     setPacientes(pacs || [])
     setAnalisis(anal || [])
