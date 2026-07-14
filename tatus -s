@@ -1,0 +1,245 @@
+warning: in the working copy of 'app/admin/dashboard/page.jsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/app/admin/dashboard/page.jsx b/app/admin/dashboard/page.jsx[m
+[1mindex 57098f9..040def7 100644[m
+[1m--- a/app/admin/dashboard/page.jsx[m
+[1m+++ b/app/admin/dashboard/page.jsx[m
+[36m@@ -1,7 +1,19 @@[m
+ 'use client'[m
+ import { useState, useEffect } from 'react'[m
+ import { useRouter } from 'next/navigation'[m
+[31m-import { supabase } from '@/lib/supabase'[m
+[32m+[m[32mimport useDashboardData from '@/lib/hooks/useDashboardData'[m
+[32m+[m[32mimport useFlujoPaciente from '@/lib/hooks/useFlujoPaciente'[m
+[32m+[m[32mimport useChi2 from '@/lib/hooks/useChi2'[m
+[32m+[m
+[32m+[m[32m// Importación de componentes[m
+[32m+[m[32mimport EpsManager from './componentes/EpsManager'[m
+[32m+[m[32mimport ConsentimientosList from './componentes/ConsentimientosList'[m
+[32m+[m[32mimport HistoriasList from './componentes/HistoriasList'[m
+[32m+[m[32mimport AnalisisDass from './componentes/AnalisisDass'[m
+[32m+[m[32mimport ExploracionClinicaList from './componentes/ExploracionClinicaList'[m
+[32m+[m[32mimport ResultadosEstudio from './componentes/ResultadosEstudio'[m
+[32m+[m[32mimport PruebaChi2 from './componentes/PruebaChi2'[m
+[32m+[m[32mimport FlujoPacienteForm from './componentes/FlujoPacienteForm'[m
+ [m
+ const preguntas = [[m
+   'Me costó mucho relajarme',[m
+[36m@@ -58,757 +70,69 @@[m [mexport default function Dashboard() {[m
+   const router = useRouter()[m
+   const [admin, setAdmin] = useState(null)[m
+   const [vista, setVista] = useState('inicio')[m
+[31m-  const [pacientes, setPacientes] = useState([])[m
+[31m-  const [analisis, setAnalisis] = useState([])[m
+[31m-  const [historias, setHistorias] = useState([])[m
+[31m-  const [consentimientos, setConsentimientos] = useState([])[m
+[31m-  const [exploraciones, setExploraciones] = useState([])[m
+[31m-  const [epsBD, setEpsBD] = useState([])[m
+[31m-  const [respuestas, setRespuestas] = useState([])[m
+[31m-  const [loading, setLoading] = useState(true)[m
+[31m-  const [busqueda, setBusqueda] = useState('')[m
+[31m-[m
+[31m-  // Estado flujo paciente admin[m
+[31m-  const [flujoVista, setFlujoVista] = useState('menu')[m
+[31m-  const [flujoCedula, setFlujoCedula] = useState('')[m
+[31m-  const [flujoPaciente, setFlujoPaciente] = useState(null)[m
+[31m-  const [flujoError, setFlujoError] = useState('')[m
+[31m-  const [flujoLoading, setFlujoLoading] = useState(false)[m
+[31m-  const [epsInput, setEpsInput] = useState('')[m
+[31m-  const [epsFiltered, setEpsFiltered] = useState([])[m
+[31m-  const [showEps, setShowEps] = useState(false)[m
+[31m-  const [historia, setHistoria] = useState({[m
+[31m-    fechaNacimiento: '', contacto: '', sexo: '', semestre: '',[m
+[31m-    enfermedadesSistemicas: '', tipoEnfermedad: '',[m
+[31m-    tomaMedicamentos: '', tipoMedicamento: '',[m
+[31m-    antecedentesPsicologicos: '', tipoEnfermedadPsicologica: '',[m
+[31m-    habitoLabios: false, habitoMejillas: false, habitoLengua: false, habitoNo: false,[m
+[31m-    sustanciasPsicoactivas: '', tipoSustancia: '', fumaCigarrilloVape: ''[m
+[31m-  })[m
+[31m-  const [respuestasDass, setRespuestasDass] = useState({})[m
+[31m-  const [exploracion, setExploracion] = useState({[m
+[31m-    presentaLesiones: '', mordeduraLabios: '', mordeduraMejillas: '', mordeduraLengua: '',[m
+[31m-    ulceraTraumatica: '', queratosisFriccional: '', fibromaTraumatico: '',[m
+[31m-    morsicatioBuccarum: '', morsicatioLabiarum: '', morsicatioLinguarum: '',[m
+[31m-    descripcionLesion: '', foto1Url: '', foto2Url: ''[m
+[31m-  })[m
+[31m-[m
+[31m-  // Estado visualización[m
+   const [detalleVista, setDetalleVista] = useState('eps')[m
+[31m-  const [consentimientoVer, setConsentimientoVer] = useState(null)[m
+[31m-  const [respuestaDetalle, setRespuestaDetalle] = useState(null)[m
+[31m-  const [nuevaEps, setNuevaEps] = useState('')[m
+[31m-  const [editEps, setEditEps] = useState(null)[m
+[31m-  const [editEpsNombre, setEditEpsNombre] = useState('')[m
+[31m-  const [descripcionVer, setDescripcionVer] = useState(null)[m
+[31m-  const [fotosVer, setFotosVer] = useState(null)[m
+[31m-  const [subiendoFoto, setSubiendoFoto] = useState(false)[m
+[31m-  const [fotoError, setFotoError] = useState('')[m
+[31m-  const [varFila, setVarFila] = useState('')[m
+[31m-  const [varColumna, setVarColumna] = useState('')[m
+[31m-  const [calculoChi2, setCalculoChi2] = useState(null)[m
+[31m-  const [indicadorClinico, setIndicadorClinico] = useState('')[m
+[31m-  const [factorAnalisis, setFactorAnalisis] = useState('')[m
+[31m-  const [datosInteractivos, setDatosInteractivos] = useState(null)[m
+[32m+[m[32m  const [busqueda, setBusqueda] = useState('')[m
+ [m
+[32m+[m[32m  // Obtención de estados y lógica a través de los hooks[m
+[32m+[m[32m  const dashboardData = useDashboardData()[m
+[32m+[m[32m  const flujoState = useFlujoPaciente()[m
+[32m+[m[32m  const chi2State = useChi2()[m
+[32m+[m
+[32m+[m[32m  const {[m
+[32m+[m[32m    pacientes,[m
+[32m+[m[32m    analisis,[m
+[32m+[m[32m    historias,[m
+[32m+[m[32m    consentimientos,[m
+[32m+[m[32m    exploraciones,[m
+[32m+[m[32m    epsBD,[m
+[32m+[m[32m    respuestas,[m
+[32m+[m[32m    loading,[m
+[32m+[m[32m    cargarDatos,[m
+[32m+[m[32m    obtenerIdParticipante,[m
+[32m+[m[32m    ordenarPorIdParticipante,[m
+[32m+[m[32m    filtrar,[m
+[32m+[m[32m    agregarEps,[m
+[32m+[m[32m    eliminarEps,[m
+[32m+[m[32m    guardarEditEps,[m
+[32m+[m[32m    eliminarConsentimiento,[m
+[32m+[m[32m    eliminarHistoria,[m
+[32m+[m[32m    eliminarEncuesta,[m
+[32m+[m[32m    eliminarExploracion[m
+[32m+[m[32m  } = dashboardData[m
+[32m+[m
+[32m+[m[32m  // Validación de sesión del administrador[m
+   useEffect(() => {[m
+[31m-    const session = localStorage.getItem('adminSession')[m
+[31m-    if (!session) { router.push('/admin/login'); return }[m
+[31m-    const data = JSON.parse(session)[m
+[31m-    if (Date.now() - data.timestamp > 8 * 60 * 60 * 1000) {[m
+[31m-      localStorage.removeItem('adminSession'); router.push('/admin/login'); return[m
+[31m-    }[m
+[31m-    setAdmin(data)[m
+[31m-    cargarDatos()[m
+[31m-  }, [])[m
+[31m-[m
+[31m-  const cargarDatos = async () => {[m
+[31m-    setLoading(true)[m
+[31m-    const [{ data: pacs }, { data: anal }, { data: hist }, { data: cons }, { data: expl }, { data: epsData }, { data: resp }] = await Promise.all([[m
+[31m-      supabase.from('pacientes').select('*').order('id', { ascending: true }),[m
+[31m-      supabase.from('analisis_dass21').select('*').order('id', { ascending: true }),[m
+[31m-      supabase.from('historias_clinicas').select('*').order('id', { ascending: true }),[m
+[31m-      supabase.from('consentimientos').select('*').order('id', { ascending: true }),[m
+[31m-      supabase.from('exploracion_clinica').select('*').order('id', { ascending: true }),[m
+[31m-      supabase.from('eps').select('*').order('nombre'),[m
+[31m-      supabase.from('respuestas_dass21').select('*').order('id', { ascending: true })[m
+[31m-    ])[m
+[31m-    setPacientes(pacs || [])[m
+[31m-    setAnalisis(anal || [])[m
+[31m-    setHistorias(hist || [])[m
+[31m-    setConsentimientos(cons || [])[m
+[31m-    setExploraciones(expl || [])[m
+[31m-    setEpsBD(epsData || [])[m
+[31m-    setRespuestas(resp || [])[m
+[31m-    setLoading(false)[m
+[31m-  }[m
+[31m-[m
+[31m-  const cerrarSesion = () => { localStorage.removeItem('adminSession'); router.push('/') }[m
+[31m-[m
+[31m-  const pacientesOrdenados = [...pacientes].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[m
+[31m-[m
+[31m-  const obtenerIdParticipante = (cedula) => {[m
+[31m-    const idx = pacientesOrdenados.findIndex(p => p.cedula == cedula)[m
+[31m-    return idx !== -1 ? idx + 1 : '—'[m
+[31m-  }[m
+[31m-[m
+[31m-  const ordenarPorIdParticipante = (lista) => {[m
+[31m-    return [...lista].sort((a, b) => {[m
+[31m-      const idA = obtenerIdParticipante(a.cedula)[m
+[31m-      const idB = obtenerIdParticipante(b.cedula)[m
+[31m-      if (idA === '—') return 1[m
+[31m-      if (idB === '—') return -1[m
+[31m-      return idA - idB[m
+[31m-    })[m
+[31m-  }[m
+[31m-[m
+[31m-  const getNombre = (cedula) => {[m
+[31m-    const p = pacientes.find(x => x.cedula == cedula)[m
+[31m-    return p ? `${p.nombre} ${p.apellidos}` : '—'[m
+[31m-  }[m
+[31m-[m
+[31m-  const filtrar = (lista) => lista.filter(item => {[m
+[31m-    const nombre = getNombre(item.cedula)[m
+[31m-    const cedula = item.cedula || ''[m
+[31m-    return `${nombre} ${cedula}`.toLowerCase().includes(busqueda.toLowerCase())[m
+[31m-  })[m
+[31m-[m
+[31m-  const calcularEdad = (fechaNac) => {[m
+[31m-    const hoy = new Date(); const nac = new Date(fechaNac)[m
+[31m-    let edad = hoy.getFullYear() - nac.getFullYear()[m
+[31m-    const m = hoy.getMonth() - nac.getMonth()[m
+[31m-    if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--[m
+[31m-    return edad[m
+[31m-  }[m
+[31m-[m
+[31m-  const calcularPruebaChi2 = () => {[m
+[31m-    if (!varFila || !varColumna) {[m
+[31m-      alert('Por favor seleccione ambas variables.');[m
+[31m-      return;[m
+[31m-    }[m
+[31m-[m
+[31m-    let datosCruzados = [];[m
+[31m-[m
+[31m-    pacientes.forEach(p => {[m
+[31m-      const e = exploraciones.find(x => x.cedula == p.cedula);[m
+[31m-      if (!e) return;[m
+[31m-[m
+[31m-      const h = historias.find(x => x.cedula == p.cedula);[m
+[31m-      const a = analisis.find(x => x.cedula == p.cedula);[m
+[31m-[m
+[31m-      let valFila = null;[m
+[31m-      let labelFila = '';[m
+[31m-[m
+[31m-      if (varFila === 'Lesiones orales (Sí / No)') {[m
+[31m-        if (e.presenta_lesiones === 'Sí' || e.presenta_lesiones === 'No') {[m
+[31m-          valFila = e.presenta_lesiones;[m
+[31m-          labelFila = e.presenta_lesiones === 'Sí' ? 'Con lesión' : 'Sin lesión';[m
+[31m-        }[m
+[31m-      } else if (varFila === 'Lesión en labios (Sí / No)') {[m
+[31m-        if (e.mordedura_labios === 'Sí' || e.mordedura_labios === 'No') {[m
+[31m-          valFila = e.mordedura_labios;[m
+[31m-          labelFila = e.mordedura_labios === 'Sí' ? 'Lesión en labios' : 'Sin lesión en labios';[m
+[31m-        }[m
+[31m-      } else if (varFila === 'Lesión en mejillas (Sí / No)') {[m
+[31m-        if (e.mordedura_mejillas === 'Sí' || e.mordedura_mejillas === 'No') {[m
+[31m-          valFila = e.mordedura_mejillas;[m
+[31m-          labelFila = e.mordedura_mejillas === 'Sí' ? 'Lesión en mejillas' : 'Sin lesión en mejillas';[m
+[31m-        }[m
+[31m-      } else if (varFila === 'Lesión en lengua (Sí / No)') {[m
+[31m-        if (e.mordedura_lengua === 'Sí' || e.mordedura_lengua === 'No') {[m
+[31m-          valFila = e.mordedura_lengua;[m
+[31m-          labelFila = e.mordedura_lengua === 'Sí' ? 'Lesión en lengua' : 'Sin lesión en lengua';[m
+[31m-        }[m
+[32m+[m[32m    const verificarSesion = async () => {[m
+[32m+[m[32m      const session = localStorage.getItem('adminSession')[m
+[32m+[m[32m      if (!session) {[m
+[32m+[m[32m        router.push('/admin/login')[m
+[32m+[m[32m        return[m
+       }[m
+[31m-[m
+[31m-      if (valFila === null) return;[m
+[31m-[m
+[31m-      let valCol = null;[m
+[31m-      let labelCol = '';[m
+[31m-[m
+[31m-      if (varColumna === 'Trastornos psicológicos (Sí / No)') {[m
+[31m-        if (a) {[m
+[31m-          const tieneT = a.interpretacion_depresion !== 'Normal' || a.interpretacion_ansiedad !== 'Normal' || a.interpretacion_estres !== 'Normal';[m
+[31m-          valCol = tieneT ? 'Sí' : 'No';[m
+[31m-          labelCol = tieneT ? 'Con trastorno' : 'Sin trastorno';[m
+[31m-        }[m
+[31m-      } else if (varColumna === 'Trastorno psicológico de tipo depresión') {[m
+[31m-        if (a) {[m
+[31m-          const tieneT = a.interpretacion_depresion !== 'Normal';[m
+[31m-          valCol = tieneT ? 'Sí' : 'No';[m
+[31m-          labelCol = tieneT ? 'Con depresión' : 'Sin depresión';[m
+[31m-        }[m
+[31m-      } else if (varColumna === 'Trasto
