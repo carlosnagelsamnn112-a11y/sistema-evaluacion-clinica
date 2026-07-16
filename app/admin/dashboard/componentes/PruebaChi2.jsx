@@ -67,6 +67,10 @@ export default function PruebaChi2({
             <option value="Sustancias psicoactivas (Sí / No)">Sustancias psicoactivas (Sí / No)</option>
             <option value="Hábito de fumar (Sí / No)">Hábito de fumar (Sí / No)</option>
             <option value="Hábito de vape (Sí / No)">Hábito de vape (Sí / No)</option>
+            <option value="Trastorno psicológico (Sí / No)">Trastorno psicológico (Sí / No)</option>
+            <option value="Depresión (Sí / No)">Depresión (Sí / No)</option>
+            <option value="Ansiedad (Sí / No)">Ansiedad (Sí / No)</option>
+            <option value="Estrés (Sí / No)">Estrés (Sí / No)</option>
           </select>
         </div>
         <button
