@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 const s = {
   body: { backgroundColor: '#08080c', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: 'var(--font-sans)' },
@@ -26,37 +25,22 @@ export default function AdminLogin() {
     setError('')
 
     try {
-      const { data, error: sbError } = await supabase
-        .from('administradores')
-        .select('*')
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      })
+      const result = await res.json()
 
-      if (sbError || !data || data.length === 0) {
-        setError('No hay administradores registrados')
-        setLoading(false)
-        return
-      }
-
-      // Verificar contraseña contra todos los admins
-      let adminValido = null
-      for (const admin of data) {
-        const res = await fetch('/api/admin/verificar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password, hash: admin.password_hash })
-        })
-        const result = await res.json()
-        if (result.valido) { adminValido = admin; break }
-      }
-
-      if (!adminValido) {
-        setError('Contraseña incorrecta')
+      if (!result.valido) {
+        setError(result.error || 'Contraseña incorrecta')
         setLoading(false)
         return
       }
 
       localStorage.setItem('adminSession', JSON.stringify({
-        id: adminValido.id,
-        nombre: adminValido.nombre,
+        id: result.admin.id,
+        nombre: result.admin.nombre,
         timestamp: Date.now()
       }))
 
