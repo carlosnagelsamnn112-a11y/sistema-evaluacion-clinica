@@ -62,15 +62,10 @@ export default function ResultadosEstudio({
     // Obtener valor del indicador para cada paciente
     const getIndicador = (cedula) => {
       const e = exploraciones.find(x => x.cedula == cedula)
-      const a = analisis.find(x => x.cedula == cedula)
       if (indicadorClinico === 'lesiones_orales') return e?.presenta_lesiones === 'Sí'
       if (indicadorClinico === 'lesion_labios') return e?.mordedura_labios === 'Sí'
       if (indicadorClinico === 'lesion_mejillas') return e?.mordedura_mejillas === 'Sí'
-      if (indicadorClinico === 'lesion_lengue' || indicadorClinico === 'lesion_lengua') return e?.mordedura_lengua === 'Sí'
-      if (indicadorClinico === 'depresion') return a?.interpretacion_depresion && a.interpretacion_depresion !== 'Normal'
-      if (indicadorClinico === 'ansiedad') return a?.interpretacion_ansiedad && a.interpretacion_ansiedad !== 'Normal'
-      if (indicadorClinico === 'estres') return a?.interpretacion_estres && a.interpretacion_estres !== 'Normal'
-      if (indicadorClinico === 'cualquier_trastorno') return a && (a.interpretacion_depresion !== 'Normal' || a.interpretacion_ansiedad !== 'Normal' || a.interpretacion_estres !== 'Normal')
+      if (indicadorClinico === 'lesion_lengua') return e?.mordedura_lengua === 'Sí'
       return false
     }
 
@@ -78,15 +73,44 @@ export default function ResultadosEstudio({
     const getFactor = (cedula) => {
       const h = historias.find(x => x.cedula == cedula)
       if (!h) return null
+      
+      if (factorAnalisis === 'edad') {
+        const edad = h.edad
+        if (edad === undefined || edad === null) return null
+        return edad < 18 ? 'Menor de edad' : 'Mayor de edad'
+      }
       if (factorAnalisis === 'sexo') return h.sexo || null
       if (factorAnalisis === 'area') return h.area || null
+      if (factorAnalisis === 'enfermedades_sistemicas') {
+        const v = h.enfermedades_sistemicas
+        if (!v) return null
+        return v === 'No' ? 'No' : 'Sí'
+      }
+      if (factorAnalisis === 'medicamentos') {
+        const v = h.toma_medicamentos
+        if (!v) return null
+        return v === 'No' ? 'No' : 'Sí'
+      }
+      if (factorAnalisis === 'antecedentes_psicologicos') {
+        const v = h.antecedentes_psicologicos
+        if (!v) return null
+        return v === 'No' ? 'No' : 'Sí'
+      }
+      if (factorAnalisis === 'sustancias') {
+        const v = h.sustancias_psicoactivas
+        if (!v) return null
+        return v === 'No' ? 'No' : 'Sí'
+      }
       if (factorAnalisis === 'fuma') {
         const v = h.fuma_cigarrillo_vape
-        if (!v || v === 'Ninguna') return 'No fuma/vape'
-        return 'Fuma o usa vape'
+        if (!v || v === 'Ninguna') return 'No'
+        return (v === 'Cigarrillo' || v === 'Las dos') ? 'Sí' : 'No'
       }
-      if (factorAnalisis === 'sustancias') return h.sustancias_psicoactivas || null
-      if (factorAnalisis === 'eps') return h.eps || null
+      if (factorAnalisis === 'vape') {
+        const v = h.fuma_cigarrillo_vape
+        if (!v || v === 'Ninguna') return 'No'
+        return (v === 'Vape' || v === 'Las dos') ? 'Sí' : 'No'
+      }
       return null
     }
 
@@ -94,10 +118,7 @@ export default function ResultadosEstudio({
     const patsValidos = pacientes.filter(p => {
       const e = exploraciones.find(x => x.cedula == p.cedula)
       const h = historias.find(x => x.cedula == p.cedula)
-      const needsExp = ['lesiones_orales', 'lesion_labios', 'lesion_mejillas', 'lesion_lengua'].includes(indicadorClinico)
-      const needsAnal = ['depresion', 'ansiedad', 'estres', 'cualquier_trastorno'].includes(indicadorClinico)
-      if (needsExp && (!e || e.presenta_lesiones === null || e.presenta_lesiones === '')) return false
-      if (needsAnal && !analisis.find(x => x.cedula == p.cedula)) return false
+      if (!e || e.presenta_lesiones === null || e.presenta_lesiones === '') return false
       if (!h) return false
       if (!getFactor(p.cedula)) return false
       return true
@@ -132,18 +153,18 @@ export default function ResultadosEstudio({
     lesion_labios: 'Lesión en labios',
     lesion_mejillas: 'Lesión en mejillas',
     lesion_lengua: 'Lesión en lengua',
-    depresion: 'Trastorno de depresión',
-    ansiedad: 'Trastorno de ansiedad',
-    estres: 'Trastorno de estrés',
-    cualquier_trastorno: 'Cualquier trastorno psicológico',
   }[indicadorClinico] || indicadorClinico
 
   const labelFactor = {
+    edad: 'Edad',
     sexo: 'Sexo',
     area: 'Área de la universidad',
-    fuma: 'Hábito de fumar/vape',
+    enfermedades_sistemicas: 'Enfermedades sistémicas',
+    medicamentos: 'Consumo de medicamentos',
+    antecedentes_psicologicos: 'Antecedentes psicológicos',
     sustancias: 'Sustancias psicoactivas',
-    eps: 'EPS',
+    fuma: 'Hábito de fumar',
+    vape: 'Hábito de vape',
   }[factorAnalisis] || factorAnalisis
 
   // Configuración de la Dona/Donut SVG para datos interactivos
@@ -225,7 +246,7 @@ export default function ResultadosEstudio({
       {/* BLOQUE 3: GENERADOR INTERACTIVO */}
       <div style={s.card}>
         <h4 style={{ color: '#fff', marginBottom: '5px', fontSize: '15px' }}>Generador de Informes Interactivos</h4>
-        <p style={{ color: '#666', fontSize: '12px', marginBottom: '20px' }}>Cruza un indicador clínico de salud con un factor de análisis socio-demográfico para visualizar prevalencias.</p>
+        <p style={{ color: '#666', fontSize: '12px', marginBottom: '20px' }}>Cruza un indicador de lesiones orales con un factor socio-demográfico para visualizar prevalencias.</p>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '15px', alignItems: 'end', marginBottom: '25px', flexWrap: 'wrap' }}>
           <div>
@@ -236,21 +257,21 @@ export default function ResultadosEstudio({
               <option value="lesion_labios">Lesión en labios (Sí/No)</option>
               <option value="lesion_mejillas">Lesión en mejillas (Sí/No)</option>
               <option value="lesion_lengua">Lesión en lengua (Sí/No)</option>
-              <option value="depresion">Trastorno de depresión (Distinto de Normal)</option>
-              <option value="ansiedad">Trastorno de ansiedad (Distinto de Normal)</option>
-              <option value="estres">Trastorno de estrés (Distinto de Normal)</option>
-              <option value="cualquier_trastorno">Cualquier trastorno psicológico (DASS-21)</option>
             </select>
           </div>
           <div>
             <label style={{ color: '#ccc', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Factor de análisis:</label>
             <select style={{ ...s.select, width: '100%' }} value={factorAnalisis} onChange={e => { setFactorAnalisis(e.target.value); setDatosInteractivos(null) }}>
               <option value="">-- Selecciona --</option>
+              <option value="edad">Edad (Menor/Mayor de edad)</option>
               <option value="sexo">Sexo</option>
               <option value="area">Área académica (Preclínica/Clínica)</option>
-              <option value="fuma">Hábito de fumar o usar vape</option>
-              <option value="sustancias">Consumo de sustancias psicoactivas</option>
-              <option value="eps">EPS asociada</option>
+              <option value="enfermedades_sistemicas">Enfermedades sistémicas (Sí/No)</option>
+              <option value="medicamentos">Consumo de medicamentos (Sí/No)</option>
+              <option value="antecedentes_psicologicos">Antecedentes psicológicos (Sí/No)</option>
+              <option value="sustancias">Sustancias psicoactivas (Sí/No)</option>
+              <option value="fuma">Hábito de fumar (Sí/No)</option>
+              <option value="vape">Hábito de vape (Sí/No)</option>
             </select>
           </div>
           <button style={{ ...s.btnGreen, height: '39px', padding: '0 25px', fontWeight: '600' }} onClick={generarResultados}>

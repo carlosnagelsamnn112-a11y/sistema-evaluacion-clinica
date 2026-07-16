@@ -58,15 +58,15 @@ export default function PruebaChi2({
             }}
           >
             <option value="">-- Seleccione una variable --</option>
-            <option value="Trastornos psicológicos (Sí / No)">Trastornos psicológicos (Sí / No)</option>
-            <option value="Trastorno psicológico de tipo depresión">Trastorno psicológico de tipo depresión</option>
-            <option value="Trastorno psicológico de tipo ansiedad">Trastorno psicológico de tipo ansiedad</option>
-            <option value="Trastorno psicológico de tipo estrés">Trastorno psicológico de tipo estrés</option>
-            <option value="Hábito de fumar">Hábito de fumar</option>
-            <option value="Hábito de vape">Hábito de vape</option>
-            <option value="Consumo de sustancias psicoactivas">Consumo de sustancias psicoactivas</option>
-            <option value="Área de la universidad">Área de la universidad</option>
+            <option value="Edad (Menor / Mayor de edad)">Edad (Menor / Mayor de edad)</option>
             <option value="Sexo">Sexo</option>
+            <option value="Área de la universidad">Área de la universidad</option>
+            <option value="Enfermedades sistémicas (Sí / No)">Enfermedades sistémicas (Sí / No)</option>
+            <option value="Consumo de medicamentos (Sí / No)">Consumo de medicamentos (Sí / No)</option>
+            <option value="Antecedentes psicológicos (Sí / No)">Antecedentes psicológicos (Sí / No)</option>
+            <option value="Sustancias psicoactivas (Sí / No)">Sustancias psicoactivas (Sí / No)</option>
+            <option value="Hábito de fumar (Sí / No)">Hábito de fumar (Sí / No)</option>
+            <option value="Hábito de vape (Sí / No)">Hábito de vape (Sí / No)</option>
           </select>
         </div>
         <button
