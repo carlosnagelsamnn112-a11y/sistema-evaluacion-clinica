@@ -1,0 +1,110 @@
+
+> sistema-evaluacion-clinica@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.81:3000
+- Environments: .env.local
+✓ Ready in 2.2s
+
+ GET /admin/dashboard 200 in 1077ms (next.js: 443ms, application-code: 635ms)
+ GET /admin/dashboard 200 in 117ms (next.js: 12ms, application-code: 105ms)
+ GET / 200 in 348ms (next.js: 137ms, application-code: 212ms)
+ GET /admin/login 200 in 118ms (next.js: 67ms, application-code: 51ms)
+ POST /api/admin/login 200 in 840ms (next.js: 266ms, application-code: 573ms)
+ GET /admin/dashboard 200 in 42ms (next.js: 6ms, application-code: 36ms)
+ GET /admin/dashboard 200 in 519ms (next.js: 226ms, application-code: 293ms)
+ GET / 200 in 203ms (next.js: 65ms, application-code: 138ms)
+ GET /admin/login 200 in 75ms (next.js: 32ms, application-code: 43ms)
+ POST /api/admin/login 200 in 1015ms (next.js: 199ms, application-code: 816ms)
+ GET /admin/dashboard 200 in 47ms (next.js: 6ms, application-code: 41ms)
+✓ Compiled in 291ms
+⨯ ./app/admin/dashboard/componentes/GeneradorInformes.jsx:519:76
+Unterminated string constant
+  [90m517 |[0m ...
+  [90m518 |[0m ...[32m#333'[0m, marginBottom: [32m'4px'[0m }}>[33mTabla[0m de porcentajes por fila</div>
+[31m[1m>[0m [90m519 |[0m ...: [32m'12px }}>Distribución relativa dentro de cada categoría de la variable fila</div>[0m
+  [90m    |[0m      [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m520 |[0m ...[32mfontSize: '[0m[35m12[0mpx[32m' }}>[0m
+  [90m521 |[0m ...
+  [90m522 |[0m ...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component Browser]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component SSR]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+
+ GET /admin/dashboard 500 in 3.2s (next.js: 2.9s, application-code: 332ms)
+⨯ ./app/admin/dashboard/componentes/GeneradorInformes.jsx:519:76
+Unterminated string constant
+  [90m517 |[0m ...
+  [90m518 |[0m ...[32m#333'[0m, marginBottom: [32m'4px'[0m }}>[33mTabla[0m de porcentajes por fila</div>
+[31m[1m>[0m [90m519 |[0m ...: [32m'12px }}>Distribución relativa dentro de cada categoría de la variable fila</div>[0m
+  [90m    |[0m      [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m520 |[0m ...[32mfontSize: '[0m[35m12[0mpx[32m' }}>[0m
+  [90m521 |[0m ...
+  [90m522 |[0m ...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component Browser]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component SSR]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+
+ GET /admin/dashboard 500 in 44ms (next.js: 20ms, application-code: 24ms)
+[browser] Uncaught Error: ./app/admin/dashboard/componentes/GeneradorInformes.jsx:519:76
+Unterminated string constant
+  517 | ...
+  518 | ...#333', marginBottom: '4px' }}>Tabla de porcentajes por fila</div>
+> 519 | ...: '12px }}>Distribución relativa dentro de cada categoría de la variable fila</div>
+      |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  520 | ...fontSize: '12px' }}>
+  521 | ...
+  522 | ...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component Browser]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Client Component Browser]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/dashboard/componentes/GeneradorInformes.jsx [Client Component SSR]
+    ./app/admin/dashboard/componentes/ResultadosEstudio.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Client Component SSR]
+    ./app/admin/dashboard/page.jsx [Server Component]
+
+
+    at <unknown> (Error: ./app/admin/dashboard/componentes/GeneradorInformes.jsx:519:76)
+    at <unknown> (Error: (./app/admin/dashboard/componentes/GeneradorInformes.jsx:519:76)
+✓ Compiled in 48ms
+ GET /admin/dashboard 200 in 682ms (next.js: 279ms, application-code: 403ms)
+ GET /admin/dashboard 200 in 120ms (next.js: 7ms, application-code: 113ms)
+ GET /admin/dashboard 200 in 75ms (next.js: 6ms, application-code: 70ms)
+ GET /admin/dashboard 200 in 68ms (next.js: 4ms, application-code: 64ms)
+^C^C

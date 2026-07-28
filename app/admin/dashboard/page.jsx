@@ -313,6 +313,7 @@ export default function Dashboard() {
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 getNombre={dashboardData.getNombre}
                 eliminarExploracion={eliminarExploracion}
+                cargarDatos={cargarDatos}
                 filtrar={filtrar}
                 busqueda={busqueda}
                 s={s}
