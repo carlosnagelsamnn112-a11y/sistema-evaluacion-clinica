@@ -95,6 +95,8 @@ export default function Dashboard() {
     eliminarEps,
     guardarEditEps,
     eliminarConsentimiento,
+    eliminarConsentimientos,
+    editarPaciente,
     eliminarHistoria,
     eliminarEncuesta,
     eliminarExploracion
@@ -271,6 +273,8 @@ export default function Dashboard() {
                 obtenerIdParticipante={obtenerIdParticipante}
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 eliminarConsentimiento={eliminarConsentimiento}
+                eliminarConsentimientos={eliminarConsentimientos}
+                editarPaciente={editarPaciente}
                 filtrar={filtrar}
                 busqueda={busqueda}
                 s={s}

@@ -134,23 +134,74 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
   )
 }
 
+const ModalEditarPaciente = ({ paciente, onClose, onGuardar }) => {
+  const [nombre, setNombre] = useState(paciente.nombre || '')
+  const [apellidos, setApellidos] = useState(paciente.apellidos || '')
+  const [cedula, setCedula] = useState(paciente.cedula || '')
+  const [guardando, setGuardando] = useState(false)
+
+  const guardar = async () => {
+    if (!nombre.trim() || !apellidos.trim() || !cedula.trim()) {
+      alert('Complete nombre, apellidos y cédula.')
+      return
+    }
+    setGuardando(true)
+    await onGuardar({ nombre: nombre.trim(), apellidos: apellidos.trim(), cedula: cedula.trim() })
+    setGuardando(false)
+  }
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ backgroundColor: '#16171f', border: '1px solid #2d2d2d', borderRadius: '12px', padding: '28px', width: '100%', maxWidth: '440px' }}>
+        <h4 style={{ color: '#fff', fontSize: '16px', margin: '0 0 6px 0' }}>Editar datos del paciente</h4>
+        <p style={{ color: '#9ca3af', fontSize: '12px', margin: '0 0 20px 0' }}>Los cambios se aplicarán en todos sus registros (historia, encuestas, exploración y consentimientos).</p>
+
+        <div style={{ marginBottom: '14px' }}>
+          <label style={{ color: '#9ca3af', fontSize: '13px', display: 'block', marginBottom: '5px' }}>Nombres:</label>
+          <input value={nombre} onChange={e => setNombre(e.target.value)} style={{ width: '100%', padding: '11px 12px', backgroundColor: '#0c0c0f', border: '1px solid #2d2d2d', borderRadius: '8px', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }} />
+        </div>
+        <div style={{ marginBottom: '14px' }}>
+          <label style={{ color: '#9ca3af', fontSize: '13px', display: 'block', marginBottom: '5px' }}>Apellidos:</label>
+          <input value={apellidos} onChange={e => setApellidos(e.target.value)} style={{ width: '100%', padding: '11px 12px', backgroundColor: '#0c0c0f', border: '1px solid #2d2d2d', borderRadius: '8px', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }} />
+        </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ color: '#9ca3af', fontSize: '13px', display: 'block', marginBottom: '5px' }}>Cédula:</label>
+          <input value={cedula} onChange={e => setCedula(e.target.value)} style={{ width: '100%', padding: '11px 12px', backgroundColor: '#0c0c0f', border: '1px solid #2d2d2d', borderRadius: '8px', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }} />
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button style={{ flex: 1, padding: '12px', backgroundColor: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', opacity: guardando ? 0.6 : 1 }} disabled={guardando} onClick={guardar}>{guardando ? 'Guardando...' : 'Guardar cambios'}</button>
+          <button style={{ flex: 1, padding: '12px', backgroundColor: '#2d2d2d', color: '#ccc', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }} onClick={onClose}>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ConsentimientosList({
   pacientes,
   consentimientos,
   obtenerIdParticipante,
   ordenarPorIdParticipante,
   eliminarConsentimiento,
+  eliminarConsentimientos,
+  editarPaciente,
   filtrar,
   busqueda,
   s
 }) {
   const [consentimientoVer, setConsentimientoVer] = useState(null)
+  const [pacienteEditar, setPacienteEditar] = useState(null)
 
-  const pacientesFiltrados = filtrar(ordenarPorIdParticipante(pacientes), busqueda)
+  // Solo mostrar pacientes que tengan al menos un consentimiento
+  const pacientesConConsentimiento = pacientes.filter(p =>
+    consentimientos.some(c => c.cedula == p.cedula)
+  )
+  const pacientesFiltrados = filtrar(ordenarPorIdParticipante(pacientesConConsentimiento), busqueda)
 
   return (
     <>
-      {!consentimientoVer && (
+      {!consentimientoVer && !pacienteEditar && (
         <div style={s.card}>
           <div className="tabla-wrap-siempre">
             <table style={s.table}>
@@ -161,13 +212,15 @@ export default function ConsentimientosList({
                   <th style={s.th}>Cédula</th>
                   <th style={s.th}>C1</th>
                   <th style={s.th}>C2</th>
-                  <th style={s.th}>Ver</th>
+                  <th style={s.th}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {pacientesFiltrados.map(p => {
                   const c1 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 1)
                   const c2 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 2)
+                  const tieneAlguno = !!(c1 || c2)
+                  const tiposEliminar = [c1 ? 'C1' : null, c2 ? 'C2' : null].filter(Boolean).join(' y ')
                   return (
                     <tr key={p.id}>
                       <td style={s.td}>{obtenerIdParticipante(p.cedula)}</td>
@@ -176,18 +229,12 @@ export default function ConsentimientosList({
                       <td style={s.td}><span style={s.badge(c1 ? 'green' : 'red')}>{c1 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
                       <td style={s.td}><span style={s.badge(c2 ? 'green' : 'red')}>{c2 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
                       <td style={s.td}>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                          {c1 && (
-                            <div style={{ display: 'flex', gap: '4px' }}>
-                              <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c1, pac: p })}>Ver C1</button>
-                              <button style={s.btnRed} onClick={() => eliminarConsentimiento(c1.id, 'Consentimiento 1', p.nombre + ' ' + p.apellidos)}>Eliminar C1</button>
-                            </div>
-                          )}
-                          {c2 && (
-                            <div style={{ display: 'flex', gap: '4px' }}>
-                              <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c2, pac: p })}>Ver C2</button>
-                              <button style={s.btnRed} onClick={() => eliminarConsentimiento(c2.id, 'Consentimiento 2', p.nombre + ' ' + p.apellidos)}>Eliminar C2</button>
-                            </div>
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', alignItems: 'center' }}>
+                          <button style={s.btnBlue} onClick={() => setPacienteEditar(p)}>Editar</button>
+                          {c1 && <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c1, pac: p })}>Ver C1</button>}
+                          {c2 && <button style={s.btnBlue} onClick={() => setConsentimientoVer({ c: c2, pac: p })}>Ver C2</button>}
+                          {tieneAlguno && (
+                            <button style={s.btnRed} onClick={() => eliminarConsentimientos(p.cedula, p.nombre + ' ' + p.apellidos, tiposEliminar)}>Eliminar</button>
                           )}
                         </div>
                       </td>
@@ -204,6 +251,16 @@ export default function ConsentimientosList({
           c={consentimientoVer.c}
           pac={consentimientoVer.pac}
           onClose={() => setConsentimientoVer(null)}
+        />
+      )}
+      {pacienteEditar && (
+        <ModalEditarPaciente
+          paciente={pacienteEditar}
+          onClose={() => setPacienteEditar(null)}
+          onGuardar={async (datos) => {
+            await editarPaciente(pacienteEditar, datos)
+            setPacienteEditar(null)
+          }}
         />
       )}
     </>
