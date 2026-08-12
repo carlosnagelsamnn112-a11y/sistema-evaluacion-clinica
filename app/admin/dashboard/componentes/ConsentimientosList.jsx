@@ -95,13 +95,13 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
               <td style={{ width: '50%', padding: '10px 10px 0 0', verticalAlign: 'bottom' }}>
                 <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Diana.png" alt="firma Diana" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                 <p style={{ fontSize: '12px', margin: '2px 0' }}>1101682283</p>
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>Diana Carolina Cortés Dulcey (20572211983)</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>Diana Carolina Cortés Dulcey (código 20572211983)</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
               </td>
               <td style={{ width: '50%', padding: '10px 0 0 10px', verticalAlign: 'bottom' }}>
                 <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Luisa.png" alt="firma Luisa" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                 <p style={{ fontSize: '12px', margin: '2px 0' }}>1013104626</p>
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>Luisa María Sandoval Ibarra (20572212013)</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>Luisa María Sandoval Ibarra (código 20572212013)</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
               </td>
             </tr>
@@ -109,13 +109,13 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
               <td style={{ width: '50%', padding: '20px 10px 0 0', verticalAlign: 'bottom' }}>
                 <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Christopher.png" alt="firma Christopher" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                 <p style={{ fontSize: '12px', margin: '2px 0' }}>1003894702</p>
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>Christopher Vargas Quiroga (20572211040)</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>Christopher Vargas Quiroga (código 20572211040)</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Estudiante de odontología</p>
               </td>
               <td style={{ width: '50%', padding: '20px 0 0 10px', verticalAlign: 'bottom' }}>
                 <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Alejandra.png" alt="firma Alejandra" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
                 <p style={{ fontSize: '12px', margin: '2px 0' }}>12345678</p>
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>Alejandra Bobadilla Henao (12345678)</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>Alejandra Bobadilla Henao (código 12345678)</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Docente de odontología</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Asesora temática</p>
               </td>
