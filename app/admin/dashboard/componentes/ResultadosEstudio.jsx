@@ -15,10 +15,16 @@ export default function ResultadosEstudio({
     return consentimientos.filter(c => c.tipo === 1).length
   }, [consentimientos])
 
-  const totalHistorias = historias.length
-  const totalEncuestas = analisis.length
+  const totalHistorias = useMemo(() => {
+    return historias.filter(h => h.fecha_nacimiento != null && h.fecha_nacimiento !== '').length
+  }, [historias])
+
+  const totalEncuestas = useMemo(() => {
+    return analisis.filter(a => a.puntaje_depresion != null).length
+  }, [analisis])
+
   const totalExploraciones = useMemo(() => {
-    return exploraciones.filter(e => e.presenta_lesiones !== null).length
+    return exploraciones.filter(e => e.presenta_lesiones === 'Sí' || e.presenta_lesiones === 'No').length
   }, [exploraciones])
 
   // Trastornos vs Lesiones orales
