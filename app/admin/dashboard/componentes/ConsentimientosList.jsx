@@ -114,8 +114,8 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
               </td>
               <td style={{ width: '50%', padding: '20px 0 0 10px', verticalAlign: 'bottom' }}>
                 <img src="https://dejgqxavpwttwlefbhhl.supabase.co/storage/v1/object/public/firmas-investigadores/Alejandra.png" alt="firma Alejandra" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '4px' }} />
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>C.C. 12345678</p>
-                <p style={{ fontSize: '12px', margin: '2px 0' }}>Alejandra Bobadilla Henao (código 12345678)</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>C.C. 1075238979</p>
+                <p style={{ fontSize: '12px', margin: '2px 0' }}>Alejandra Bobadilla Henao</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Docente de odontología</p>
                 <p style={{ fontSize: '12px', margin: '2px 0', color: '#555' }}>Asesora temática</p>
               </td>
