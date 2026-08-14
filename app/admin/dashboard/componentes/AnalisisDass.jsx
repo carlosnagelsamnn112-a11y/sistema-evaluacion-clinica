@@ -4,7 +4,6 @@ export default function AnalisisDass({
   analisis,
   respuestas,
   preguntas,
-  obtenerIdParticipante,
   ordenarPorIdParticipante,
   getNombre,
   eliminarEncuesta,
@@ -15,7 +14,8 @@ export default function AnalisisDass({
 }) {
   const [respuestaDetalle, setRespuestaDetalle] = useState(null)
 
-  const analisisFiltrados = filtrar(ordenarPorIdParticipante(analisis), busqueda)
+  const analisisReales = analisis.filter(a => a.puntaje_depresion != null)
+  const analisisFiltrados = filtrar(ordenarPorIdParticipante(analisisReales), busqueda)
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function AnalisisDass({
             <table style={s.table}>
               <thead>
                 <tr>
-                  <th style={s.th}>ID</th>
+                  <th style={s.th}>N°</th>
                   <th style={s.th}>Nombre</th>
                   <th style={s.th}>Cédula</th>
                   <th style={s.th}>Depresión</th>
@@ -35,9 +35,9 @@ export default function AnalisisDass({
                 </tr>
               </thead>
               <tbody>
-                {analisisFiltrados.map(a => (
+                {analisisFiltrados.map((a, i) => (
                   <tr key={a.id}>
-                    <td style={s.td}>{obtenerIdParticipante(a.cedula)}</td>
+                    <td style={s.td}>{i + 1}</td>
                     <td style={s.td}>{getNombre(a.cedula)}</td>
                     <td style={s.td}>{a.cedula}</td>
                     <td style={s.td}>
@@ -76,7 +76,7 @@ export default function AnalisisDass({
               </tbody>
             </table>
           </div>
-          {analisis.length === 0 && (
+          {analisisReales.length === 0 && (
             <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>
               No hay encuestas completadas
             </p>

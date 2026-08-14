@@ -2,7 +2,6 @@ import React from 'react'
 
 export default function HistoriasList({
   historias,
-  obtenerIdParticipante,
   ordenarPorIdParticipante,
   getNombre,
   eliminarHistoria,
@@ -10,7 +9,8 @@ export default function HistoriasList({
   busqueda,
   s
 }) {
-  const historiasFiltradas = filtrar(ordenarPorIdParticipante(historias), busqueda)
+  const historiasReales = historias.filter(h => h.fecha_nacimiento && h.fecha_nacimiento !== '')
+  const historiasFiltradas = filtrar(ordenarPorIdParticipante(historiasReales), busqueda)
 
   return (
     <div style={s.card}>
@@ -18,9 +18,10 @@ export default function HistoriasList({
         <table style={s.table}>
           <thead>
             <tr>
-              <th style={s.th}>ID</th>
+              <th style={s.th}>N°</th>
               <th style={s.th}>Nombre</th>
               <th style={s.th}>Cédula</th>
+              <th style={s.th}>Contacto</th>
               <th style={s.th}>Edad</th>
               <th style={s.th}>Sexo</th>
               <th style={s.th}>EPS</th>
@@ -36,11 +37,12 @@ export default function HistoriasList({
             </tr>
           </thead>
           <tbody>
-            {historiasFiltradas.map(h => (
+            {historiasFiltradas.map((h, i) => (
               <tr key={h.id}>
-                <td style={s.td}>{obtenerIdParticipante(h.cedula)}</td>
+                <td style={s.td}>{i + 1}</td>
                 <td style={s.td}>{getNombre(h.cedula)}</td>
                 <td style={s.td}>{h.cedula}</td>
+                <td style={s.td}>{h.contacto}</td>
                 <td style={s.td}>{h.edad}</td>
                 <td style={s.td}>{h.sexo}</td>
                 <td style={s.td}>{h.eps}</td>
@@ -60,7 +62,7 @@ export default function HistoriasList({
           </tbody>
         </table>
       </div>
-      {historias.length === 0 && (
+      {historiasReales.length === 0 && (
         <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>No hay historias clínicas registradas</p>
       )}
     </div>

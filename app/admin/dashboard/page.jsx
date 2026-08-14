@@ -88,7 +88,6 @@ export default function Dashboard() {
     respuestas,
     loading,
     cargarDatos,
-    obtenerIdParticipante,
     ordenarPorIdParticipante,
     filtrar,
     agregarEps,
@@ -270,7 +269,6 @@ export default function Dashboard() {
               <ConsentimientosList
                 pacientes={pacientes}
                 consentimientos={consentimientos}
-                obtenerIdParticipante={obtenerIdParticipante}
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 eliminarConsentimiento={eliminarConsentimiento}
                 eliminarConsentimientos={eliminarConsentimientos}
@@ -284,7 +282,6 @@ export default function Dashboard() {
             {detalleVista === 'historias' && (
               <HistoriasList
                 historias={historias}
-                obtenerIdParticipante={obtenerIdParticipante}
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 getNombre={dashboardData.getNombre}
                 eliminarHistoria={eliminarHistoria}
@@ -299,7 +296,6 @@ export default function Dashboard() {
                 analisis={analisis}
                 respuestas={respuestas}
                 preguntas={preguntas}
-                obtenerIdParticipante={obtenerIdParticipante}
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 getNombre={dashboardData.getNombre}
                 eliminarEncuesta={eliminarEncuesta}
@@ -313,7 +309,6 @@ export default function Dashboard() {
             {detalleVista === 'exploracion' && (
               <ExploracionClinicaList
                 exploraciones={exploraciones}
-                obtenerIdParticipante={obtenerIdParticipante}
                 ordenarPorIdParticipante={ordenarPorIdParticipante}
                 getNombre={dashboardData.getNombre}
                 eliminarExploracion={eliminarExploracion}

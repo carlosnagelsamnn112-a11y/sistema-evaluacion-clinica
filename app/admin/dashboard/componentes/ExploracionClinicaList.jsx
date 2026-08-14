@@ -115,7 +115,6 @@ const GestionarFotos = ({ foto1, foto2, cedula, nombre, onClose, onGuardado, s }
 
 export default function ExploracionClinicaList({
   exploraciones,
-  obtenerIdParticipante,
   ordenarPorIdParticipante,
   getNombre,
   eliminarExploracion,
@@ -127,7 +126,8 @@ export default function ExploracionClinicaList({
   const [descripcionVer, setDescripcionVer] = useState(null)
   const [fotosGestionar, setFotosGestionar] = useState(null)
 
-  const exploracionesFiltradas = filtrar(ordenarPorIdParticipante(exploraciones), busqueda)
+  const exploracionesReales = exploraciones.filter(e => e.presenta_lesiones === 'Sí' || e.presenta_lesiones === 'No')
+  const exploracionesFiltradas = filtrar(ordenarPorIdParticipante(exploracionesReales), busqueda)
 
   return (
     <>
@@ -136,7 +136,7 @@ export default function ExploracionClinicaList({
           <table style={s.table}>
             <thead>
               <tr>
-                <th style={s.th}>ID</th>
+                <th style={s.th}>N°</th>
                 <th style={s.th}>Nombre</th>
                 <th style={s.th}>Cédula</th>
                 <th style={s.th}>Lesiones</th>
@@ -155,9 +155,9 @@ export default function ExploracionClinicaList({
               </tr>
             </thead>
             <tbody>
-              {exploracionesFiltradas.map(e => (
+              {exploracionesFiltradas.map((e, i) => (
                 <tr key={e.id}>
-                  <td style={s.td}>{obtenerIdParticipante(e.cedula)}</td>
+                  <td style={s.td}>{i + 1}</td>
                   <td style={s.td}>{getNombre(e.cedula)}</td>
                   <td style={s.td}>{e.cedula}</td>
                   <td style={s.td}>
@@ -231,9 +231,9 @@ export default function ExploracionClinicaList({
             </tbody>
           </table>
         </div>
-        {exploraciones.length === 0 && (
+        {exploracionesReales.length === 0 && (
           <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>
-            No hay exploraciones registradas
+            No hay exploraciones completadas
           </p>
         )}
       </div>

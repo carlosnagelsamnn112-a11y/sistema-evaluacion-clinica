@@ -181,7 +181,6 @@ const ModalEditarPaciente = ({ paciente, onClose, onGuardar }) => {
 export default function ConsentimientosList({
   pacientes,
   consentimientos,
-  obtenerIdParticipante,
   ordenarPorIdParticipante,
   eliminarConsentimiento,
   eliminarConsentimientos,
@@ -207,7 +206,7 @@ export default function ConsentimientosList({
             <table style={s.table}>
               <thead>
                 <tr>
-                  <th style={s.th}>ID</th>
+                  <th style={s.th}>N°</th>
                   <th style={s.th}>Nombre</th>
                   <th style={s.th}>Cédula</th>
                   <th style={s.th}>C1</th>
@@ -216,14 +215,14 @@ export default function ConsentimientosList({
                 </tr>
               </thead>
               <tbody>
-                {pacientesFiltrados.map(p => {
+                {pacientesFiltrados.map((p, i) => {
                   const c1 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 1)
                   const c2 = consentimientos.find(c => c.cedula == p.cedula && c.tipo === 2)
                   const tieneAlguno = !!(c1 || c2)
                   const tiposEliminar = [c1 ? 'C1' : null, c2 ? 'C2' : null].filter(Boolean).join(' y ')
                   return (
                     <tr key={p.id}>
-                      <td style={s.td}>{obtenerIdParticipante(p.cedula)}</td>
+                      <td style={s.td}>{i + 1}</td>
                       <td style={s.td}>{p.nombre} {p.apellidos}</td>
                       <td style={s.td}>{p.cedula}</td>
                       <td style={s.td}><span style={s.badge(c1 ? 'green' : 'red')}>{c1 ? '✓ Firmado' : '✗ Pendiente'}</span></td>
