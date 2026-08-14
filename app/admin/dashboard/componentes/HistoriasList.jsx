@@ -21,7 +21,7 @@ export default function HistoriasList({
               <th style={s.th}>N°</th>
               <th style={s.th}>Nombre</th>
               <th style={s.th}>Cédula</th>
-              <th style={s.th}>Contacto</th>
+              <th style={s.th}>Teléfono</th>
               <th style={s.th}>Edad</th>
               <th style={s.th}>Sexo</th>
               <th style={s.th}>EPS</th>
