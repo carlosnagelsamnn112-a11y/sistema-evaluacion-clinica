@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { uploadFirmaConsentimiento } from '@/lib/queries'
 import SignaturePad from 'signature_pad'
 
 const consentimientoTextos = {
@@ -99,6 +101,7 @@ const s = {
 }
 
 export default function Paciente() {
+  const router = useRouter()
   const [pantalla, setPantalla] = useState('menu')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -131,7 +134,7 @@ export default function Paciente() {
     if (!cons1.nombre || !cons1.apellidos || !cons1.cedula) { setError('Complete todos los campos'); return }
     setLoading(true)
     try {
-      const { data } = await supabase.from('consentimientos').select('id').eq('cedula', cons1.cedula).eq('tipo', 1)
+      const { data } = await supabase.from('consentimientos').select('id').eq('cedula', cons1.cedula.trim()).eq('tipo', 1)
       if (data && data.length > 0) { setError('Este paciente ya tiene el Consentimiento 1 firmado'); setLoading(false); return }
       setTipoConsentimiento(1)
       mostrar('consentimiento')
@@ -140,14 +143,14 @@ export default function Paciente() {
   }
 
   const validarCons2 = async () => {
-    if (!cons2Cedula) { setError('Ingrese el número de cédula'); return }
+    if (!cons2Cedula.trim()) { setError('Ingrese el número de cédula'); return }
     setLoading(true)
     try {
-      const { data: c1 } = await supabase.from('consentimientos').select('id').eq('cedula', cons2Cedula).eq('tipo', 1)
+      const { data: c1 } = await supabase.from('consentimientos').select('id').eq('cedula', cons2Cedula.trim()).eq('tipo', 1)
       if (!c1 || c1.length === 0) { setError('Debe firmar primero el Consentimiento 1'); setLoading(false); return }
-      const { data: c2 } = await supabase.from('consentimientos').select('id').eq('cedula', cons2Cedula).eq('tipo', 2)
+      const { data: c2 } = await supabase.from('consentimientos').select('id').eq('cedula', cons2Cedula.trim()).eq('tipo', 2)
       if (c2 && c2.length > 0) { setError('Este paciente ya tiene el Consentimiento 2 firmado'); setLoading(false); return }
-      const { data: pac } = await supabase.from('pacientes').select('*').eq('cedula', cons2Cedula).single()
+      const { data: pac } = await supabase.from('pacientes').select('*').eq('cedula', cons2Cedula.trim()).single()
       if (!pac) { setError('Paciente no encontrado'); setLoading(false); return }
       setPaciente(pac)
       setTipoConsentimiento(2)
@@ -163,9 +166,12 @@ export default function Paciente() {
     setLoading(true)
     try {
       const firmaDataURL = signaturePadRef.current.toDataURL()
-      const nombrePaciente = tipoConsentimiento === 1 ? cons1.nombre : paciente.nombre
-      const apellidosPaciente = tipoConsentimiento === 1 ? cons1.apellidos : paciente.apellidos
-      const cedulaPaciente = tipoConsentimiento === 1 ? cons1.cedula : cons2Cedula
+      const nombrePaciente = tipoConsentimiento === 1 ? cons1.nombre.trim() : paciente.nombre
+      const apellidosPaciente = tipoConsentimiento === 1 ? cons1.apellidos.trim() : paciente.apellidos
+      const cedulaPaciente = (tipoConsentimiento === 1 ? cons1.cedula : cons2Cedula).trim()
+
+      // Subir firma a Storage o usar fallback
+      const firmaFinalUrl = await uploadFirmaConsentimiento(cedulaPaciente, tipoConsentimiento, firmaDataURL)
 
       let pacienteId
       if (tipoConsentimiento === 1) {
@@ -185,7 +191,7 @@ export default function Paciente() {
         paciente_id: pacienteId,
         cedula: cedulaPaciente,
         tipo: tipoConsentimiento,
-        pdf_url: firmaDataURL,
+        pdf_url: firmaFinalUrl,
         fecha_firma: new Date().toISOString().split('T')[0]
       })
 
@@ -215,7 +221,7 @@ export default function Paciente() {
             <button style={s.btn} onClick={() => { setCons2Cedula(''); setError(''); mostrar('cedulaCons2') }}>
               CONSENTIMIENTO 2 — REGISTRO FOTOGRÁFICO
             </button>
-            <button style={{ ...s.btnSecondary, marginTop: '10px' }} onClick={() => window.location.href = '/'}>
+            <button style={{ ...s.btnSecondary, marginTop: '10px' }} onClick={() => router.push('/')}>
               ← Volver al inicio
             </button>
           </div>
@@ -227,7 +233,7 @@ export default function Paciente() {
             <h3 style={s.h3}>CONSENTIMIENTO 1 — RECOLECCIÓN DE DATOS</h3>
             <div style={s.formGroup}><label style={s.label}>Nombres completos:</label><input style={s.input} value={cons1.nombre} onChange={e => setCons1({ ...cons1, nombre: e.target.value })} placeholder="Ingrese sus nombres" /></div>
             <div style={s.formGroup}><label style={s.label}>Apellidos completos:</label><input style={s.input} value={cons1.apellidos} onChange={e => setCons1({ ...cons1, apellidos: e.target.value })} placeholder="Ingrese sus apellidos" /></div>
-            <div style={s.formGroup}><label style={s.label}>Número de cédula:</label><input style={s.input} type="number" value={cons1.cedula} onChange={e => setCons1({ ...cons1, cedula: e.target.value })} placeholder="Ingrese su número de cédula" /></div>
+            <div style={s.formGroup}><label style={s.label}>Número de cédula:</label><input style={s.input} type="text" inputMode="numeric" pattern="[0-9]*" value={cons1.cedula} onChange={e => setCons1({ ...cons1, cedula: e.target.value })} placeholder="Ingrese su número de cédula" /></div>
             {error && <div style={s.error}>{error}</div>}
             <button style={s.btn} onClick={validarCons1} disabled={loading}>{loading ? 'Verificando...' : 'Siguiente'}</button>
             <button style={s.btnSecondary} onClick={volverMenu}>Cancelar</button>
@@ -238,7 +244,7 @@ export default function Paciente() {
         {pantalla === 'cedulaCons2' && (
           <div>
             <h3 style={s.h3}>CONSENTIMIENTO 2 — REGISTRO FOTOGRÁFICO</h3>
-            <div style={s.formGroup}><label style={s.label}>Número de cédula:</label><input style={s.input} type="number" value={cons2Cedula} onChange={e => setCons2Cedula(e.target.value)} placeholder="Ingrese su número de cédula" /></div>
+            <div style={s.formGroup}><label style={s.label}>Número de cédula:</label><input style={s.input} type="text" inputMode="numeric" pattern="[0-9]*" value={cons2Cedula} onChange={e => setCons2Cedula(e.target.value)} placeholder="Ingrese su número de cédula" /></div>
             {error && <div style={s.error}>{error}</div>}
             <button style={s.btn} onClick={validarCons2} disabled={loading}>{loading ? 'Verificando...' : 'Siguiente'}</button>
             <button style={s.btnSecondary} onClick={volverMenu}>Cancelar</button>

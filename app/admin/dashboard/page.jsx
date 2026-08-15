@@ -109,14 +109,33 @@ export default function Dashboard() {
         router.push('/admin/login')
         return
       }
-      const data = JSON.parse(session)
-      if (Date.now() - data.timestamp > 8 * 60 * 60 * 1000) {
+      try {
+        const data = JSON.parse(session)
+        if (!data.id || Date.now() - data.timestamp > 8 * 60 * 60 * 1000) {
+          localStorage.removeItem('adminSession')
+          router.push('/admin/login')
+          return
+        }
+
+        const res = await fetch('/api/admin/verificar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminId: data.id, token: data.token })
+        })
+        const result = await res.json()
+
+        if (!result.valido) {
+          localStorage.removeItem('adminSession')
+          router.push('/admin/login')
+          return
+        }
+
+        setAdmin(data)
+        await cargarDatos()
+      } catch {
         localStorage.removeItem('adminSession')
         router.push('/admin/login')
-        return
       }
-      setAdmin(data)
-      await cargarDatos()
     }
     verificarSesion()
   }, [router, cargarDatos])

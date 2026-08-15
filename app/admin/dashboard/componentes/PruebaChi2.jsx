@@ -98,6 +98,12 @@ export default function PruebaChi2({
             <span style={{ fontSize: '12px', color: '#666' }}>Cruzado por Cédula</span>
           </div>
 
+          {calculoChi2.advertenciaEsperadosBajos && (
+            <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px', color: '#fbbf24', fontSize: '13px' }}>
+              ⚠️ <strong>Advertencia de validez estadística:</strong> Al menos una frecuencia esperada ($E_ij$) es menor a 5. Se recomienda aumentar el tamaño de la muestra o interpretar con precaución el p-valor de la prueba de Chi-cuadrado.
+            </div>
+          )}
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px', flexWrap: 'wrap' }}>
             
             {/* TABLA DE CONTINGENCIA (OBSERVADO vs ESPERADO) */}

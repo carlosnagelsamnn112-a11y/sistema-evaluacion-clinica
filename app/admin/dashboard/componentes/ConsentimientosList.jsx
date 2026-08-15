@@ -1,6 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const VerConsentimiento = ({ c, pac, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   const contenidos = {
     1: {
       titulo: 'CONSENTIMIENTO INFORMADO PARA LA PARTICIPACIÓN EN UN ESTUDIO DE INVESTIGACIÓN',
@@ -18,7 +24,7 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
       ]
     },
     2: {
-      titulo: 'CONSENTIMIENTO INFORMADO PARA LA TOMA Y USO DE REGISTROS FOTOGRÁFICOS EN INVESTIGACIÓN',
+      titulo: 'CONSENTIMIENTO INFORMADO PARA LA TOMA Y USO DE REGISTROS FOTOGRÁFICO EN INVESTIGACIÓN',
       intro: `En el marco del desarrollo del presente proyecto de investigación, se solicita su autorización para la toma de registros fotográficos intraorales, los cuales serán utilizados exclusivamente con fines académicos y científicos. Estas imágenes permitirán apoyar el análisis clínico y la comprensión de los hábitos parafuncionales en los participantes del estudio.`,
       parrafoYo: 'actuando en nombre propio, manifiesto que he sido informado(a) de manera clara, suficiente y comprensible, y mis preguntas han sido contestadas de manera satisfactoria por el investigador. Autorizo de forma libre, previa y voluntaria la toma y uso de registros fotográficos intraorales dentro del proyecto de investigación mencionado, desarrollado por los estudiantes investigadores Diana Carolina Cortés Dulcey, Luisa María Sandoval Ibarra y Christopher Vargas Quiroga, bajo la asesoría temática de la Dra. Alejandra Bobadilla Henao.',
       cuerpo: [
@@ -37,7 +43,10 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
   const fechaFormateada = c.fecha_firma ? c.fecha_firma.split('-').reverse().join('/') : ''
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, overflowY: 'auto', padding: '20px' }}>
+    <div
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, overflowY: 'auto', padding: '20px' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
       <div style={{ maxWidth: '820px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '8px', padding: '50px 50px 30px 50px', color: '#000', fontFamily: 'Arial, sans-serif' }}>
         
         {/* LOGO */}
@@ -74,9 +83,9 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
         {/* CIERRE */}
         <p style={{ fontSize: '13px', margin: '25px 0 25px 0' }}>En constancia de lo anterior, se firma el presente consentimiento informado.</p>
 
-        {/* FIRMA PACIENTE — tamaño fijo 5cm x 2cm */}
+        {/* FIRMA PACIENTE — soporta DataURL y URLs públicas de Storage */}
         <div style={{ marginBottom: '15px' }}>
-          {c.pdf_url && c.pdf_url.startsWith('data:image') ? (
+          {c.pdf_url && (c.pdf_url.startsWith('http') || c.pdf_url.startsWith('data:image')) ? (
             <img src={c.pdf_url} alt="firma paciente" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '8px' }} />
           ) : (
             <div style={{ width: '5cm', height: '2cm', marginBottom: '8px' }} />
@@ -140,6 +149,12 @@ const ModalEditarPaciente = ({ paciente, onClose, onGuardar }) => {
   const [cedula, setCedula] = useState(paciente.cedula || '')
   const [guardando, setGuardando] = useState(false)
 
+  useEffect(() => {
+    const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   const guardar = async () => {
     if (!nombre.trim() || !apellidos.trim() || !cedula.trim()) {
       alert('Complete nombre, apellidos y cédula.')
@@ -151,7 +166,10 @@ const ModalEditarPaciente = ({ paciente, onClose, onGuardar }) => {
   }
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+    <div
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
       <div style={{ backgroundColor: '#16171f', border: '1px solid #2d2d2d', borderRadius: '12px', padding: '28px', width: '100%', maxWidth: '440px' }}>
         <h4 style={{ color: '#fff', fontSize: '16px', margin: '0 0 6px 0' }}>Editar datos del paciente</h4>
         <p style={{ color: '#9ca3af', fontSize: '12px', margin: '0 0 20px 0' }}>Los cambios se aplicarán en todos sus registros (historia, encuestas, exploración y consentimientos).</p>

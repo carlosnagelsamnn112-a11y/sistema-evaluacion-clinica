@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { uploadFotoExploracion, deleteFotoFromStorage, updateExploracionClinica } from '@/lib/queries'
 
 const GestionarFotos = ({ foto1, foto2, cedula, nombre, onClose, onGuardado, s }) => {
@@ -8,6 +8,12 @@ const GestionarFotos = ({ foto1, foto2, cedula, nombre, onClose, onGuardado, s }
   const [error, setError] = useState('')
   const input1 = useRef(null)
   const input2 = useRef(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
 
   const subir = async (archivo, slot) => {
     if (!archivo) return
@@ -88,7 +94,10 @@ const GestionarFotos = ({ foto1, foto2, cedula, nombre, onClose, onGuardado, s }
   )
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+    <div
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
       <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '550px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
         <h3 style={{ color: '#fff', marginBottom: '5px' }}>Gestionar fotos</h3>
         <p style={{ color: '#888', fontSize: '13px', marginBottom: '20px' }}>{nombre}</p>
@@ -239,7 +248,10 @@ export default function ExploracionClinicaList({
       </div>
 
       {descripcionVer && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setDescripcionVer(null) }}
+        >
           <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '500px', width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
             <h3 style={{ color: '#fff', marginBottom: '5px' }}>Descripción de la lesión</h3>
             <p style={{ color: '#888', fontSize: '13px', marginBottom: '15px' }}>{descripcionVer.nombre}</p>

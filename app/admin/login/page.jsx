@@ -41,6 +41,7 @@ export default function AdminLogin() {
       localStorage.setItem('adminSession', JSON.stringify({
         id: result.admin.id,
         nombre: result.admin.nombre,
+        token: result.admin.token,
         timestamp: Date.now()
       }))
 
