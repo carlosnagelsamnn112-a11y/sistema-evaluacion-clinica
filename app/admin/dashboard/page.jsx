@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import useDashboardData from '@/lib/hooks/useDashboardData'
 import useFlujoPaciente from '@/lib/hooks/useFlujoPaciente'
 import useChi2 from '@/lib/hooks/useChi2'
+import useOddsRatio from '@/lib/hooks/useOddsRatio'
 
 // Importación de componentes
 import EpsManager from './componentes/EpsManager'
@@ -13,6 +14,7 @@ import AnalisisDass from './componentes/AnalisisDass'
 import ExploracionClinicaList from './componentes/ExploracionClinicaList'
 import ResultadosEstudio from './componentes/ResultadosEstudio'
 import PruebaChi2 from './componentes/PruebaChi2'
+import PruebaOddsRatio from './componentes/PruebaOddsRatio'
 import FlujoPacienteForm from './componentes/FlujoPacienteForm'
 
 const preguntas = [
@@ -77,6 +79,7 @@ export default function Dashboard() {
   const dashboardData = useDashboardData()
   const flujoState = useFlujoPaciente()
   const chi2State = useChi2()
+  const oddsRatioState = useOddsRatio()
 
   const {
     pacientes,
@@ -238,6 +241,7 @@ export default function Dashboard() {
                 { key: 'exploracion', label: '5. Exploración Clínica' },
                 { key: 'resultados', label: '6. Resultados del Estudio' },
                 { key: 'chi2', label: '7. Prueba de Chi-cuadrado' },
+                { key: 'oddsratio', label: '8. Prueba Odds ratio' },
               ].map(t => (
                 <button
                   key={t.key}
@@ -358,6 +362,23 @@ export default function Dashboard() {
                 calculoChi2={chi2State.calculoChi2}
                 setCalculoChi2={chi2State.setCalculoChi2}
                 calcularPruebaChi2={chi2State.calcularPruebaChi2}
+                pacientes={pacientes}
+                exploraciones={exploraciones}
+                historias={historias}
+                analisis={analisis}
+                s={s}
+              />
+            )}
+
+            {detalleVista === 'oddsratio' && (
+              <PruebaOddsRatio
+                varFila={oddsRatioState.varFila}
+                setVarFila={oddsRatioState.setVarFila}
+                varColumna={oddsRatioState.varColumna}
+                setVarColumna={oddsRatioState.setVarColumna}
+                calculoOR={oddsRatioState.calculoOR}
+                setCalculoOR={oddsRatioState.setCalculoOR}
+                calcularOddsRatio={oddsRatioState.calcularOddsRatio}
                 pacientes={pacientes}
                 exploraciones={exploraciones}
                 historias={historias}
