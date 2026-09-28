@@ -133,6 +133,9 @@ export default function ExploracionClinicaList({
   s
 }) {
   const [descripcionVer, setDescripcionVer] = useState(null)
+  const [descripcionTexto, setDescripcionTexto] = useState('')
+  const [guardandoDesc, setGuardandoDesc] = useState(false)
+  const [errorDesc, setErrorDesc] = useState('')
   const [fotosGestionar, setFotosGestionar] = useState(null)
 
   const exploracionesReales = exploraciones.filter(e => e.presenta_lesiones === 'Sí' || e.presenta_lesiones === 'No')
@@ -195,14 +198,16 @@ export default function ExploracionClinicaList({
                     {e.descripcion_lesion ? (
                       <button
                         style={s.btnBlue}
-                        onClick={() =>
+                        onClick={() => {
                           setDescripcionVer({
-                            nombre: getNombre(e.cedula),
-                            texto: e.descripcion_lesion
+                            cedula: e.cedula,
+                            nombre: getNombre(e.cedula)
                           })
-                        }
+                          setDescripcionTexto(e.descripcion_lesion)
+                          setErrorDesc('')
+                        }}
                       >
-                        Ver texto
+                        Ver / Editar
                       </button>
                     ) : (
                       '—'
@@ -255,8 +260,43 @@ export default function ExploracionClinicaList({
           <div style={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', padding: '25px', maxWidth: '500px', width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
             <h3 style={{ color: '#fff', marginBottom: '5px' }}>Descripción de la lesión</h3>
             <p style={{ color: '#888', fontSize: '13px', marginBottom: '15px' }}>{descripcionVer.nombre}</p>
-            <p style={{ color: '#ddd', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{descripcionVer.texto}</p>
-            <button style={{ ...s.btn, width: '100%', marginTop: '20px' }} onClick={() => setDescripcionVer(null)}>Cerrar</button>
+            {errorDesc && <p style={{ color: '#f87171', fontSize: '12px', marginBottom: '15px' }}>{errorDesc}</p>}
+            <textarea
+              style={{ ...s.textarea, minHeight: '180px', marginBottom: '15px' }}
+              value={descripcionTexto}
+              onChange={e => setDescripcionTexto(e.target.value)}
+              disabled={guardandoDesc}
+            />
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                style={{ ...s.btn, flex: 1 }}
+                onClick={() => setDescripcionVer(null)}
+                disabled={guardandoDesc}
+              >
+                Cancelar
+              </button>
+              <button
+                style={{ ...s.btnGreen, flex: 1 }}
+                onClick={async () => {
+                  setGuardandoDesc(true)
+                  setErrorDesc('')
+                  try {
+                    await updateExploracionClinica(descripcionVer.cedula, {
+                      descripcion_lesion: descripcionTexto.trim()
+                    })
+                    await cargarDatos()
+                    setDescripcionVer(null)
+                  } catch (e) {
+                    setErrorDesc('Error al guardar: ' + e.message)
+                  } finally {
+                    setGuardandoDesc(false)
+                  }
+                }}
+                disabled={guardandoDesc}
+              >
+                {guardandoDesc ? 'Guardando...' : 'Guardar cambios'}
+              </button>
+            </div>
           </div>
         </div>
       )}
