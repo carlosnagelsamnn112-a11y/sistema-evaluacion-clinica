@@ -210,7 +210,19 @@ export default function ExploracionClinicaList({
                         Ver / Editar
                       </button>
                     ) : (
-                      '—'
+                      <button
+                        style={s.btnBlue}
+                        onClick={() => {
+                          setDescripcionVer({
+                            cedula: e.cedula,
+                            nombre: getNombre(e.cedula)
+                          })
+                          setDescripcionTexto('')
+                          setErrorDesc('')
+                        }}
+                      >
+                        Agregar
+                      </button>
                     )}
                   </td>
                   <td style={s.td}>
