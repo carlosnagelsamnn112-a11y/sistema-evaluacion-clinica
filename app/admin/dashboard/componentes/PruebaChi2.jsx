@@ -26,7 +26,7 @@ export default function PruebaChi2({
         7. Prueba de Chi-cuadrado
       </h3>
       <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>
-        Analiza de forma interactiva la asociación estadística entre las variables del estudio clínico. Los cálculos se generan automáticamente sobre todos los registros guardados.
+        Analiza de forma interactiva la asociación estadística entre las variables del estudio clínico. <strong style={{ color: '#aaa' }}>Criterio de exclusión:</strong> Los pacientes con ortodoncia activa son excluidos automáticamente de este cálculo.
       </p>
 
       {/* PANEL DE SELECCIÓN */}
@@ -92,11 +92,16 @@ export default function PruebaChi2({
       ) : (
         <div>
           {/* INFO ADICIONAL */}
-          <div style={{ backgroundColor: '#161616', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '12px 18px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ backgroundColor: '#161616', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '12px 18px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
             <span style={{ fontSize: '14px', color: '#aaa' }}>
               Tamaño de muestra analizada (N): <strong style={{ color: '#fff' }}>{calculoChi2.totalN} pacientes</strong>
+              {calculoChi2.excluidosOrtodoncia > 0 && (
+                <span style={{ color: '#f59e0b', marginLeft: '12px', fontSize: '13px' }}>
+                  ({calculoChi2.excluidosOrtodoncia} con ortodoncia excluidos)
+                </span>
+              )}
             </span>
-            <span style={{ fontSize: '12px', color: '#666' }}>Cruzado por Cédula</span>
+            <span style={{ fontSize: '12px', color: '#666' }}>Cruzado por Cédula · Excluye ortodoncia</span>
           </div>
 
           {calculoChi2.advertenciaEsperadosBajos && (
