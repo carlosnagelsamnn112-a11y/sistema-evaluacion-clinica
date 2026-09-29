@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 
 export default function FlujoPacienteForm({
@@ -107,7 +108,9 @@ export default function FlujoPacienteForm({
           <h3 style={{ color: '#fff', marginBottom: '15px' }}>Historia Clínica — Verificar paciente</h3>
           <input
             style={{ ...s.input, width: '100%', marginBottom: '10px' }}
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={flujoCedula}
             onChange={e => setFlujoCedula(e.target.value)}
             placeholder="Número de cédula"
@@ -336,7 +339,9 @@ export default function FlujoPacienteForm({
           <h3 style={{ color: '#fff', marginBottom: '15px' }}>Encuesta DASS-21 — Verificar paciente</h3>
           <input
             style={{ ...s.input, width: '100%', marginBottom: '10px' }}
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={flujoCedula}
             onChange={e => setFlujoCedula(e.target.value)}
             placeholder="Número de cédula"
@@ -433,7 +438,9 @@ export default function FlujoPacienteForm({
           <h3 style={{ color: '#fff', marginBottom: '15px' }}>Exploración Clínica — Verificar paciente</h3>
           <input
             style={{ ...s.input, width: '100%', marginBottom: '10px' }}
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={flujoCedula}
             onChange={e => setFlujoCedula(e.target.value)}
             placeholder="Número de cédula"

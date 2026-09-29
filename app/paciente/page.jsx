@@ -187,13 +187,18 @@ export default function Paciente() {
         pacienteId = paciente.id
       }
 
-      await supabase.from('consentimientos').insert({
+      const { error: errorIns } = await supabase.from('consentimientos').insert({
         paciente_id: pacienteId,
         cedula: cedulaPaciente,
         tipo: tipoConsentimiento,
         pdf_url: firmaFinalUrl,
         fecha_firma: new Date().toISOString().split('T')[0]
       })
+      if (errorIns) {
+        setError('Error al guardar el consentimiento: ' + errorIns.message)
+        setLoading(false)
+        return
+      }
 
       mostrar('exitoConsentimiento')
     } catch (e) { setError('Error al guardar: ' + e.message) }

@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useMemo } from 'react'
 
 const VARIABLES_FILA = [
@@ -67,17 +68,25 @@ export default function GeneradorInformes({ pacientes, exploraciones, historias,
         if (h && (h.area === 'Preclínica' || h.area === 'Clínica'))
           return { val: h.area, label: h.area }
       } else if (varColumna === 'enfermedades') {
-        if (h && (h.enfermedades_sistemicas === 'Sí' || h.enfermedades_sistemicas === 'No'))
-          return { val: h.enfermedades_sistemicas, label: h.enfermedades_sistemicas === 'Sí' ? 'Con enfermedad' : 'Sin enfermedad' }
+        if (h && h.enfermedades_sistemicas) {
+          const tiene = h.enfermedades_sistemicas === 'Sí' || (h.enfermedades_sistemicas !== 'No' && h.enfermedades_sistemicas.trim() !== '')
+          return { val: tiene ? 'Sí' : 'No', label: tiene ? 'Con enfermedad' : 'Sin enfermedad' }
+        }
       } else if (varColumna === 'medicamentos') {
-        if (h && (h.toma_medicamentos === 'Sí' || h.toma_medicamentos === 'No'))
-          return { val: h.toma_medicamentos, label: h.toma_medicamentos === 'Sí' ? 'Consume med.' : 'No consume med.' }
+        if (h && h.toma_medicamentos) {
+          const tiene = h.toma_medicamentos === 'Sí' || (h.toma_medicamentos !== 'No' && h.toma_medicamentos.trim() !== '')
+          return { val: tiene ? 'Sí' : 'No', label: tiene ? 'Consume med.' : 'No consume med.' }
+        }
       } else if (varColumna === 'antecedentes') {
-        if (h && (h.antecedentes_psicologicos === 'Sí' || h.antecedentes_psicologicos === 'No'))
-          return { val: h.antecedentes_psicologicos, label: h.antecedentes_psicologicos === 'Sí' ? 'Con antecedentes' : 'Sin antecedentes' }
+        if (h && h.antecedentes_psicologicos) {
+          const tiene = h.antecedentes_psicologicos === 'Sí' || (h.antecedentes_psicologicos !== 'No' && h.antecedentes_psicologicos.trim() !== '')
+          return { val: tiene ? 'Sí' : 'No', label: tiene ? 'Con antecedentes' : 'Sin antecedentes' }
+        }
       } else if (varColumna === 'sustancias') {
-        if (h && (h.sustancias_psicoactivas === 'Sí' || h.sustancias_psicoactivas === 'No'))
-          return { val: h.sustancias_psicoactivas, label: h.sustancias_psicoactivas === 'Sí' ? 'Consume SPA' : 'No consume SPA' }
+        if (h && h.sustancias_psicoactivas) {
+          const tiene = h.sustancias_psicoactivas === 'Sí' || (h.sustancias_psicoactivas !== 'No' && h.sustancias_psicoactivas.trim() !== '')
+          return { val: tiene ? 'Sí' : 'No', label: tiene ? 'Consume SPA' : 'No consume SPA' }
+        }
       } else if (varColumna === 'fumar') {
         if (h) {
           const f = h.fuma_cigarrillo_vape === 'Cigarrillo' || h.fuma_cigarrillo_vape === 'Las dos'

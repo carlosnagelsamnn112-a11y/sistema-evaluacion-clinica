@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 
 export default function PruebaChi2({
@@ -237,10 +238,10 @@ export default function PruebaChi2({
                     )
                   })}
                   <tr style={{ backgroundColor: '#1a1a1a', fontWeight: 'bold' }}>
-                    <td style={{ padding: '10px', color: '#fff' }}>Suma Total (Chi-cuadrado calculado)</td>
+                    <td style={{ padding: '10px', color: '#fff' }}>Suma Total (X² calculado)</td>
                     <td style={{ padding: '10px', textAlign: 'center' }}>{calculoChi2.totalN}</td>
-                    <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>{calculoChi2.totalN.toFixed(4)}</td>
-                    <td style={{ padding: '10px', textAlign: 'center' }}>0.0000</td>
+                    <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>{calculoChi2.totalN.toFixed(2)}</td>
+                    <td style={{ padding: '10px', textAlign: 'center' }}>0.00</td>
                     <td style={{ padding: '10px', textAlign: 'center', color: '#aaa' }}>—</td>
                     <td style={{ padding: '10px', textAlign: 'right', color: '#e57373', fontSize: '15px' }}>{calculoChi2.chiTotal.toFixed(6)}</td>
                   </tr>

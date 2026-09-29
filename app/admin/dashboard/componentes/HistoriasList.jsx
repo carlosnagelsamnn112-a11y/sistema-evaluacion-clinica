@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 
 export default function HistoriasList({
@@ -49,11 +50,27 @@ export default function HistoriasList({
                 <td style={s.td}>{h.eps}</td>
                 <td style={s.td}>{h.semestre}</td>
                 <td style={s.td}>{h.area}</td>
-                <td style={s.td}>{h.enfermedades_sistemicas}</td>
-                <td style={s.td}>{h.toma_medicamentos}</td>
-                <td style={s.td}>{h.antecedentes_psicologicos}</td>
+                <td style={s.td}>
+                  {h.enfermedades_sistemicas === 'Sí'
+                    ? (h.tipo_enfermedad ? `Sí (${h.tipo_enfermedad})` : 'Sí')
+                    : (h.enfermedades_sistemicas || 'No')}
+                </td>
+                <td style={s.td}>
+                  {h.toma_medicamentos === 'Sí'
+                    ? (h.tipo_medicamento ? `Sí (${h.tipo_medicamento})` : 'Sí')
+                    : (h.toma_medicamentos || 'No')}
+                </td>
+                <td style={s.td}>
+                  {h.antecedentes_psicologicos === 'Sí'
+                    ? (h.tipo_enfermedad_psicologica ? `Sí (${h.tipo_enfermedad_psicologica})` : 'Sí')
+                    : (h.antecedentes_psicologicos || 'No')}
+                </td>
                 <td style={s.td}>{h.habitos_orales}</td>
-                <td style={s.td}>{h.sustancias_psicoactivas}</td>
+                <td style={s.td}>
+                  {h.sustancias_psicoactivas === 'Sí'
+                    ? (h.tipo_sustancia ? `Sí (${h.tipo_sustancia})` : 'Sí')
+                    : (h.sustancias_psicoactivas || 'No')}
+                </td>
                 <td style={s.td}>{h.fuma_cigarrillo_vape}</td>
                 <td style={s.td}>{h.ortodoncia || '—'}</td>
                 <td style={s.td}>

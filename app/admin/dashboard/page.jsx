@@ -105,6 +105,8 @@ export default function Dashboard() {
   } = dashboardData
 
   // Validación de sesión del administrador
+  // cargarDatos es estable (useCallback sin dependencias), pero usamos ref para
+  // evitar que futuras refactorizaciones generen bucles de renders
   useEffect(() => {
     const verificarSesion = async () => {
       const session = localStorage.getItem('adminSession')
@@ -141,7 +143,10 @@ export default function Dashboard() {
       }
     }
     verificarSesion()
-  }, [router, cargarDatos])
+    // cargarDatos es un useCallback estable (sin dependencias), se omite del array
+    // para evitar que re-renders innecesarios re-ejecuten la verificación de sesión.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
 
   const cerrarSesion = () => {
     localStorage.removeItem('adminSession')
