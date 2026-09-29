@@ -26,7 +26,7 @@ export default function PruebaOddsRatio({
         8. Prueba Odds Ratio (Razón de Momios / Razón de Posibilidades)
       </h3>
       <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>
-        Evalúa la fuerza de asociación y la probabilidad relativa (Odds Ratio) entre la presencia de lesiones orales y los factores demográficos, clínicos y psicológicos de la población del estudio.
+        Evalúa la fuerza de asociación y la probabilidad relativa (Odds Ratio) entre la presencia de lesiones orales y los factores demográficos, clínicos y psicológicos de la población del estudio. <strong style={{ color: '#aaa' }}>Criterio de exclusión:</strong> Los pacientes con ortodoncia activa son excluidos automáticamente de este cálculo.
       </p>
 
       {/* PANEL DE SELECCIÓN */}
@@ -82,8 +82,27 @@ export default function PruebaOddsRatio({
         </button>
       </div>
 
-      {calculoOR && (
+      {!calculoOR ? (
+        <div style={{ padding: '40px 20px', border: '1px dashed #333', borderRadius: '8px', textAlign: 'center', backgroundColor: '#0a0a0a' }}>
+          <span style={{ fontSize: '36px', display: 'block', marginBottom: '10px' }}>📈</span>
+          <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
+            Selecciona una variable de fila y una de columna, y presiona el botón <strong style={{ color: '#aaa' }}>Calcular Odds Ratio</strong> para ver los resultados.
+          </p>
+        </div>
+      ) : (
         <div>
+          {/* INFO ADICIONAL */}
+          <div style={{ backgroundColor: '#161616', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '12px 18px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+            <span style={{ fontSize: '14px', color: '#aaa' }}>
+              Tamaño de muestra analizada (N): <strong style={{ color: '#fff' }}>{calculoOR.totalN} pacientes</strong>
+              {calculoOR.excluidosOrtodoncia > 0 && (
+                <span style={{ color: '#f59e0b', marginLeft: '12px', fontSize: '13px' }}>
+                  ({calculoOR.excluidosOrtodoncia} con ortodoncia excluidos)
+                </span>
+              )}
+            </span>
+            <span style={{ fontSize: '12px', color: '#666' }}>Cruzado por Cédula · Excluye ortodoncia</span>
+          </div>
           {/* TABLA DE CONTINGENCIA 2x2 */}
           <h4 style={{ color: '#fff', fontSize: '15px', marginBottom: '12px' }}>
             Tabla de Contingencia 2x2 ({calculoOR.labelFila} vs {calculoOR.labelC1})
