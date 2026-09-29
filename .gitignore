@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# archivos locales de trabajo
+/FOTOS/
+/Libro1.xlsx
+/dev.log
