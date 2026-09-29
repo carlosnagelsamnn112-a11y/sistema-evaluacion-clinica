@@ -33,6 +33,7 @@ export default function HistoriasList({
               <th style={s.th}>Hábitos Orales</th>
               <th style={s.th}>Sustancias</th>
               <th style={s.th}>Fuma/Vape</th>
+              <th style={s.th}>Ortodoncia</th>
               <th style={s.th}>Acciones</th>
             </tr>
           </thead>
@@ -54,6 +55,7 @@ export default function HistoriasList({
                 <td style={s.td}>{h.habitos_orales}</td>
                 <td style={s.td}>{h.sustancias_psicoactivas}</td>
                 <td style={s.td}>{h.fuma_cigarrillo_vape}</td>
+                <td style={s.td}>{h.ortodoncia || '—'}</td>
                 <td style={s.td}>
                   <button style={s.btnRed} onClick={() => eliminarHistoria(h.id, getNombre(h.cedula))}>Eliminar</button>
                 </td>

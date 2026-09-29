@@ -294,6 +294,24 @@ export default function FlujoPacienteForm({
             </div>
           </div>
 
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ color: '#ccc', fontSize: '14px', display: 'block', marginBottom: '4px' }}>¿Usa actualmente ortodoncia?</label>
+            <div style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '12px' }}>
+              {['Sí', 'No'].map(op => (
+                <label key={op} style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '6px 0', cursor: 'pointer', color: '#ccc' }}>
+                  <input
+                    type="radio"
+                    name="ortodoncia"
+                    value={op}
+                    checked={historia.ortodoncia === op}
+                    onChange={e => setHistoria({ ...historia, ortodoncia: e.target.value })}
+                  />
+                  {op}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {flujoError && (
             <div style={{ color: '#ff6666', padding: '10px', backgroundColor: '#220000', borderRadius: '6px', marginBottom: '10px' }}>
               {flujoError}
