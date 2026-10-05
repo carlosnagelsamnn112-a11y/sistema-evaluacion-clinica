@@ -43,6 +43,7 @@ next-env.d.ts
 
 # archivos locales de trabajo
 /FOTOS/
-/Libro1.xlsx
+/Libro1*.xlsx
+~$*
 /dev.log
 detalles_descartados_*.csv
