@@ -162,6 +162,7 @@ export default function ExploracionClinicaList({
                 <th style={s.th}>M. Buccarum</th>
                 <th style={s.th}>M. Labiarum</th>
                 <th style={s.th}>M. Linguarum</th>
+                <th style={s.th}>Queilitis</th>
                 <th style={s.th}>Descripción</th>
                 <th style={s.th}>Fotos</th>
                 <th style={s.th}>Acciones</th>
@@ -195,6 +196,7 @@ export default function ExploracionClinicaList({
                   <td style={s.td}>{e.morsicatio_buccarum || '—'}</td>
                   <td style={s.td}>{e.morsicatio_labiarum || '—'}</td>
                   <td style={s.td}>{e.morsicatio_linguarum || '—'}</td>
+                  <td style={s.td}>{e.queilitis_exfoliativa || '—'}</td>
                   <td style={s.td}>
                     {e.descripcion_lesion ? (
                       <button

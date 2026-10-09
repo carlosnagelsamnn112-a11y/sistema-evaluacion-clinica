@@ -46,6 +46,7 @@ export default function PruebaChi2({
             <option value="Lesión en labios (Sí / No)">Lesión en labios (Sí / No)</option>
             <option value="Lesión en mejillas (Sí / No)">Lesión en mejillas (Sí / No)</option>
             <option value="Lesión en lengua (Sí / No)">Lesión en lengua (Sí / No)</option>
+            <option value="Queilitis exfoliativa (Sí / No)">Queilitis exfoliativa (Sí / No)</option>
           </select>
         </div>
         <div>

@@ -562,6 +562,7 @@ export default function FlujoPacienteForm({
                   { key: 'morsicatioBuccarum', label: 'Morsicatio buccarum' },
                   { key: 'morsicatioLabiarum', label: 'Morsicatio labiarum' },
                   { key: 'morsicatioLinguarum', label: 'Morsicatio linguarum' },
+                  { key: 'queilitisExfoliativa', label: 'Queilitis exfoliativa' },
                 ].map(f => (
                   <div key={f.key} style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                     <label style={{ color: '#ccc', fontSize: '14px' }}>{f.label}</label>

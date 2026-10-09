@@ -6,6 +6,7 @@ const VARIABLES_FILA = [
   { value: 'lesion_labios', label: 'Lesión en labios (Sí / No)' },
   { value: 'lesion_mejillas', label: 'Lesión en mejillas (Sí / No)' },
   { value: 'lesion_lengua', label: 'Lesión en lengua (Sí / No)' },
+  { value: 'queilitis_exfoliativa', label: 'Queilitis exfoliativa (Sí / No)' },
 ]
 
 const VARIABLES_COLUMNA = [
@@ -49,6 +50,9 @@ export default function GeneradorInformes({ pacientes, exploraciones, historias,
       } else if (varFila === 'lesion_lengua') {
         if (e.mordedura_lengua === 'Sí') return { val: 'Sí', label: 'Lesión lengua' }
         if (e.mordedura_lengua === 'No') return { val: 'No', label: 'Sin lesión lengua' }
+      } else if (varFila === 'queilitis_exfoliativa') {
+        if (e.queilitis_exfoliativa === 'Sí') return { val: 'Sí', label: 'Con queilitis' }
+        if (e.queilitis_exfoliativa === 'No') return { val: 'No', label: 'Sin queilitis' }
       }
       return null
     }
