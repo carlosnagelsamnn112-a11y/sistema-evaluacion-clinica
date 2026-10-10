@@ -51,7 +51,7 @@ export default function GeneradorInformes({ pacientes, exploraciones, historias,
         if (e.mordedura_lengua === 'Sí') return { val: 'Sí', label: 'Lesión lengua' }
         if (e.mordedura_lengua === 'No') return { val: 'No', label: 'Sin lesión lengua' }
       } else if (varFila === 'queilitis_exfoliativa') {
-        if (e.queilitis_exfoliativa === 'Sí') return { val: 'Sí', label: 'Con queilitis' }
+        if (['Sí', 'Si'].includes(e.queilitis_exfoliativa)) return { val: 'Sí', label: 'Con queilitis' }
         if (e.queilitis_exfoliativa === 'No') return { val: 'No', label: 'Sin queilitis' }
       }
       return null
