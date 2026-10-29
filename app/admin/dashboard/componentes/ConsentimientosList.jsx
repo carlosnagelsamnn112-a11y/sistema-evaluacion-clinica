@@ -1,12 +1,49 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 
+const CEDULAS_MENORES_PADRES = new Set(['1077725890', '1077726074', '1118368898'])
+
+function urlPdfPadres(cedula, tipo) {
+  const id = String(cedula || '').trim()
+  if (!CEDULAS_MENORES_PADRES.has(id)) return null
+  if (tipo !== 1 && tipo !== 2) return null
+  return `/consentimientos-padres/Consentimiento_${tipo}_${id}.pdf`
+}
+
+function esPdf(url) {
+  if (!url || typeof url !== 'string') return false
+  const u = url.split('?')[0].toLowerCase()
+  return u.endsWith('.pdf') || url.includes('application/pdf')
+}
+
 const VerConsentimiento = ({ c, pac, onClose }) => {
   useEffect(() => {
     const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
+
+  const pdfExterno = urlPdfPadres(c.cedula, c.tipo) || (esPdf(c.pdf_url) ? c.pdf_url : null)
+  if (pdfExterno) {
+    return (
+      <div
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, display: 'flex', flexDirection: 'column', padding: '16px' }}
+        onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      >
+        <div style={{ maxWidth: '920px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <p style={{ color: '#fff', margin: '0 0 10px 0', fontSize: '14px' }}>
+            Consentimiento {c.tipo} firmado por el acudiente — {pac?.nombre} {pac?.apellidos} ({c.cedula})
+          </p>
+          <iframe
+            title={`Consentimiento ${c.tipo} padres`}
+            src={pdfExterno}
+            style={{ flex: 1, width: '100%', border: 'none', borderRadius: '8px', background: '#fff' }}
+          />
+          <button onClick={onClose} style={{ marginTop: '12px', padding: '12px 20px', backgroundColor: '#1a2e5a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', width: '100%', fontSize: '14px' }}>Cerrar</button>
+        </div>
+      </div>
+    )
+  }
 
   const contenidos = {
     1: {
