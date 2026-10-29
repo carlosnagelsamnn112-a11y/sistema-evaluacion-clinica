@@ -27,19 +27,23 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
   if (pdfExterno) {
     return (
       <div
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, display: 'flex', flexDirection: 'column', padding: '16px' }}
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, overflowY: 'auto', padding: '20px' }}
         onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
       >
-        <div style={{ maxWidth: '920px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <p style={{ color: '#fff', margin: '0 0 10px 0', fontSize: '14px' }}>
-            Consentimiento {c.tipo} firmado por el acudiente — {pac?.nombre} {pac?.apellidos} ({c.cedula})
-          </p>
-          <iframe
-            title={`Consentimiento ${c.tipo} padres`}
-            src={pdfExterno}
-            style={{ flex: 1, width: '100%', border: 'none', borderRadius: '8px', background: '#fff' }}
-          />
-          <button onClick={onClose} style={{ marginTop: '12px', padding: '12px 20px', backgroundColor: '#1a2e5a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', width: '100%', fontSize: '14px' }}>Cerrar</button>
+        <div style={{ maxWidth: '820px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '8px', padding: '50px 50px 30px 50px', color: '#000', fontFamily: 'Arial, sans-serif' }}>
+          <object
+            data={`${pdfExterno}#toolbar=0&navpanes=0&scrollbar=0`}
+            type="application/pdf"
+            title={`Consentimiento ${c.tipo}`}
+            style={{ width: '100%', height: '1080px', border: 'none', display: 'block', backgroundColor: '#fff' }}
+          >
+            <iframe
+              title={`Consentimiento ${c.tipo}`}
+              src={`${pdfExterno}#toolbar=0&navpanes=0`}
+              style={{ width: '100%', height: '1080px', border: 'none', display: 'block' }}
+            />
+          </object>
+          <button onClick={onClose} style={{ marginTop: '25px', padding: '12px 20px', backgroundColor: '#1a2e5a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', width: '100%', fontSize: '14px' }}>Cerrar</button>
         </div>
       </div>
     )
