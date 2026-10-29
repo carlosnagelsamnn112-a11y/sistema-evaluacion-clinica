@@ -1,19 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 
-const CEDULAS_MENORES_PADRES = new Set(['1077725890', '1077726074', '1118368898'])
-
-function urlPdfPadres(cedula, tipo) {
-  const id = String(cedula || '').trim()
-  if (!CEDULAS_MENORES_PADRES.has(id)) return null
-  if (tipo !== 1 && tipo !== 2) return null
-  return `/consentimientos-padres/Consentimiento_${tipo}_${id}.pdf`
-}
-
-function esPdf(url) {
-  if (!url || typeof url !== 'string') return false
-  const u = url.split('?')[0].toLowerCase()
-  return u.endsWith('.pdf') || url.includes('application/pdf')
+const DATOS_ACUDIENTES = {
+  '1077725890': { nombre: 'Norma Amparo Medina Herrera', cedula: '40768113', calidad: 'madre', menor: 'Laura Valentina Trujillo Medina', fecha: '20/08/2026' },
+  '1077726074': { nombre: 'Oscar Mauricio Montenegro Ortiz', cedula: '83092098', calidad: 'padre', menor: 'Isabella Montenegro Ortiz', fecha: '20/08/2026' },
+  '1118368898': { nombre: 'Angélica María Molina Suárez', cedula: '30506640', calidad: 'madre', menor: 'María Paula Segura Molina', fecha: '12/08/2026' },
 }
 
 const VerConsentimiento = ({ c, pac, onClose }) => {
@@ -22,32 +13,6 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
-
-  const pdfExterno = urlPdfPadres(c.cedula, c.tipo) || (esPdf(c.pdf_url) ? c.pdf_url : null)
-  if (pdfExterno) {
-    return (
-      <div
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.92)', zIndex: 1000, overflowY: 'auto', padding: '20px' }}
-        onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
-      >
-        <div style={{ maxWidth: '820px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '8px', padding: '50px 50px 30px 50px', color: '#000', fontFamily: 'Arial, sans-serif' }}>
-          <object
-            data={`${pdfExterno}#toolbar=0&navpanes=0&scrollbar=0`}
-            type="application/pdf"
-            title={`Consentimiento ${c.tipo}`}
-            style={{ width: '100%', height: '1080px', border: 'none', display: 'block', backgroundColor: '#fff' }}
-          >
-            <iframe
-              title={`Consentimiento ${c.tipo}`}
-              src={`${pdfExterno}#toolbar=0&navpanes=0`}
-              style={{ width: '100%', height: '1080px', border: 'none', display: 'block' }}
-            />
-          </object>
-          <button onClick={onClose} style={{ marginTop: '25px', padding: '12px 20px', backgroundColor: '#1a2e5a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', width: '100%', fontSize: '14px' }}>Cerrar</button>
-        </div>
-      </div>
-    )
-  }
 
   const contenidos = {
     1: {
@@ -81,8 +46,41 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
     }
   }
 
-  const t = contenidos[c.tipo]
-  const fechaFormateada = c.fecha_firma ? c.fecha_firma.split('-').reverse().join('/') : ''
+  const contenidosMenor = {
+    1: {
+      titulo: 'CONSENTIMIENTO INFORMADO PARA LA PARTICIPACIÓN DE UN MENOR DE EDAD EN UN ESTUDIO DE INVESTIGACIÓN',
+      intro: 'En el marco del desarrollo del presente proyecto de investigación, se invita al menor de edad bajo su representación a participar de manera voluntaria. Este documento está dirigido al padre, madre o representante legal, quien podrá autorizar o no su participación después de recibir información clara y suficiente.',
+      cuerpo: [
+        { titulo: '1. Información del estudio', texto: 'El propósito del estudio es analizar la relación entre los factores emocionales (estrés, ansiedad y depresión) y los hábitos parafuncionales orales, así como su posible impacto en la salud oral, en estudiantes de odontología de la Universidad Antonio Nariño, sede Neiva, durante los periodos académicos 2026-1 y 2026-2.' },
+        { titulo: '2. Procedimientos', texto: 'La participación del menor incluye:\n- Responder un cuestionario estructurado con información personal general, antecedentes médicos y hábitos parafuncionales orales.\n- Responder una encuesta para la evaluación de aspectos emocionales (estrés, ansiedad y depresión).\n- Someterse a un examen clínico intraoral no invasivo.\n- La toma de registros fotográficos intraorales, únicamente cuando sea necesario y exista autorización específica e independiente.' },
+        { titulo: '3. Riesgos', texto: 'De acuerdo con la información prevista en el proyecto, la investigación se considera de riesgo mínimo, ya que no implica procedimientos invasivos ni intervenciones que afecten la integridad física del participante. Algunas preguntas relacionadas con aspectos emocionales podrían causar incomodidad. El menor puede solicitar aclaraciones, abstenerse de responder una pregunta o detener su participación.' },
+        { titulo: '4. Beneficios', texto: 'No se contempla un beneficio económico ni se garantiza un beneficio directo para el menor. Su participación contribuirá al fortalecimiento del conocimiento científico en el área de la salud oral.' },
+        { titulo: '5. Confidencialidad y privacidad', texto: 'La información suministrada será tratada con estricta confidencialidad y utilizada únicamente con fines académicos e investigativos. La identidad del menor no será revelada en publicaciones o presentaciones. La toma y el uso de fotografías requieren autorización específica en el documento independiente.' },
+        { titulo: '6. Uso de la información', texto: 'Se autoriza el uso de la información recolectada para el análisis académico, la presentación de resultados y las publicaciones derivadas de la investigación, manteniendo la confidencialidad de los datos personales.' },
+        { titulo: '7. Participación voluntaria y retiro', texto: 'La participación es voluntaria. El representante legal puede retirar su autorización en cualquier momento y el menor puede manifestar que no desea continuar, sin que esto genere perjuicio alguno ni afecte su acceso a servicios que le correspondan.' },
+        { titulo: '8. Aclaración de dudas y derechos del menor', texto: 'El representante legal declara haber tenido la oportunidad de formular preguntas y haber recibido respuestas claras y satisfactorias. El estudio deberá explicarse al menor con lenguaje apropiado para su edad y comprensión, y se solicitará su asentimiento cuando corresponda. La autorización del representante no obliga al menor a participar si expresa que no desea hacerlo.' },
+        { titulo: '9. Marco normativo', texto: 'El documento se elabora tomando como referencia la Resolución 8430 de 1993 del Ministerio de Salud de Colombia, en particular las disposiciones sobre investigación en seres humanos y consentimiento informado.' },
+      ]
+    },
+    2: {
+      titulo: 'CONSENTIMIENTO INFORMADO PARA LA TOMA Y USO DE REGISTROS FOTOGRÁFICOS INTRAORALES DE UN MENOR DE EDAD EN INVESTIGACIÓN',
+      intro: 'En el marco del desarrollo del presente proyecto de investigación, se solicita la autorización del padre, madre o representante legal para la toma de registros fotográficos intraorales del menor, los cuales serán utilizados con fines académicos, científicos e investigativos.',
+      cuerpo: [
+        { titulo: '1. Finalidad de los registros fotográficos', texto: 'Las imágenes permitirán apoyar el análisis clínico y la comprensión de los hábitos parafuncionales orales en el desarrollo del trabajo de grado. Serán utilizadas exclusivamente con fines académicos, científicos e investigativos relacionados con el proyecto.' },
+        { titulo: '2. Procedimiento', texto: 'La toma de fotografías se realizará únicamente en la cavidad oral, mediante procedimientos no invasivos y cumpliendo con las normas de bioseguridad establecidas.' },
+        { titulo: '3. Riesgos', texto: 'Se considera un procedimiento de riesgo mínimo, ya que la toma fotográfica intraoral no es invasiva. Se respetará la comodidad y privacidad del menor, quien podrá pedir que se detenga el procedimiento.' },
+        { titulo: '4. Confidencialidad y privacidad', texto: 'Las imágenes serán tratadas con estricta confidencialidad, evitando información que permita identificar al menor. En caso de que se requiera incluir elementos que puedan facilitar su identificación, se solicitará una autorización adicional y específica.' },
+        { titulo: '5. Uso de las imágenes', texto: 'Si se concede la autorización, los registros fotográficos podrán utilizarse en el análisis clínico, presentaciones académicas o científicas y publicaciones derivadas de la investigación, bajo las condiciones de confidencialidad descritas. Este consentimiento no autoriza usos comerciales ni usos ajenos al proyecto.' },
+        { titulo: '6. Participación voluntaria y retiro', texto: 'La autorización para las fotografías es voluntaria e independiente de la participación general en el estudio. Negarse a autorizar fotografías no impedirá que el menor participe en las demás actividades que no las requieran. La autorización puede retirarse en cualquier momento.' },
+        { titulo: '7. Aclaración de dudas', texto: 'Declaro que he recibido información suficiente sobre el propósito, alcance y uso de los registros fotográficos y que he tenido la oportunidad de realizar preguntas, las cuales han sido respondidas satisfactoriamente.' },
+        { titulo: '8. Marco normativo', texto: 'El documento se elabora tomando como referencia la Resolución 8430 de 1993 del Ministerio de Salud de Colombia, en particular las disposiciones relacionadas con investigación en seres humanos y consentimiento informado.' },
+      ]
+    }
+  }
+
+  const acudiente = DATOS_ACUDIENTES[String(c.cedula || '').trim()]
+  const t = acudiente ? contenidosMenor[c.tipo] : contenidos[c.tipo]
+  const fechaFormateada = acudiente ? acudiente.fecha : (c.fecha_firma ? c.fecha_firma.split('-').reverse().join('/') : '')
 
   return (
     <div
@@ -111,7 +109,11 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
 
         {/* PÁRRAFO YO */}
         <p style={{ fontSize: '13px', marginBottom: '20px', textAlign: 'justify' }}>
-          Yo, <strong>{pac?.nombre} {pac?.apellidos}</strong>, identificado(a) con el número de cédula que aparece al pie de mi firma, {t.parrafoYo}
+          {acudiente ? (
+            <>Yo, <strong>{acudiente.nombre}</strong>, identificado(a) con documento de identidad No. {acudiente.cedula}, actuando en calidad de {acudiente.calidad} de <strong>{acudiente.menor}</strong>, con documento de identidad No. {c.cedula}, manifiesto que he sido informado(a) de manera clara, suficiente y comprensible{c.tipo === 1 ? ' sobre el estudio' : ''} y que mis preguntas han sido respondidas satisfactoriamente. Autorizo de forma libre, previa y voluntaria {c.tipo === 1 ? 'la participación del menor en el proyecto mencionado' : 'la toma y uso de registros fotográficos intraorales del menor dentro del proyecto de investigación mencionado'}, desarrollado por los estudiantes investigadores Diana Carolina Cortés Dulcey, Luisa María Sandoval Ibarra y Christopher Vargas Quiroga, bajo la asesoría científica de la Dra. Alejandra Bobadilla Henao.</>
+          ) : (
+            <>Yo, <strong>{pac?.nombre} {pac?.apellidos}</strong>, identificado(a) con el número de cédula que aparece al pie de mi firma, {t.parrafoYo}</>
+          )}
         </p>
 
         {/* NUMERALES */}
@@ -123,21 +125,37 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
         ))}
 
         {/* CIERRE */}
-        <p style={{ fontSize: '13px', margin: '25px 0 25px 0' }}>En constancia de lo anterior, se firma el presente consentimiento informado.</p>
+        <p style={{ fontSize: '13px', margin: '25px 0 25px 0' }}>
+          {acudiente
+            ? 'En constancia de lo anterior, se firma el presente consentimiento informado por el representante legal del menor.'
+            : 'En constancia de lo anterior, se firma el presente consentimiento informado.'}
+        </p>
 
-        {/* FIRMA PACIENTE — soporta DataURL y URLs públicas de Storage */}
+        {/* FIRMA — no se usa la firma digital del menor */}
         <div style={{ marginBottom: '15px' }}>
-          {c.pdf_url && (c.pdf_url.startsWith('http') || c.pdf_url.startsWith('data:image')) ? (
+          {!acudiente && c.pdf_url && (c.pdf_url.startsWith('http') || c.pdf_url.startsWith('data:image')) ? (
             <img src={c.pdf_url} alt="firma paciente" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '8px' }} />
           ) : (
             <div style={{ width: '5cm', height: '2cm', marginBottom: '8px' }} />
           )}
         </div>
 
-        {/* DATOS PACIENTE */}
-        <p style={{ fontSize: '13px', margin: '3px 0' }}>Nombre: {pac?.nombre} {pac?.apellidos}</p>
-        <p style={{ fontSize: '13px', margin: '3px 0' }}>Cédula de ciudadanía: {c.cedula}</p>
-        <p style={{ fontSize: '13px', margin: '3px 0 30px 0' }}>Fecha: {fechaFormateada}</p>
+        {acudiente ? (
+          <>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Representante del menor: {acudiente.nombre}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Cédula del representante: {acudiente.cedula}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Actúa como: {acudiente.calidad.charAt(0).toUpperCase() + acudiente.calidad.slice(1)}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Nombre del menor: {acudiente.menor}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Documento del menor: {c.cedula}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0 30px 0' }}>Fecha: {fechaFormateada}</p>
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Nombre: {pac?.nombre} {pac?.apellidos}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0' }}>Cédula de ciudadanía: {c.cedula}</p>
+            <p style={{ fontSize: '13px', margin: '3px 0 30px 0' }}>Fecha: {fechaFormateada}</p>
+          </>
+        )}
 
         {/* FIRMAS INVESTIGADORES */}
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
