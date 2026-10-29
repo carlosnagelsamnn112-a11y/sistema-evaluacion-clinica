@@ -131,9 +131,10 @@ const VerConsentimiento = ({ c, pac, onClose }) => {
             : 'En constancia de lo anterior, se firma el presente consentimiento informado.'}
         </p>
 
-        {/* FIRMA — no se usa la firma digital del menor */}
         <div style={{ marginBottom: '15px' }}>
-          {!acudiente && c.pdf_url && (c.pdf_url.startsWith('http') || c.pdf_url.startsWith('data:image')) ? (
+          {acudiente ? (
+            <img src={`/firmas-acudientes/${c.cedula}.png`} alt="firma acudiente" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '8px' }} />
+          ) : c.pdf_url && (c.pdf_url.startsWith('http') || c.pdf_url.startsWith('data:image')) ? (
             <img src={c.pdf_url} alt="firma paciente" style={{ width: '5cm', height: '2cm', objectFit: 'contain', display: 'block', marginBottom: '8px' }} />
           ) : (
             <div style={{ width: '5cm', height: '2cm', marginBottom: '8px' }} />
